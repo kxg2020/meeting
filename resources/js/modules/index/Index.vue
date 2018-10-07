@@ -65,14 +65,17 @@
       Tabbar
     },
     created() {
-      let _this = this
-      _this.axios.get('/meeting/type').then(res => {
-        console.log(res)
-      }).catch(error => {
-
-      })
+      this.getMeetingTypeList()
     },
     methods: {
+      getMeetingTypeList() {
+        let _this = this
+        _this.axios.get('/meetingType/list').then(res => {
+          console.log(res)
+        }).catch(error => {
+
+        })
+      },
       toMeetingList (group_id) {
         this.$router.push({path: '/meeting_list/' + group_id})
       },

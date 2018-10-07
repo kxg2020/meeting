@@ -11,7 +11,10 @@ use think\facade\Request;
 class Index extends Base{
 
     public function index(){
-        return view('index');
+        // dev
+        if (strpos(Request::domain(), 'localhost')){
+            return view('index', ['token' => (new Aes(Config::get("aes_key")))->encrypt('whngqdcmhdxxf')]);
+        }
         $code = Request::get("code");
         if($code){
             $userBasic = WeChat::getInstance()->setCode($code)->getUserBasic();
@@ -29,9 +32,7 @@ class Index extends Base{
             $redirect = sprintf($this->authApi,$this->companyId,$this->redirect,$this->agentId);
             return redirect($redirect);
         }
-        // 返回token
-        header("token",(new Aes(Config::get("aes_key")))->encrypt($userBasic["UserId"]));
-       return view('index');
+       return view('index', ['token' => (new Aes(Config::get("aes_key")))->encrypt($userBasic["UserId"])]);
     }
 
 

@@ -14,10 +14,10 @@ class Auth{
             if($key == Config::get("aes_key")){
                 return $next($request);
             }else{
-                return json(["msg" => "token error","status" => false,"code" => 0]);
+                return json(["msg" => "token validation failed.","status" => false,"code" => 0]);
             }
         }else{
-            return json(["msg" => "token error","status" => false,"code" => 0]);
+            return json(["msg" => "token not exist.","status" => false,"code" => 0]);
         }
     }
 }
