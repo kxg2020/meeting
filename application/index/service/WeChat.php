@@ -12,13 +12,13 @@ class WeChat{
     // 企业ID
     const COMPANY_ID   = "ww0d4cee19e94134fd";
     // 企业接口
-    const COMPANY_BASE_API  = "https://qyapi.weixin.qq.com/cgi-bin/";
+    const COMPANY_BASE_API  = "https://qyapi.weixin.qq.com/cgi-bin";
     // 获取access_token
     const GET_ACCESS_TOKEN  = "gettoken?corpid=%s&corpsecret=%s";
     // 获取成员基础信息
-    const GET_MEMBER_BASIC  = "user/getuserinfo?access_token=%s&code=%s";
+    const GET_MEMBER_BASIC  = "/user/getuserinfo?access_token=%s&code=%s";
     // 获取成员部门信息
-    const GET_MEMBER_INFO   = "user/get?access_token=%s&userid=%s";
+    const GET_MEMBER_INFO   = "/user/get?access_token=%s&userid=%s";
 
     private $requestUrl;
     private $token = null;
