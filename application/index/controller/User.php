@@ -10,8 +10,8 @@ class User extends Base{
     /*
      * ²éÑ¯ÓÃ»§
      */
-    public function getUserByUserId($username){
-        $user = Db::name("user")->where(["username"=>$username])->find();
+    public function getUserByUserId($userId){
+        $user = Db::name("user")->where(["user_id"=>$userId])->find();
         return $this->printResponse(200,$user);
     }
 
