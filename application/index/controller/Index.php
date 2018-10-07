@@ -11,7 +11,7 @@ use think\facade\Request;
 class Index extends Base{
 
     public function index(){
-        return view('index');
+
         $code = Request::get("code");
         if($code){
             $userBasic = WeChat::getInstance()->setCode($code)->getUserBasic();

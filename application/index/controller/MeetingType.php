@@ -21,7 +21,7 @@ class MeetingType extends  Base{
      * 根据type_id获取会议列表
      */
     public function meetingList(){
-        $meetingId = Request::post("id");
+        $params = Request::get("type");
 
     }
 }

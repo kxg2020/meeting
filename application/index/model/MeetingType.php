@@ -18,7 +18,7 @@ class MeetingType extends Base{
     /*
      * 根据type_id获取列表
      */
-    public function meetingList($meetingTypeId){
+    public function meetingList($params){
         $result = Db::name("");
     }
 
