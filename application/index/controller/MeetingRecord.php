@@ -7,10 +7,16 @@ use think\facade\Request;
 class MeetingRecord extends Base{
 
     /*
-   * ´´½¨»áÒé
+   * ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½
    */
     public function meetingNew(){
         $params = Request::post();
         var_dump($params);
+    }
+
+    public function meetingRecords()
+    {
+        $records = \app\index\model\MeetingRecord::getInstance()->getMeetingRecords(Request::param('meeting_type_id'));
+        return $this->printResponse(200, $records);
     }
 }

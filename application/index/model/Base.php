@@ -12,6 +12,6 @@ class Base  extends  Model{
             "data"   => $data,
             "status" => $code == 200 ? true : false
         ];
-        return $this->response;
+        return json($this->response);
     }
 }

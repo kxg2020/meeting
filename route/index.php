@@ -14,11 +14,11 @@ use think\facade\Route;
 Route::get("/","index/index");
 
 Route::group("/api/",function(){
-    // 会议类型列表
-    Route::get("meetingType/type/:key","MeetingType/meetingType");
-    // 具体会议列表
-    Route::get("meetingType/list/:type","MeetingType/meetingList");
-    // 创建新会议
+    // meeting type all
+    Route::get("meetingTypes","MeetingType/meetingTypes");
+    //
+    Route::get("meetingRecords/:meeting_type_id","MeetingRecord/meetingRecords");
+    // 锟斤拷锟斤拷锟铰伙拷锟斤拷
     Route::post("meetingRecord/new","MeetingRecord/meetingNew");
 
 })->middleware(\app\index\service\Auth::class);
