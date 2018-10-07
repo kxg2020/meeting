@@ -21,4 +21,6 @@ Route::group("/api/",function(){
 
     Route::post("meetingRecord/new","MeetingRecord/meetingNew");
 
+    Route::get("department","Department/list");
+
 })->middleware(\app\index\service\Auth::class);
