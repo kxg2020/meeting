@@ -9,12 +9,14 @@
 // | Author: liu21st <liu21st@gmail.com>
 // +----------------------------------------------------------------------
 
-\think\facade\Route::get('think', function () {
-    return 'hello,ThinkPHP5!';
-});
+use think\facade\Route;
 
-\think\facade\Route::get('hello/:name', 'index/hello');
+Route::get("/","index/index");
 
-return [
+// 会议类型列表
+Route::group("/api/",function(){
 
-];
+    Route::get("meeting/type","meeting/meetingType");
+    Route::get("meeting/list","meeting/meetingList");
+
+})->middleware(\app\index\service\Auth::class);
