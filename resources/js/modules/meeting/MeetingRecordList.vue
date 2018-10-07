@@ -42,48 +42,34 @@
 
 <script>
   export default {
-    name: "MeetingList",
+    name: "MeetingRecordList",
     data () {
       return {
-        meetingGroup: {
-          name: '党员大会'
+        meetingType: {
+          id: '',
+          name: ''
         },
-        meetingList: null,
+        meetingRecordList: null,
         loadding: false
     }
     },
     created() {
-      if (this.$route.params.group_id != undefined) {
-        this.getMeetingList(this.$route.params.group_id)
+      if (this.$route.params.type_id != undefined) {
+        this.getMeetingList(this.$route.params.type_id)
       } else {
         this.$router.replace('/')
       }
     },
     methods: {
-      getMeetingList () {
+      getMeetingList (type_id) {
         let _this = this
         _this.loadding = true
-        setTimeout(() => {
-          _this.meetingList = [
-            {
-              id: 1,
-              title: '关于XXX会议',
-              username: 'XXX',
-              start_time: '2018-10-7 15:49:47',
-              end_time: '2018-11-7 15:50:14',
-              view_count: 20
-            },
-            {
-              id: 1,
-              title: '关于XXX会议',
-              username: 'XXX',
-              start_time: '2018-10-7 15:49:47',
-              end_time: '2018-11-7 15:50:14',
-              view_count: 20
-            },
-          ]
-          _this.loadding = false
-        }, 2000)
+        _this.axios.get('/meeting_records/' + type_id).then(res => {
+          _this.meetingRecordList = res.meeting_record_list
+          _this.meetingType = res.meeting_type
+        }).catch(err => {
+
+        })
       },
       back () {
         this.$router.back()

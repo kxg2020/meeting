@@ -1,8 +1,8 @@
-import MeetingList from './MeetingList.vue'
+import MeetingRecordList from './MeetingRecordList.vue'
 export default [
   {
-    name: 'MeetingList',
-    path: '/meeting_list/:group_id(\\d+)',
-    component: MeetingList
+    name: 'MeetingRecordList',
+    path: '/meeting_record_list/:type_id(\\d+)',
+    component: MeetingRecordList
   },
 ]
