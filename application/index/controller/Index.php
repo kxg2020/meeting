@@ -1,5 +1,6 @@
 <?php
 namespace app\index\controller;
+use app\index\model\User;
 use app\index\service\Aes;
 use app\index\service\WeChat;
 use think\Exception;

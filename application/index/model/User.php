@@ -1,5 +1,5 @@
 <?php
-namespace app\index\controller;
+namespace app\index\model;
 use app\index\service\Singleton;
 use think\Db;
 
@@ -12,7 +12,7 @@ class User extends Base{
      */
     public function getUserByUserId($userId){
         $user = Db::name("user")->where(["user_id"=>$userId])->find();
-        return $this->printResponse(200,$user);
+        return $this->returnResponse($user);
     }
 
     /*
@@ -20,7 +20,7 @@ class User extends Base{
      */
     public function createUser(){
         $result = Db::name("user")->insertGetId($this->userInfo);
-        return $this->printResponse(200,$result);
+        return $this->returnResponse($result);
     }
 
     /*
