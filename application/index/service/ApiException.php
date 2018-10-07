@@ -7,9 +7,10 @@ class ApiException extends Handle{
 
     public function render(\Exception $e){
         $this->exception = [
-            "status" => 500,
+            "status" => false,
             "msg"    => "接口异常",
-            "data"   => []
+            "data"   => [],
+            "code"   => 500
         ];
         return json($this->exception);
     }

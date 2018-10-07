@@ -1,25 +1,18 @@
 <?php
-/**
- * Created by PhpStorm.
- * User: gaow
- * Date: 2018/10/7
- * Time: 20:48
- */
-
 namespace app\index\model;
 
-
+use app\index\service\Singleton;
 use think\Db;
 
 class MeetingRecord extends Base
 {
     use Singleton;
 
-    public function getMeetingRecords($meeting_type_id)
-    {
-        return Db::name('meeting_record')
+    public function getMeetingRecords($type){
+        $records = Db::name('meeting_record')
             ->field('id,title,create_time')
-            ->where(['meeting_type_id' => $meeting_type_id])
+            ->where(['meeting_type_id' => $type])
             ->select();
+        return $this->returnResponse($records);
     }
 }
