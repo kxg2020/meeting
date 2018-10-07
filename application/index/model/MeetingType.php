@@ -6,24 +6,18 @@ use think\Db;
 class MeetingType extends Base{
     use Singleton;
     /*
-     * 会议类型
+     * all
      */
-    public function meetingType($params){
+    public function meetingTypes(){
         $field  = "id,title,img_url";
         $result = Db::name("meeting_type")
-            ->field($field)->where($this->condition($params))->select();
+            ->field($field)->select();
         return $this->returnResponse($result);
     }
 
-    /*
-     * 根据type_id获取列表
-     */
-    public function meetingList($params){
-        $result = Db::name("");
-    }
 
     /*
-     * 搜索条件
+     * 锟斤拷锟斤拷锟斤拷锟斤拷
      */
     private function condition($params){
         $where = [

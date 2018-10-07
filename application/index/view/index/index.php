@@ -24,5 +24,6 @@ if (! function_exists('mix')) {
 <body>
 <div id="app"></div>
 </body>
+<script>window.token = '{$token}'</script>
 <script type="text/javascript" src="<?php echo mix("/static/js/app.js"); ?>"></script>
 </html>

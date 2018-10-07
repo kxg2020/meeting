@@ -9,13 +9,13 @@
       >
         <div slot="action" @click="onSearch">搜索</div>
       </van-search>
-      <div class="meeting-group-list">
-        <div class="meeting-group-item" v-for="(meetingGroupItem, mgIndex) in meetingList" :key="mgIndex" @click="toMeetingList(meetingGroupItem.id)">
-          <div class="meeting-group-img">
-            <img :src="meetingGroupItem.img_url" alt="">
+      <div class="meeting-type-list">
+        <div class="meeting-type-item" v-for="(meetingTypeItem, mgIndex) in meetingTypeList" :key="mgIndex" @click="toMeetingList(meetingTypeItem.id)">
+          <div class="meeting-type-img">
+            <img :src="meetingTypeItem.img_url" alt="">
           </div>
-          <div class="meeting-group-title">
-            <span>{{meetingGroupItem.title}}</span>
+          <div class="meeting-type-title">
+            <span>{{meetingTypeItem.title}}</span>
           </div>
         </div>
       </div>
@@ -32,47 +32,24 @@
     data() {
       return {
         searchValue: '',
-        meetingList: [
-          {
-            id: 1,
-            title: '党员大会',
-            img_url: 'https://img.it9g.com/other/FvO_Csuv2DyvYZxzc97xjxLWyoeO.jpeg'
-          },
-          {
-            id: 1,
-            title: '党员大会',
-            img_url: 'https://img.it9g.com/other/FvO_Csuv2DyvYZxzc97xjxLWyoeO.jpeg'
-          },
-          {
-            id: 1,
-            title: '党员大会',
-            img_url: 'https://img.it9g.com/other/FvO_Csuv2DyvYZxzc97xjxLWyoeO.jpeg'
-          },
-          {
-            id: 1,
-            title: '党员大会',
-            img_url: 'https://img.it9g.com/other/FvO_Csuv2DyvYZxzc97xjxLWyoeO.jpeg'
-          },
-          {
-            id: 1,
-            title: '党员大会',
-            img_url: 'https://img.it9g.com/other/FvO_Csuv2DyvYZxzc97xjxLWyoeO.jpeg',
-          },
-        ]
+        meetingTypeList: []
       }
     },
     components: {
       Tabbar
     },
     created() {
-      let _this = this
-      _this.axios.get('/meeting/type').then(res => {
-        console.log(res)
-      }).catch(error => {
-
-      })
+      this.getMeetingTypeList()
     },
     methods: {
+      getMeetingTypeList() {
+        let _this = this
+        _this.axios.get('/meetingTypes').then(res => {
+          this.meetingTypeList = res.data
+        }).catch(error => {
+
+        })
+      },
       toMeetingList (group_id) {
         this.$router.push({path: '/meeting_list/' + group_id})
       },
@@ -84,7 +61,7 @@
 </script>
 
 <style scoped>
-  .meeting-group-list {
+  .meeting-type-list {
     display: flex;
     flex-direction: row;
     flex-wrap: wrap;
@@ -92,21 +69,22 @@
     justify-content: start;
   }
 
-  .meeting-group-item {
+  .meeting-type-item {
     box-sizing: border-box;
     width: 25%;
     padding: 10px;
     text-align: center;
   }
 
-  .meeting-group-img img {
+  .meeting-type-img img {
     width: 50px;
     height: 50px;
     border-radius: 5px;
   }
 
-  .meeting-group-title {
+  .meeting-type-title {
     color: #333;
     line-height: 1.2em;
+    height: 2.4em;
   }
 </style>

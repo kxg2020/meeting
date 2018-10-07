@@ -5,10 +5,41 @@ import vueAxios from 'vue-axios'
 import store from './store'
 Vue.use(vueAxios, axios)
 
-Vue.axios.defaults.baseURL = '/api'
-
 import Vant from 'vant'
 Vue.use(Vant)
+
+Vue.axios.defaults.baseURL = '/api'
+
+
+console.log(window.token)
+Vue.axios.defaults.headers.common = {
+  'token': window.token,
+}
+
+// 请求拦截
+Vue.axios.interceptors.request.use(
+  config => {
+    // todo add config
+    return config
+  },
+  error => {
+    return Promise.reject(error.response.data)
+  }
+)
+
+
+// 响应拦截
+Vue.axios.interceptors.response.use(
+  response => {
+    return response.data
+  },
+  error => {
+    if (error.response) {
+      console.log(error.response)
+    }
+    return Promise.reject(error.response.data)
+  }
+)
 
 import App from './App.vue'
 Vue.component('App', App)
