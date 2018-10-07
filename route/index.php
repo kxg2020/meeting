@@ -16,7 +16,8 @@ Route::get("/","index/index");
 // 会议类型列表
 Route::group("/api/",function(){
 
-    Route::get("meeting/type","meeting/meetingType");
-    Route::get("meeting/list","meeting/meetingList");
+    Route::get("meetingType/type","MeetingType/meetingType");
+    Route::get("meetingType/list","MeetingType/meetingList");
+    Route::post("meetingRecord/new","MeetingRecord/meetingNew");
 
 })->middleware(\app\index\service\Auth::class);

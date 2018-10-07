@@ -17,6 +17,8 @@ class WeChat{
     const GET_ACCESS_TOKEN = "gettoken?corpid=%s&corpsecret=%s";
     // 获取成员信息
     const GET_MEMBER_INFO  = "getuserinfo?access_token=%s&code=%s";
+    // 获取成员部门信息
+    const GET_MEMBER_DEPARTMENT = "get?access_token=%s&userid=%s";
 
     private $requestUrl;
     private $token = null;
@@ -29,7 +31,7 @@ class WeChat{
     public function getCompanyAccessToken(){
         $this->token = \think\facade\Cache::get("access_token");
         if(!$this->token){
-            $this->setUrl("access_token");
+            $this->setUrl("accessToken");
             $result = Tool::getInstance()
                 ->jsonDecode(Http::getInstance()->request($this->requestUrl));
             if(isset($result["errcode"]) && $result["errcode"] == 0){
@@ -42,10 +44,10 @@ class WeChat{
     }
 
     /*
-     * 获取成员信息
+     * 登录获取成员基础信息
      */
-    public function getMemberInfo(){
-        $this->setUrl("userInfo");
+    public function getUserBasic(){
+        $this->getCompanyAccessToken()->setUrl("userInfo");
         $result = Tool::getInstance()
             ->jsonDecode(Http::getInstance()->request($this->requestUrl));
         if(isset($result["errcode"]) && $result["errcode"] == 0){
@@ -54,12 +56,28 @@ class WeChat{
         return false;
     }
 
-    private function setUrl($type){
+    /*
+     * 获取成员部门详情
+     */
+    public function getUserInfo($userId){
+        $this->getCompanyAccessToken()
+             ->setUrl("userDepartmentInfo",["user_id"=>$userId]);
+        $result = Tool::getInstance()
+            ->jsonDecode(Http::getInstance()->request($this->requestUrl));
+        if(isset($result["errcode"]) && $result["errcode"] == 0){
+            return $result;
+        }
+        return false;
+    }
+
+    private function setUrl($type,$param = []){
         $url = [
-            "access_token" => sprintf(self::COMPANY_BASE_API.self::GET_ACCESS_TOKEN,self::COMPANY_ID,self::AGENT_SECRET),
-            "userInfo"    => sprintf(self::COMPANY_BASE_API.self::GET_MEMBER_INFO,$this->token,self::AGENT_SECRET),
+            "accessToken" => sprintf(self::COMPANY_BASE_API.self::GET_ACCESS_TOKEN,self::COMPANY_ID,self::AGENT_SECRET),
+            "userInfo"     => sprintf(self::COMPANY_BASE_API.self::GET_MEMBER_INFO,$this->token,$this->code),
+            "userDepartmentInfo" => sprintf(self::COMPANY_BASE_API.self::GET_MEMBER_DEPARTMENT,$this->token,$param["user_id"])
         ];
         $this->requestUrl = $url[$type];
+        return $this;
     }
 
     public function setCode($code){
