@@ -1,3 +1,4 @@
+import Index from './Index.vue'
 export default [
   {
     path: '/',
@@ -6,6 +7,6 @@ export default [
   {
     name: 'Index',
     path: '/index',
-    component: () => import('./Index.vue')
+    component: Index
   },
 ]
