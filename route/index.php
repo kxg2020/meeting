@@ -11,7 +11,14 @@
 
 \think\facade\Route::get('index', 'index/index');
 \think\facade\Route::get('', 'index/index');
+use think\facade\Route;
 
-return [
+Route::get("/","index/index");
 
-];
+// ���������б�
+Route::group("/api/",function(){
+
+    Route::get("meeting/type","meeting/meetingType");
+    Route::get("meeting/list","meeting/meetingList");
+
+})->middleware(\app\index\service\Auth::class);
