@@ -16,7 +16,7 @@ class MeetingRecord extends Base{
         $records = \app\index\model\MeetingRecord::getInstance()
             ->getMeetingRecords(Request::param('meeting_type_id'));
         if($records["status"]){
-            return $this->printResponse(200, $records);
+            return $this->printResponse(200, $records["data"]);
         }
         return $this->printResponse();
     }

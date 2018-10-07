@@ -8,7 +8,7 @@ class MeetingType extends  Base{
     public function meetingTypes(){
         $meeting = \app\index\model\MeetingType::getInstance()->meetingTypes();
         if($meeting["status"]){
-            return $this->printResponse(200,$meeting);
+            return $this->printResponse(200,$meeting["data"]);
         }
         return $this->printResponse();
     }
