@@ -47,7 +47,7 @@ class WeChat{
      * 登录获取成员基础信息
      */
     public function getUserBasic(){
-        $this->getCompanyAccessToken()->setUrl("userInfo");
+        $this->getCompanyAccessToken()->setUrl("userBasic");
         $result = Tool::getInstance()
             ->jsonDecode(Http::getInstance()->request($this->requestUrl));
         if(isset($result["errcode"]) && $result["errcode"] == 0){
@@ -61,7 +61,7 @@ class WeChat{
      */
     public function getUserInfo($userId){
         $this->getCompanyAccessToken()
-             ->setUrl("userDepartmentInfo",["user_id"=>$userId]);
+             ->setUrl("userInfo",["user_id"=>$userId]);
         $result = Tool::getInstance()
             ->jsonDecode(Http::getInstance()->request($this->requestUrl));
         if(isset($result["errcode"]) && $result["errcode"] == 0){
@@ -71,12 +71,17 @@ class WeChat{
     }
 
     private function setUrl($type,$param = []){
-        $url = [
-            "accessToken" => sprintf(self::COMPANY_BASE_API.self::GET_ACCESS_TOKEN,self::COMPANY_ID,self::AGENT_SECRET),
-            "userInfo"     => sprintf(self::COMPANY_BASE_API.self::GET_MEMBER_INFO,$this->token,$this->code),
-            "userDepartmentInfo" => sprintf(self::COMPANY_BASE_API.self::GET_MEMBER_DEPARTMENT,$this->token,$param["user_id"])
-        ];
-        $this->requestUrl = $url[$type];
+        switch($type){
+            case "accessToken":
+                $this->requestUrl = sprintf(self::COMPANY_BASE_API.self::GET_ACCESS_TOKEN,self::COMPANY_ID,self::AGENT_SECRET);
+                break;
+            case "userBasic":
+                $this->requestUrl = sprintf(self::COMPANY_BASE_API.self::GET_MEMBER_INFO,$this->token,$this->code);
+                break;
+            case "userInfo":
+                $this->requestUrl = sprintf(self::COMPANY_BASE_API.self::GET_MEMBER_DEPARTMENT,$this->token,$param["user_id"]);
+                break;
+        }
         return $this;
     }
 
