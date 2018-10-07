@@ -9,11 +9,13 @@
 // | Author: liu21st <liu21st@gmail.com>
 // +----------------------------------------------------------------------
 
+\think\facade\Route::get('index', 'index/index');
+\think\facade\Route::get('', 'index/index');
 use think\facade\Route;
 
 Route::get("/","index/index");
 
-// »áÒéÀàĞÍÁĞ±í
+// ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Ğ±ï¿½
 Route::group("/api/",function(){
 
     Route::get("meetingType/type","MeetingType/meetingType");

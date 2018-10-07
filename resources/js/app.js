@@ -5,6 +5,9 @@ import vueAxios from 'vue-axios'
 import store from './store'
 Vue.use(vueAxios, axios)
 
+import Vant from 'vant'
+Vue.use(Vant)
+
 import App from './App.vue'
 Vue.component('App', App)
 
