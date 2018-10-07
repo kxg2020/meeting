@@ -1,7 +1,7 @@
 <template>
   <div class="main">
     <van-nav-bar
-      :title="meetingGroup.name"
+      :title="meetingType.title"
       left-text="返回"
       left-arrow
       @click-left="back()"
@@ -13,22 +13,22 @@
         </div>
       </template>
       <template v-else>
-        <div v-if="meetingList.length > 0" class="meeting-list">
-          <div v-for="(meetingItem, meetingIndex) in meetingList" :key="meetingIndex" class="meeting-item">
+        <div v-if="meetingRecordList.length > 0" class="meeting-list">
+          <div v-for="(meetingItem, meetingIndex) in meetingRecordList" :key="meetingIndex" class="meeting-item">
             <div class="meeting-title">
               {{meetingItem.title}}
             </div>
             <div class="meeting-noti">
               <span>主持人</span>
-              <span>{{meetingItem.username}}</span>
+              <span>{{meetingItem.create_user_id}}</span>
             </div>
             <div class="meeting-noti">
               <span>开始时间</span>
-              <span>{{meetingItem.start_time}}</span>
+              <span>{{meetingItem.create_time}}</span>
             </div>
             <div class="meeting-noti">
               <span>结束时间</span>
-              <span>{{meetingItem.end_time}}</span>
+              <span>{{meetingItem.create_time}}</span>
             </div>
           </div>
         </div>
@@ -64,9 +64,10 @@
       getMeetingList (type_id) {
         let _this = this
         _this.loadding = true
-        _this.axios.get('/meeting_records/' + type_id).then(res => {
-          _this.meetingRecordList = res.meeting_record_list
-          _this.meetingType = res.meeting_type
+        _this.axios.get('/meeting_record_list/' + type_id).then(res => {
+          _this.meetingRecordList = res.data.meeting_records
+          _this.meetingType = res.data.meeting_type
+          _this.loadding = false
         }).catch(err => {
 
         })

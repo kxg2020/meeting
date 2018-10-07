@@ -1,10 +1,9 @@
 <?php
-namespace app\index\service;
+namespace app\index\controller;
 
-use app\index\controller\Base;
 use think\facade\Request;
 
-class MeetingRecord extends Base{
+class MeetingRecord extends Base {
 
 
     public function meetingNew(){
@@ -12,9 +11,9 @@ class MeetingRecord extends Base{
         var_dump($params);
     }
 
-    public function meetingRecords(){
+    public function meetingRecordList(){
         $records = \app\index\model\MeetingRecord::getInstance()
-            ->getMeetingRecords(Request::param('meeting_type_id'));
+            ->getMeetingRecords(Request::param('typeId'));
         if($records["status"]){
             return $this->printResponse(200, $records["data"]);
         }

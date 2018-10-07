@@ -17,7 +17,7 @@ Route::group("/api/",function(){
 
     Route::get("meetingTypes","MeetingType/meetingTypes");
 
-    Route::get("meetingRecords/:meeting_type_id","MeetingRecord/meetingRecords");
+    Route::get("meeting_record_list/:typeId","MeetingRecord/meetingRecordList");
 
     Route::post("meetingRecord/new","MeetingRecord/meetingNew");
 
