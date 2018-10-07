@@ -12,11 +12,13 @@ class WeChat{
     // 企业ID
     const COMPANY_ID   = "ww0d4cee19e94134fd";
     // 企业接口
-    const COMPANY_BASE_API = "https://qyapi.weixin.qq.com/cgi-bin/";
+    const COMPANY_BASE_API  = "https://qyapi.weixin.qq.com/cgi-bin/";
     // 获取access_token
-    const GET_ACCESS_TOKEN = "gettoken?corpid=%s&corpsecret=%s";
-    // 获取成员信息
-    const GET_MEMBER_INFO  = "getuserinfo?access_token=%s&code=%s";
+    const GET_ACCESS_TOKEN  = "gettoken?corpid=%s&corpsecret=%s";
+    // 获取成员基础信息
+    const GET_MEMBER_BASIC  = "user/getuserinfo?access_token=%s&code=%s";
+    // 获取成员部门信息
+    const GET_MEMBER_INFO   = "user/get?access_token=%s&userid=%s";
 
     private $requestUrl;
     private $token = null;
@@ -29,7 +31,7 @@ class WeChat{
     public function getCompanyAccessToken(){
         $this->token = \think\facade\Cache::get("access_token");
         if(!$this->token){
-            $this->setUrl("access_token");
+            $this->setUrl("accessToken");
             $result = Tool::getInstance()
                 ->jsonDecode(Http::getInstance()->request($this->requestUrl));
             if(isset($result["errcode"]) && $result["errcode"] == 0){
@@ -42,10 +44,10 @@ class WeChat{
     }
 
     /*
-     * 获取成员信息
+     * 登录获取成员基础信息
      */
-    public function getMemberInfo(){
-        $this->setUrl("userInfo");
+    public function getUserBasic(){
+        $this->getCompanyAccessToken()->setUrl("userBasic");
         $result = Tool::getInstance()
             ->jsonDecode(Http::getInstance()->request($this->requestUrl));
         if(isset($result["errcode"]) && $result["errcode"] == 0){
@@ -54,12 +56,33 @@ class WeChat{
         return false;
     }
 
-    private function setUrl($type){
-        $url = [
-            "access_token" => sprintf(self::COMPANY_BASE_API.self::GET_ACCESS_TOKEN,self::COMPANY_ID,self::AGENT_SECRET),
-            "userInfo"    => sprintf(self::COMPANY_BASE_API.self::GET_MEMBER_INFO,$this->token,self::AGENT_SECRET),
-        ];
-        $this->requestUrl = $url[$type];
+    /*
+     * 获取成员部门详情
+     */
+    public function getUserInfo($userId){
+        $this->getCompanyAccessToken()
+             ->setUrl("userInfo",["user_id"=>$userId]);
+        $result = Tool::getInstance()
+            ->jsonDecode(Http::getInstance()->request($this->requestUrl));
+        if(isset($result["errcode"]) && $result["errcode"] == 0){
+            return $result;
+        }
+        return false;
+    }
+
+    private function setUrl($type,$param = []){
+        switch($type){
+            case "accessToken":
+                $this->requestUrl = sprintf(self::COMPANY_BASE_API.self::GET_ACCESS_TOKEN,self::COMPANY_ID,self::AGENT_SECRET);
+                break;
+            case "userBasic":
+                $this->requestUrl = sprintf(self::COMPANY_BASE_API.self::GET_MEMBER_BASIC,$this->token,$this->code);
+                break;
+            case "userInfo":
+                $this->requestUrl = sprintf(self::COMPANY_BASE_API.self::GET_MEMBER_INFO,$this->token,$param["user_id"]);
+                break;
+        }
+        return $this;
     }
 
     public function setCode($code){
