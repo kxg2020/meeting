@@ -16,7 +16,7 @@ class WeChat{
     // 获取access_token
     const GET_ACCESS_TOKEN = "gettoken?corpid=%s&corpsecret=%s";
     // 获取成员信息
-    const GET_MEMBER_INFO  = "getuserinfo?access_token=%s&code=%s";
+    const GET_MEMBER_INFO  = "/user/getuserinfo?access_token=%s&code=%s";
     // 获取成员部门信息
     const GET_MEMBER_DEPARTMENT = "get?access_token=%s&userid=%s";
 
