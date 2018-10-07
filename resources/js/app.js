@@ -5,6 +5,8 @@ import vueAxios from 'vue-axios'
 import store from './store'
 Vue.use(vueAxios, axios)
 
+Vue.axios.defaults.baseURL = '/api'
+
 import Vant from 'vant'
 Vue.use(Vant)
 

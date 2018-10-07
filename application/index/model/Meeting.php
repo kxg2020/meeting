@@ -6,7 +6,7 @@ use think\Db;
 class Meeting extends Base{
     use Singleton;
     /*
-     * »áÒéÀàÐÍ
+     * ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½
      */
     public function meetingType(){
         $field  = "id,title,img_url";
@@ -15,7 +15,7 @@ class Meeting extends Base{
     }
 
     /*
-     * »áÒéÁÐ±í
+     * ï¿½ï¿½ï¿½ï¿½ï¿½Ð±ï¿½
      */
     public function meetingList($meetingTypeId){
         $result = Db::name("");

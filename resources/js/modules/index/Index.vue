@@ -1,15 +1,21 @@
 <template>
   <div class="main">
     <div class="main-container main-container-top">
+      <van-search
+        v-model="searchValue"
+        placeholder="请输入搜索关键词"
+        show-action
+        @search="onSearch"
+      >
+        <div slot="action" @click="onSearch">搜索</div>
+      </van-search>
       <div class="meeting-group-list">
-        <div class="meeting-group-item" v-for="(meetingGroupItem, mgIndex) in meetingList"
-             :style="'/*background-image: url(' + meetingGroupItem.img_url + ');*/'" :key="mgIndex" @click="toMeetingList(meetingGroupItem.id)">
-          <div class="meeting-group-title">
-            <i :class="meetingGroupItem.icon" aria-hidden="true"></i>
-            <span>{{meetingGroupItem.title}}</span>
+        <div class="meeting-group-item" v-for="(meetingGroupItem, mgIndex) in meetingList" :key="mgIndex" @click="toMeetingList(meetingGroupItem.id)">
+          <div class="meeting-group-img">
+            <img :src="meetingGroupItem.img_url" alt="">
           </div>
-          <div class="meeting-group-desc">
-            {{meetingGroupItem.desc}}
+          <div class="meeting-group-title">
+            <span>{{meetingGroupItem.title}}</span>
           </div>
         </div>
       </div>
@@ -25,41 +31,32 @@
     name: "Index",
     data() {
       return {
+        searchValue: '',
         meetingList: [
           {
             id: 1,
             title: '党员大会',
-            icon: 'fa fa-file-text-o',
-            img_url: 'https://img.it9g.com/other/FvO_Csuv2DyvYZxzc97xjxLWyoeO.jpeg',
-            desc: '会议分组描述信息会议分组描述信息会议分组描述信息会议分组描述信息会议分组描述信息会议分组描述信息'
+            img_url: 'https://img.it9g.com/other/FvO_Csuv2DyvYZxzc97xjxLWyoeO.jpeg'
           },
           {
             id: 1,
             title: '党员大会',
-            icon: 'fa fa-file-text-o',
-            img_url: 'https://img.it9g.com/other/FvO_Csuv2DyvYZxzc97xjxLWyoeO.jpeg',
-            desc: '会议分组描述信息会议分组描述信息会议分组描述信息会议分组描述信息会议分组描述信息会议分组描述信息'
+            img_url: 'https://img.it9g.com/other/FvO_Csuv2DyvYZxzc97xjxLWyoeO.jpeg'
           },
           {
             id: 1,
             title: '党员大会',
-            icon: 'fa fa-file-text-o',
-            img_url: 'https://img.it9g.com/other/FvO_Csuv2DyvYZxzc97xjxLWyoeO.jpeg',
-            desc: '会议分组描述信息会议分组描述信息会议分组描述信息会议分组描述信息会议分组描述信息会议分组描述信息'
+            img_url: 'https://img.it9g.com/other/FvO_Csuv2DyvYZxzc97xjxLWyoeO.jpeg'
           },
           {
             id: 1,
             title: '党员大会',
-            icon: 'fa fa-file-text-o',
-            img_url: 'https://img.it9g.com/other/FvO_Csuv2DyvYZxzc97xjxLWyoeO.jpeg',
-            desc: '会议分组描述信息会议分组描述信息会议分组描述信息会议分组描述信息会议分组描述信息会议分组描述信息'
+            img_url: 'https://img.it9g.com/other/FvO_Csuv2DyvYZxzc97xjxLWyoeO.jpeg'
           },
           {
             id: 1,
             title: '党员大会',
-            icon: 'fa fa-file-text-o',
             img_url: 'https://img.it9g.com/other/FvO_Csuv2DyvYZxzc97xjxLWyoeO.jpeg',
-            desc: '会议分组描述信息会议分组描述信息会议分组描述信息会议分组描述信息会议分组描述信息会议分组描述信息'
           },
         ]
       }
@@ -68,11 +65,19 @@
       Tabbar
     },
     created() {
+      let _this = this
+      _this.axios.get('/meeting/type').then(res => {
+        console.log(res)
+      }).catch(error => {
 
+      })
     },
     methods: {
       toMeetingList (group_id) {
         this.$router.push({path: '/meeting_list/' + group_id})
+      },
+      onSearch () {
+        this.$toast(this.searchValue)
       }
     }
   }
@@ -81,32 +86,27 @@
 <style scoped>
   .meeting-group-list {
     display: flex;
-    flex-direction: column;
-    justify-content: center;
+    flex-direction: row;
+    flex-wrap: wrap;
+    align-items: center;
+    justify-content: start;
   }
 
   .meeting-group-item {
-    margin: 15px;
-    height: 150px;
-    border: 1px solid #f1f4f8;
+    box-sizing: border-box;
+    width: 25%;
+    padding: 10px;
+    text-align: center;
+  }
+
+  .meeting-group-img img {
+    width: 50px;
+    height: 50px;
     border-radius: 5px;
-    background-repeat: no-repeat;
-    background-size: 100% 100%;
   }
 
   .meeting-group-title {
     color: #333;
-    line-height: 2em;
-    font-size: 1.2em;
-  }
-
-  .meeting-group-title i {
-    margin-left: 1em;
-    margin-right: .5em;
-  }
-
-  .meeting-group-desc {
-    margin: 1em 2.5em;
-    color: #666;
+    line-height: 1.2em;
   }
 </style>
