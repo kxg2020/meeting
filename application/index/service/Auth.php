@@ -10,8 +10,9 @@ class Auth{
     public function handle($request, \Closure $next){
         $token = Request::header("token");
         if($token){
-            $key = (new Aes(Config::get("aes_key")))->decrypt($token);
-            if($key == Config::get("aes_key")){
+            $userId = (new Aes(Config::get("aes_key")))->decrypt($token);
+            // token先不做验证
+            if($userId){
                 return $next($request);
             }else{
                 return json(["msg" => "token error","status" => false,"code" => 0]);

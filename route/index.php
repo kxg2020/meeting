@@ -17,9 +17,9 @@ Route::get("/","index/index");
 
 Route::group("/api/",function(){
     // 会议类型列表
-    Route::get("meetingType/type","MeetingType/meetingType");
+    Route::get("meetingType/type/:key","MeetingType/meetingType");
     // 具体会议列表
-    Route::get("meetingType/list","MeetingType/meetingList");
+    Route::get("meetingType/list/:type","MeetingType/meetingList");
     // 创建新会议
     Route::post("meetingRecord/new","MeetingRecord/meetingNew");
 
