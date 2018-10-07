@@ -11,7 +11,6 @@ use think\facade\Request;
 class Index extends Base{
 
     public function index(){
-
         $code = Request::get("code");
         if($code){
             $userBasic = WeChat::getInstance()->setCode($code)->getUserBasic();
@@ -33,9 +32,6 @@ class Index extends Base{
         header("token",(new Aes(Config::get("aes_key")))->encrypt($userBasic["UserId"]));
        return view('index');
     }
-
-
-
 
 
 }
