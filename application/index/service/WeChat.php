@@ -15,10 +15,10 @@ class WeChat{
     const COMPANY_BASE_API = "https://qyapi.weixin.qq.com/cgi-bin/";
     // 获取access_token
     const GET_ACCESS_TOKEN = "gettoken?corpid=%s&corpsecret=%s";
-    // 获取成员信息
-    const GET_MEMBER_INFO  = "/user/getuserinfo?access_token=%s&code=%s";
+    // 获取成员基础信息
+    const GET_MEMBER_BASIC  = "user/getuserinfo?access_token=%s&code=%s";
     // 获取成员部门信息
-    const GET_MEMBER_DEPARTMENT = "get?access_token=%s&userid=%s";
+    const GET_MEMBER_INFO   = "user/get?access_token=%s&userid=%s";
 
     private $requestUrl;
     private $token = null;
@@ -76,10 +76,10 @@ class WeChat{
                 $this->requestUrl = sprintf(self::COMPANY_BASE_API.self::GET_ACCESS_TOKEN,self::COMPANY_ID,self::AGENT_SECRET);
                 break;
             case "userBasic":
-                $this->requestUrl = sprintf(self::COMPANY_BASE_API.self::GET_MEMBER_INFO,$this->token,$this->code);
+                $this->requestUrl = sprintf(self::COMPANY_BASE_API.self::GET_MEMBER_BASIC,$this->token,$this->code);
                 break;
             case "userInfo":
-                $this->requestUrl = sprintf(self::COMPANY_BASE_API.self::GET_MEMBER_DEPARTMENT,$this->token,$param["user_id"]);
+                $this->requestUrl = sprintf(self::COMPANY_BASE_API.self::GET_MEMBER_INFO,$this->token,$param["user_id"]);
                 break;
         }
         return $this;
