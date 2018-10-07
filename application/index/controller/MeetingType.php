@@ -8,7 +8,8 @@ class MeetingType extends  Base{
      * 会议类型
      */
     public function meetingType(){
-        $meeting = \app\index\model\MeetingType::getInstance()->meetingType();
+        $params = Request::get();
+        $meeting = \app\index\model\MeetingType::getInstance()->meetingType($params);
         if($meeting["status"]){
            return $this->printResponse(200,$meeting["data"]);
         }

@@ -8,10 +8,10 @@ class MeetingType extends Base{
     /*
      * 会议类型
      */
-    public function meetingType(){
+    public function meetingType($params){
         $field  = "id,title,img_url";
         $result = Db::name("meeting_type")
-            ->field($field)->where(["status" => 1])->select();
+            ->field($field)->where($this->condition($params))->select();
         return $this->returnResponse($result);
     }
 
@@ -20,5 +20,18 @@ class MeetingType extends Base{
      */
     public function meetingList($meetingTypeId){
         $result = Db::name("");
+    }
+
+    /*
+     * 搜索条件
+     */
+    private function condition($params){
+        $where = [
+            ["status","=", 1]
+        ];
+        if(isset($params["key"])){
+            $where[] = ["title","like","%".$params["key"]."%"];
+        }
+        return $where;
     }
 }
