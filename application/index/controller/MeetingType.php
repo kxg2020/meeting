@@ -4,10 +4,12 @@ use think\facade\Request;
 
 class MeetingType extends  Base{
 
-    /*
-     * all
-     */
+
     public function meetingTypes(){
-        return \app\index\model\MeetingType::getInstance()->meetingTypes();
+        $meeting = \app\index\model\MeetingType::getInstance()->meetingTypes();
+        if($meeting["status"]){
+            return $this->printResponse(200,$meeting);
+        }
+        return $this->printResponse();
     }
 }
