@@ -26,7 +26,7 @@
       </van-cell-group>
       <div v-for="(issue, issueIndex) in model.issue_list" :key="issueIndex">
         <div class="cell-group-title">
-          <span>议题{{issueIndex + 1}}</span>
+          <span>{{issue.political_name}}</span>
           <i class="fa fa-minus-square" @click="removeIssue(issueIndex)"></i>
         </div>
         <van-cell-group>
@@ -65,7 +65,7 @@
               <i class="fa fa-paperclip"></i>
             </div>
           </div>
-          <van-cell title="投票">
+          <van-cell title="投票" v-if="['bj', 'tp'].includes(issue.political_short_name)">
             <div slot="right-icon" @click="addVote(issueIndex)">
               <i class="fa fa-plus-square"></i>
             </div>
@@ -84,26 +84,37 @@
                 </div>
               </van-field>
               <van-cell title="投票选项">
-                <el-tag
-                  class="vote-item"
-                  :key="issueIndex + voteIndex + voteItemIndex"
-                  v-for="(voteItem, voteItemIndex) in vote.items"
-                  closable
-                  :disable-transitions="false"
-                  @close="handleCloseVoteItem(issueIndex, voteIndex, voteItemIndex)">
-                  {{voteItem}}
-                </el-tag>
-                <el-input
-                  class="vote-item input-vote-item"
-                  v-if="vote.inputVisible"
-                  v-model="vote.inputValue"
-                  :ref="'saveVoteInput' + issueIndex + voteIndex"
-                  size="small"
-                  @keyup.enter.native="handleInputConfirmVoteItem(issueIndex, voteIndex)"
-                  @blur="handleInputConfirmVoteItem(issueIndex, voteIndex)"
-                >
-                </el-input>
-                <el-button v-else class="vote-item" size="small" @click="showInputVoteItem(issueIndex, voteIndex)">+ 投票选项</el-button>
+                <template v-if="issue.political_short_name == 'tp'">
+                  <el-tag
+                    class="vote-item"
+                    :key="issueIndex + voteIndex + voteItemIndex"
+                    v-for="(voteItem, voteItemIndex) in vote.items"
+                    closable
+                    :disable-transitions="false"
+                    @close="handleCloseVoteItem(issueIndex, voteIndex, voteItemIndex)">
+                    {{voteItem}}
+                  </el-tag>
+                  <el-input
+                    class="vote-item input-vote-item"
+                    v-if="vote.inputVisible"
+                    v-model="vote.inputValue"
+                    :ref="'saveVoteInput' + issueIndex + voteIndex"
+                    size="small"
+                    @keyup.enter.native="handleInputConfirmVoteItem(issueIndex, voteIndex)"
+                    @blur="handleInputConfirmVoteItem(issueIndex, voteIndex)"
+                  >
+                  </el-input>
+                  <el-button v-else class="vote-item" size="small" @click="showInputVoteItem(issueIndex, voteIndex)">+ 投票选项</el-button>
+                </template>
+                <template v-if="issue.political_short_name == 'bj'">
+                  <el-tag
+                    class="vote-item"
+                    :key="issueIndex + voteIndex + voteItemIndex"
+                    v-for="(voteItem, voteItemIndex) in vote.items"
+                    :disable-transitions="false">
+                    {{voteItem}}
+                  </el-tag>
+                </template>
               </van-cell>
             </div>
           </div>
@@ -221,18 +232,20 @@
         })
       },
       addVote(issueIndex) {
-        this.$dialog.confirm({
-
-        }).then(() => {
-
-        }).catch(() => {
-
-        })
+        let items = []
+        if (this.model.issue_list[issueIndex].political_short_name == 'tp') {
+          items = []
+        } else if (this.model.issue_list[issueIndex].political_short_name == 'bj') {
+          items = ['同意票', '反对票', '弃权票']
+        } else {
+          this.$toast("此议题不支持投票")
+          return
+        }
         this.model.issue_list[issueIndex].votes.push({
           title: '',
           inputVisible: false,
           inputValue: '',
-          items: []
+          items: items
         })
       },
       removeVote(issueIndex, voteIndex) {
