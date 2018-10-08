@@ -9,14 +9,13 @@ class MeetingRecord extends Base{
     use Singleton;
 
     public function getMeetingRecords($type){
-        $field = "a.id,a.title,a.create_time,b.title as meetingType,b.id as meetingTypeId";
-        $records = Db::name('meeting_record')
-            ->alias("a")
-            ->leftJoin("meeting_type b", "a.meeting_type_id = b.id")
-            ->field($field)
-            ->where(['a.meeting_type_id' => $type])
-            ->select();
-        return $this->returnResponse($records);
+        $records = Db::name("meeting_record")->where(["meeting_type_id"=>$type])->select();
+        $recordType = Db::name("meeting_type")->where(["id"=>$type])->find();
+        $result = [
+            "meetingRecords" => $records,
+            "meetingTypes"   => $recordType
+        ];
+        return $this->returnResponse($result);
 
     }
 }
