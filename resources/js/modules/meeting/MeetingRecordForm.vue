@@ -175,6 +175,14 @@
         })
       },
       addVote(issueIndex) {
+        // todo type
+        // this.$dialog.confirm({
+        //
+        // }).then(() => {
+        //
+        // }).catch(() => {
+        //
+        // })
         this.model.issue_list[issueIndex].votes.push({
           title: '',
           inputVisible: false,
@@ -242,12 +250,12 @@
     border-radius: 5px;
   }
   .upload-list{
-    padding-left: 15px;
+    margin-left: 15px;
     border-bottom: 1px solid #eee;
     padding-bottom: 15px;
   }
   .issue-file-list{
-    padding-left: 15px;
+    margin-left: 15px;
     border-bottom: 1px solid #eee;
     padding-bottom: 15px;
   }
@@ -279,5 +287,8 @@
   }
   .issue-content::after{
     border-bottom: unset;
+  }
+  .van-cell--required {
+    overflow: hidden;
   }
 </style>
