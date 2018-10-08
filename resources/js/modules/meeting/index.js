@@ -1,8 +1,14 @@
 import MeetingRecordList from './MeetingRecordList.vue'
+import MeetingRecordForm from './MeetingRecordForm.vue'
 export default [
   {
     name: 'MeetingRecordList',
-    path: '/meeting_record_list/:type_id(\\d+)',
+    path: '/meeting_record/list/:type_id(\\d+)',
     component: MeetingRecordList
+  },
+  {
+    name: 'MeetingRecordCreate',
+    path: '/meeting_record/create',
+    component: MeetingRecordForm
   },
 ]

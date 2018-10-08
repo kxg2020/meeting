@@ -8,10 +8,14 @@ Vue.use(vueAxios, axios)
 import Vant from 'vant'
 Vue.use(Vant)
 
+import { Tag, input, button } from 'element-ui'
+
+Vue.use(Tag)
+Vue.use(input)
+Vue.use(button)
+
 Vue.axios.defaults.baseURL = '/api'
 
-
-console.log(window.token)
 Vue.axios.defaults.headers.common = {
   'token': window.token,
 }
@@ -40,6 +44,8 @@ Vue.axios.interceptors.response.use(
     return Promise.reject(error.response.data)
   }
 )
+
+require('./utils/date.js')
 
 import App from './App.vue'
 Vue.component('App', App)

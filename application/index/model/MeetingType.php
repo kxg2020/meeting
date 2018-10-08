@@ -1,31 +1,22 @@
 <?php
 namespace app\index\model;
 use app\index\service\Singleton;
+use app\index\service\Tool;
 use think\Db;
+use think\facade\Cache;
 
 class MeetingType extends Base{
     use Singleton;
-    /*
-     * all
-     */
+
     public function meetingTypes(){
-        $field  = "id,title,img_url";
-        $result = Db::name("meeting_type")
-            ->field($field)->select();
+        $result = Tool::getInstance()->jsonDecode(Cache::get("meetingTypes"));
+        if(!$result){
+            $field  = "id,title,img_url";
+            $result = Db::name("meeting_type")->field($field)->select();
+            Cache::set("meetingTypes",Tool::getInstance()->jsonEncode($result),86400 * 7);
+        }
         return $this->returnResponse($result);
     }
 
 
-    /*
-     * ��������
-     */
-    private function condition($params){
-        $where = [
-            ["status","=", 1]
-        ];
-        if(isset($params["key"])){
-            $where[] = ["title","like","%".$params["key"]."%"];
-        }
-        return $where;
-    }
 }

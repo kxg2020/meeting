@@ -6,7 +6,7 @@
       left-arrow
       @click-left="back()"
     />
-    <div class="main-container main-container-bottom">
+    <div class="main-container main-container-center">
       <template v-if="loadding">
         <div style="display: flex;justify-content: center;">
           <van-loading type="spinner"/>
@@ -37,6 +37,16 @@
         </div>
       </template>
     </div>
+    <van-tabbar>
+      <van-tabbar-item @click="toForm">
+        <span>发起会议</span>
+        <i slot="icon" slot-scope="props" class="fa fa-edit"></i>
+      </van-tabbar-item>
+      <van-tabbar-item>
+        <span>按钮</span>
+        <i slot="icon" slot-scope="props" class="fa fa-edit"></i>
+      </van-tabbar-item>
+    </van-tabbar>
   </div>
 </template>
 
@@ -64,7 +74,7 @@
       getMeetingList (type_id) {
         let _this = this
         _this.loadding = true
-        _this.axios.get('/meeting_record_list/' + type_id).then(res => {
+        _this.axios.get('/meetingRecord/' + type_id).then(res => {
           _this.meetingRecordList = res.data.meeting_records
           _this.meetingType = res.data.meeting_type
           _this.loadding = false
@@ -74,6 +84,9 @@
       },
       back () {
         this.$router.back()
+      },
+      toForm() {
+        this.$router.push({path: '/meeting_record/create'})
       }
     }
   }

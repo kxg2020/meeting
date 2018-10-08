@@ -4,19 +4,19 @@ namespace app\index\model;
 use app\index\service\Singleton;
 use think\Db;
 
-class MeetingRecord extends Base
-{
+
+class MeetingRecord extends Base{
     use Singleton;
 
     public function getMeetingRecords($type){
-        $meeting_records = Db::name('meeting_record')
-            ->field('id,title,create_time')
-            ->where(['meeting_type_id' => $type])
+        $field = "a.id,a.title,a.create_time,b.title as meetingType,b.id as meetingTypeId";
+        $records = Db::name('meeting_record')
+            ->alias("a")
+            ->leftJoin("meeting_type b", "a.meeting_type_id = b.id")
+            ->field($field)
+            ->where(['a.meeting_type_id' => $type])
             ->select();
-        $meeting_type = Db::name('meeting_type')->where('id', $type)->find();
-        return $this->returnResponse([
-            'meeting_records' => $meeting_records,
-            'meeting_type' => $meeting_type
-        ]);
+        return $this->returnResponse($records);
+
     }
 }

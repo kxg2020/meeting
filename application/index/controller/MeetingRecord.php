@@ -6,14 +6,12 @@ use think\facade\Request;
 class MeetingRecord extends Base {
 
 
-    public function meetingNew(){
-        $params = Request::post();
-        var_dump($params);
-    }
+    public function meetingCreate(){}
+
 
     public function meetingRecordList(){
-        $records = \app\index\model\MeetingRecord::getInstance()
-            ->getMeetingRecords(Request::param('typeId'));
+        $typeId = Request::param("typeId");
+        $records = \app\index\model\MeetingRecord::getInstance()->getMeetingRecords($typeId);
         if($records["status"]){
             return $this->printResponse(200, $records["data"]);
         }
