@@ -17,8 +17,10 @@ class WeChat{
     const GET_ACCESS_TOKEN  = "gettoken?corpid=%s&corpsecret=%s";
     // 获取成员基础信息
     const GET_MEMBER_BASIC  = "user/getuserinfo?access_token=%s&code=%s";
-    // 获取成员部门信息
+    // 获取成员详细信息
     const GET_MEMBER_INFO   = "user/get?access_token=%s&userid=%s";
+    // 获取部门列表信息
+    const GET_DEPARTMENT    = "department/list?access_token=%s&id=%s";
 
     private $requestUrl;
     private $token = null;
@@ -47,23 +49,28 @@ class WeChat{
      * 登录获取成员基础信息
      */
     public function getUserBasic(){
-        $this->getCompanyAccessToken()->setUrl("userBasic");
-        $result = Tool::getInstance()
-            ->jsonDecode(Http::getInstance()->request($this->requestUrl));
-        if(isset($result["errcode"]) && $result["errcode"] == 0){
-            return $result;
-        }
-        return false;
+       return $this->getCompanyAccessToken()->setUrl("userBasic")->request();
     }
 
     /*
      * 获取成员部门详情
      */
     public function getUserInfo($userId){
-        $this->getCompanyAccessToken()
-             ->setUrl("userInfo",["user_id"=>$userId]);
-        $result = Tool::getInstance()
-            ->jsonDecode(Http::getInstance()->request($this->requestUrl));
+       return $this->getCompanyAccessToken()->setUrl("userInfo",["user_id"=>$userId])->request();
+    }
+
+    /*
+     * 获取部门列表
+     */
+    public function getDepartmentList(){
+        return $this->getCompanyAccessToken()->setUrl("departmentList")->request();
+    }
+
+    /*
+     * 发起请求
+     */
+    private function request(){
+        $result = Tool::getInstance()->jsonDecode(Http::getInstance()->request($this->requestUrl));
         if(isset($result["errcode"]) && $result["errcode"] == 0){
             return $result;
         }
@@ -80,6 +87,9 @@ class WeChat{
                 break;
             case "userInfo":
                 $this->requestUrl = sprintf(self::COMPANY_BASE_API.self::GET_MEMBER_INFO,$this->token,$param["user_id"]);
+                break;
+            case "departmentList":
+                $this->requestUrl = sprintf(self::COMPANY_BASE_API.self::GET_DEPARTMENT,$this->token,"");
                 break;
         }
         return $this;

@@ -24,17 +24,25 @@ class User extends Base{
     }
 
     /*
+     * 更新用户
+     */
+    public function updateUser($userId){
+        $result = Db::name("user")->where(["user_id"=>$userId])->update($this->userInfo);
+        return $this->returnResponse($result);
+    }
+
+    /*
      * 用户详情
      */
     public function setUserInfo($params = []){
         $this->userInfo = [
             "user_id" => $params["userid"],
             "name"    => $params["name"],
-            "department" => json_encode($params["department"]),
             "avatar"  => $params["avatar"],
             "mobile"  => $params["mobile"],
             "enable"  => $params["enable"],
             "position"=> $params["position"],
+            "department" => json_encode($params["department"]),
         ];
         return $this;
     }

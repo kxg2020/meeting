@@ -11,22 +11,20 @@ use think\facade\Request;
 class Index extends Base{
 
     public function index(){
-
         // dev
         if (strpos(Request::domain(), 'localhost')){
             return view('index', ['token' => (new Aes(Config::get("aes_key")))->encrypt('whngqdcmhdxxf')]);
         }
-
         $code = Request::get("code");
         if($code){
             $userBasic = WeChat::getInstance()->setCode($code)->getUserBasic();
+            $userInfo  = WeChat::getInstance()->getUserInfo($userBasic["UserId"]);
             if($userBasic){
-                // 获取成员部门
                 $user = User::getInstance()->getUserByUserId($userBasic["UserId"]);
                 if(!$user["data"]){
-                    $userInfo = WeChat::getInstance()
-                        ->getUserInfo($userBasic["UserId"]);
                     User::getInstance()->setUserInfo($userInfo)->createUser();
+                }else{
+                    User::getInstance()->setUserInfo($userInfo)->updateUser($userBasic["UserId"]);
                 }
             }
         }else{
@@ -37,6 +35,5 @@ class Index extends Base{
            'token' => (new Aes(Config::get("aes_key")))->encrypt($userBasic["UserId"])
        ]);
     }
-
 
 }
