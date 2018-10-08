@@ -8,8 +8,7 @@ use think\Db;
 class MeetingRecord extends Base{
     use Singleton;
 
-    public function getMeetingRecords($type)
-    {
+    public function getMeetingRecords($type){
         $field = "a.id,a.title,a.create_time,b.title as meetingType,b.id as meetingTypeId";
         $records = Db::name('meeting_record')
             ->alias("a")
