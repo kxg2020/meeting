@@ -9,7 +9,7 @@ class Upload{
     use Singleton;
     private $result = [];
     private $savePath = "static/uploads";
-    private $size   = 1024 * 1024 *3;
+    private $size   = 1024 * 1024 * 3;
 
     public function uploadFile(){
         if($this->checkPath()){

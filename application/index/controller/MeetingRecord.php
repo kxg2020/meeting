@@ -6,7 +6,9 @@ use think\facade\Request;
 class MeetingRecord extends Base {
 
 
-    public function meetingCreate(){}
+    public function meetingCreate(){
+
+    }
 
 
     public function meetingRecordList(){

@@ -27,5 +27,7 @@ Route::group("/api/",function(){
 
     Route::post("upload","File/upload");
 
+    Route::get("political","MeetingPolitical/politicalList");
+
 
 })->middleware(\app\index\service\Auth::class);
