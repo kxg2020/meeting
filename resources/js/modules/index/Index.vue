@@ -51,7 +51,7 @@
         })
       },
       toMeetingList (group_id) {
-        this.$router.push({path: '/meeting_record_list/' + group_id})
+        this.$router.push({path: '/meeting_record/list/' + group_id})
       },
       onSearch () {
         this.$toast(this.searchValue)

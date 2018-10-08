@@ -17,7 +17,7 @@ if (! function_exists('mix')) {
 <html lang="en">
 <head>
   <meta charset="UTF-8">
-  <title>Title</title>
+  <title>会议中心</title>
   <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no">
   <link href="<?php echo mix("/static/css/app.css"); ?>" rel="stylesheet">
 </head>
