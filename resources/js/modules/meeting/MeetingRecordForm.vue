@@ -15,11 +15,11 @@
           label="主题"
           placeholder="请输入会议主题"
         />
-        <van-cell title="开始时间" @click="showStartTimeDialog">
+        <van-cell class="form-item" title="开始时间" @click="showStartTimeDialog">
           <span v-if="model.start_time">{{model.start_time}}</span>
           <span class="placeholder-text" v-else>请选择</span>
         </van-cell>
-        <van-cell title="结束时间" @click="showEndTimeDialog">
+        <van-cell class="form-item" title="结束时间" @click="showEndTimeDialog">
           <span v-if="model.end_time">{{model.end_time}}</span>
           <span class="placeholder-text" v-else>请选择</span>
         </van-cell>
@@ -51,7 +51,7 @@
               <i class="fa fa-camera"></i>
             </div>
           </div>
-          <div class="issue-file-list">
+          <div class="form-item issue-file-list">
             <div class="cell-title">
               附件
             </div>
@@ -60,6 +60,46 @@
             </div>
             <div class="upload-item upload-btn">
               <i class="fa fa-paperclip"></i>
+            </div>
+          </div>
+          <van-cell title="投票">
+            <van-icon slot="right-icon" name="add-o" class="van-cell__right-icon" @click="addVote(issueIndex)"/>
+          </van-cell>
+          <div class="form-item issue-vote-list">
+            <div v-for="(vote, voteIndex) in issue.votes" :key="voteIndex">
+              <van-field
+                v-model="vote.title"
+                required
+                clearable
+                label="投票标题"
+                placeholder="请输入投票标题"
+              >
+                <div slot="button" @click="removeVote(issueIndex, voteIndex)">
+                  <van-icon name="close" />
+                </div>
+              </van-field>
+              <van-cell title="投票选项">
+                <el-tag
+                  class="vote-item"
+                  :key="issueIndex + voteIndex + voteItemIndex"
+                  v-for="(voteItem, voteItemIndex) in vote.items"
+                  closable
+                  :disable-transitions="false"
+                  @close="handleCloseVoteItem(issueIndex, voteIndex, voteItemIndex)">
+                  {{voteItem}}
+                </el-tag>
+                <el-input
+                  class="vote-item input-vote-item"
+                  v-if="vote.inputVisible"
+                  v-model="vote.inputValue"
+                  :ref="'saveVoteInput' + issueIndex + voteIndex"
+                  size="small"
+                  @keyup.enter.native="handleInputConfirmVoteItem(issueIndex, voteIndex)"
+                  @blur="handleInputConfirmVoteItem(issueIndex, voteIndex)"
+                >
+                </el-input>
+                <el-button v-else class="vote-item" size="small" @click="showInputVoteItem(issueIndex, voteIndex)">+ 投票选项</el-button>
+              </van-cell>
             </div>
           </div>
         </van-cell-group>
@@ -99,16 +139,6 @@
           end_time: '',
           issue_list: []
         },
-        issueTemplate: {
-          title: '',
-          content: '',
-          images: [],
-          files: []
-        },
-        voteTemplate: {
-          title: '',
-          items: []
-        },
         showStartTime: false,
         showEndTime: false
       }
@@ -136,7 +166,48 @@
         this.showEndTime = false
       },
       addIssue() {
-        this.model.issue_list.push(this.issueTemplate)
+        this.model.issue_list.push({
+          title: '',
+          content: '',
+          images: [],
+          files: [],
+          votes: []
+        })
+      },
+      addVote(issueIndex) {
+        this.model.issue_list[issueIndex].votes.push({
+          title: '',
+          inputVisible: false,
+          inputValue: '',
+          items: []
+        })
+      },
+      removeVote(issueIndex, voteIndex) {
+        this.$dialog.confirm({
+          title: '提示',
+          message: '是否移除此投票'
+        }).then(() => {
+          this.model.issue_list[issueIndex].votes.splice(voteIndex, 1)
+        }).catch(() => {
+
+        });
+      },
+      handleCloseVoteItem(issueIndex, voteIndex, voteItemIndex) {
+        this.model.issue_list[issueIndex].votes[voteIndex].items.splice(voteItemIndex, 1)
+      },
+      handleInputConfirmVoteItem(issueIndex, voteIndex){
+        let inputValue = this.model.issue_list[issueIndex].votes[voteIndex].inputValue
+        if (inputValue && !this.model.issue_list[issueIndex].votes[voteIndex].items.includes(inputValue)) {
+          this.model.issue_list[issueIndex].votes[voteIndex].items.push(inputValue)
+        }
+        this.model.issue_list[issueIndex].votes[voteIndex].inputVisible = false
+        this.model.issue_list[issueIndex].votes[voteIndex].inputValue = ''
+      },
+      showInputVoteItem(issueIndex, voteIndex) {
+        this.model.issue_list[issueIndex].votes[voteIndex].inputVisible = true
+        this.$nextTick(_ => {
+          this.$refs['saveVoteInput' + issueIndex + voteIndex][0].$refs.input.focus()
+        })
       },
       back () {
         this.$router.back()
@@ -171,12 +242,12 @@
     border-radius: 5px;
   }
   .upload-list{
-    margin-left: 15px;
+    padding-left: 15px;
     border-bottom: 1px solid #eee;
     padding-bottom: 15px;
   }
   .issue-file-list{
-    margin-left: 15px;
+    padding-left: 15px;
     border-bottom: 1px solid #eee;
     padding-bottom: 15px;
   }
@@ -191,12 +262,19 @@
   .file-item {
 
   }
+  .input-vote-item{
+    max-width: 150px;
+  }
+  .vote-item{
+    margin-right: 10px;
+    margin-bottom: 10px;
+  }
 </style>
 <style>
-  .van-cell .van-cell__title {
+  .form-item .van-cell__title {
     max-width: 90px;
   }
-  .van-cell__value{
+  .form-item .van-cell__value{
     text-align: left;
   }
   .issue-content::after{

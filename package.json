@@ -17,6 +17,7 @@
     "babel-preset-env": "^1.7.0",
     "cross-env": "~5.1.1",
     "css-loader": "^0.28.4",
+    "element-ui": "^2.4.8",
     "laravel-mix": "~2.0",
     "lodash": "^4.17.4",
     "font-awesome": "^4.7.0",

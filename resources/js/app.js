@@ -8,6 +8,12 @@ Vue.use(vueAxios, axios)
 import Vant from 'vant'
 Vue.use(Vant)
 
+import { Tag, input, button } from 'element-ui'
+
+Vue.use(Tag)
+Vue.use(input)
+Vue.use(button)
+
 Vue.axios.defaults.baseURL = '/api'
 
 Vue.axios.defaults.headers.common = {
