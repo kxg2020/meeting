@@ -36,4 +36,25 @@ class Index extends Base{
            'token' => (new Aes(Config::get("aes_key")))->encrypt($userBasic["UserId"])
        ]);
     }
+
+    public function test(){
+        $template = "<div class='normal'>会议名称:%s</div>";
+        $template.= "<div class='normal'>主持人:%s</div>";
+        $template.= "<div class='highlight'>参会时间:%s</div>";
+        $title = "第三次代表大会";
+        $host  = "张涛";
+        $time  = "2018-5-20";
+        $description =  sprintf($template,$title,$host,$time);
+        $data = array (
+            'toUser' => 'ZhangTao',
+            'toParty' => '',
+            'toTag' => '',
+            'title' => '会议通知',
+            'description' => $description,
+            'url' => 'http://www.baidu.com',
+            'btnTxt' => '更多',
+        );
+      $result =  WeChat::getInstance()->setPost($data,"textcard")->sendAgentMessage();
+        var_dump($result);
+    }
 }

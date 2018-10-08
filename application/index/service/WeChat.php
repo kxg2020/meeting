@@ -21,11 +21,13 @@ class WeChat{
     const GET_MEMBER_INFO   = "user/get?access_token=%s&userid=%s";
     // 获取部门列表信息
     const GET_DEPARTMENT    = "department/list?access_token=%s&id=%s";
-
+    // 发送应用消息
+    const SEND_AGENT_MESSAGE= "message/send?access_token=%s";
 
     private $requestUrl;
     private $token = null;
     private $code  = null;
+    private $post  = [];
 
 
     /*
@@ -70,10 +72,17 @@ class WeChat{
     }
 
     /*
+     * 发送应用消息
+     */
+    public function sendAgentMessage(){
+       return $this->getCompanyAccessToken()->setUrl("sendAgentMessage")->request();
+    }
+
+    /*
      * 发起请求
      */
     private function request(){
-        $result = Tool::getInstance()->jsonDecode(Http::getInstance()->request($this->requestUrl));
+        $result = Tool::getInstance()->jsonDecode(Http::getInstance()->request($this->requestUrl,Tool::getInstance()->jsonEncode($this->post)));
         if(isset($result["errcode"]) && $result["errcode"] == 0){
             return $result;
         }
@@ -94,12 +103,32 @@ class WeChat{
             case "departmentList":
                 $this->requestUrl = sprintf(self::COMPANY_BASE_API.self::GET_DEPARTMENT,$this->token,"");
                 break;
+            case "sendAgentMessage":
+                $this->requestUrl = sprintf(self::COMPANY_BASE_API.self::SEND_AGENT_MESSAGE,$this->token);
+                break;
         }
         return $this;
     }
 
     public function setCode($code){
         $this->code = $code;
+        return $this;
+    }
+
+    public function setPost($params,$type){
+        $this->post = [
+            "touser"   => $params["toUser"],
+            "toparty"  => $params["toParty"],
+            "totag"    => $params["toTag"],
+            "msgtype"  => $type,
+            "agentid"  => self::AGENT_ID,
+            "textcard" => [
+                "title"       => $params["title"],
+                "description" => $params["description"],
+                "url"         => $params["url"],
+                "btntxt"      => $params["btnTxt"],
+            ],
+        ];
         return $this;
     }
 }
