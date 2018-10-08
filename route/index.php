@@ -13,14 +13,19 @@ use think\facade\Route;
 
 Route::get("/","index/index");
 
+Route::get("/upload","static/uploads");
+
 Route::group("/api/",function(){
 
     Route::get("meetingTypes","MeetingType/meetingTypes");
 
-    Route::get("meeting_record_list/:typeId","MeetingRecord/meetingRecordList");
+    Route::get("meetingRecord/:typeId","MeetingRecord/meetingRecordList");
 
-    Route::post("meetingRecord/new","MeetingRecord/meetingNew");
+    Route::post("meetingRecord/create","MeetingRecord/meetingCreate");
 
-    Route::get("department","Department/list");
+    Route::get("department","Department/departmentList");
+
+    Route::post("upload","File/upload");
+
 
 })->middleware(\app\index\service\Auth::class);
