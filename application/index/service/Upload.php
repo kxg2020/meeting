@@ -20,10 +20,10 @@ class Upload{
                 $imgUrl = $root."static/uploads/".$info->getSaveName();
                 return json(["status" => true,"img_url" =>$imgUrl,"msg"=>"success"]);
             }else{
-                return json(["status" => true,"img_url" =>"","msg" => $file->getError()]);
+                return json(["status" => false,"img_url" =>"","msg" => $file->getError()]);
             }
         }
-        return json(["status" => true,"img_url" =>"","msg" => "uploads文件夹不存在"]);
+        return json(["status" => false,"img_url" =>"","msg" => "uploads文件夹不存在"]);
     }
 
     public function checkPath(){
