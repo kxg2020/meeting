@@ -1,6 +1,5 @@
 /.idea
 /runtime
-/config/database.php
 /vendor
 *.log
 .env
