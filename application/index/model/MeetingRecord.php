@@ -13,7 +13,7 @@ class MeetingRecord extends Base{
         $recordType = Db::name("meeting_type")->where(["id"=>$type])->find();
         $result = [
             "meetingRecords" => $records,
-            "meetingTypes"   => $recordType
+            "meetingType"   => $recordType
         ];
         return $this->returnResponse($result);
 

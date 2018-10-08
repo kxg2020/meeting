@@ -75,8 +75,8 @@
         let _this = this
         _this.loadding = true
         _this.axios.get('/meetingRecord/' + type_id).then(res => {
-          _this.meetingRecordList = res.data.meeting_records
-          _this.meetingType = res.data.meeting_type
+          _this.meetingRecordList = res.data.meetingRecords
+          _this.meetingType = res.data.meetingType
           _this.loadding = false
         }).catch(err => {
 
