@@ -16,16 +16,19 @@
           placeholder="请输入会议主题"
         />
         <van-cell class="form-item" title="开始时间" @click="showStartTimeDialog">
-          <span v-if="model.start_time">{{model.start_time}}</span>
+          <span v-if="model.start_time">{{model.start_time.Format('yyyy-MM-dd hh:mm:ss')}}</span>
           <span class="placeholder-text" v-else>请选择</span>
         </van-cell>
         <van-cell class="form-item" title="结束时间" @click="showEndTimeDialog">
-          <span v-if="model.end_time">{{model.end_time}}</span>
+          <span v-if="model.end_time">{{model.end_time.Format('yyyy-MM-dd hh:mm:ss')}}</span>
           <span class="placeholder-text" v-else>请选择</span>
         </van-cell>
       </van-cell-group>
       <div v-for="(issue, issueIndex) in model.issue_list" :key="issueIndex">
-        <h2 class="cell-group-title">议题{{issueIndex + 1}}</h2>
+        <div class="cell-group-title">
+          <span>{{issue.political_name}}</span>
+          <i class="fa fa-minus-square" @click="removeIssue(issueIndex)"></i>
+        </div>
         <van-cell-group>
           <van-field
             v-model="issue.title"
@@ -62,8 +65,10 @@
               <i class="fa fa-paperclip"></i>
             </div>
           </div>
-          <van-cell title="投票">
-            <van-icon slot="right-icon" name="add-o" class="van-cell__right-icon" @click="addVote(issueIndex)"/>
+          <van-cell title="投票" v-if="['bj', 'tp'].includes(issue.political_short_name)">
+            <div slot="right-icon" @click="addVote(issueIndex)">
+              <i class="fa fa-plus-square"></i>
+            </div>
           </van-cell>
           <div class="form-item issue-vote-list">
             <div v-for="(vote, voteIndex) in issue.votes" :key="voteIndex">
@@ -75,30 +80,41 @@
                 placeholder="请输入投票标题"
               >
                 <div slot="button" @click="removeVote(issueIndex, voteIndex)">
-                  <van-icon name="close" />
+                  <i class="fa fa-minus-square"></i>
                 </div>
               </van-field>
               <van-cell title="投票选项">
-                <el-tag
-                  class="vote-item"
-                  :key="issueIndex + voteIndex + voteItemIndex"
-                  v-for="(voteItem, voteItemIndex) in vote.items"
-                  closable
-                  :disable-transitions="false"
-                  @close="handleCloseVoteItem(issueIndex, voteIndex, voteItemIndex)">
-                  {{voteItem}}
-                </el-tag>
-                <el-input
-                  class="vote-item input-vote-item"
-                  v-if="vote.inputVisible"
-                  v-model="vote.inputValue"
-                  :ref="'saveVoteInput' + issueIndex + voteIndex"
-                  size="small"
-                  @keyup.enter.native="handleInputConfirmVoteItem(issueIndex, voteIndex)"
-                  @blur="handleInputConfirmVoteItem(issueIndex, voteIndex)"
-                >
-                </el-input>
-                <el-button v-else class="vote-item" size="small" @click="showInputVoteItem(issueIndex, voteIndex)">+ 投票选项</el-button>
+                <template v-if="issue.political_short_name == 'tp'">
+                  <el-tag
+                    class="vote-item"
+                    :key="issueIndex + voteIndex + voteItemIndex"
+                    v-for="(voteItem, voteItemIndex) in vote.items"
+                    closable
+                    :disable-transitions="false"
+                    @close="handleCloseVoteItem(issueIndex, voteIndex, voteItemIndex)">
+                    {{voteItem}}
+                  </el-tag>
+                  <el-input
+                    class="vote-item input-vote-item"
+                    v-if="vote.inputVisible"
+                    v-model="vote.inputValue"
+                    :ref="'saveVoteInput' + issueIndex + voteIndex"
+                    size="small"
+                    @keyup.enter.native="handleInputConfirmVoteItem(issueIndex, voteIndex)"
+                    @blur="handleInputConfirmVoteItem(issueIndex, voteIndex)"
+                  >
+                  </el-input>
+                  <el-button v-else class="vote-item" size="small" @click="showInputVoteItem(issueIndex, voteIndex)">+ 投票选项</el-button>
+                </template>
+                <template v-if="issue.political_short_name == 'bj'">
+                  <el-tag
+                    class="vote-item"
+                    :key="issueIndex + voteIndex + voteItemIndex"
+                    v-for="(voteItem, voteItemIndex) in vote.items"
+                    :disable-transitions="false">
+                    {{voteItem}}
+                  </el-tag>
+                </template>
               </van-cell>
             </div>
           </div>
@@ -108,7 +124,6 @@
         <van-cell title="增加议题" icon="add-o" style="color: #38f;" @click="addIssue"/>
       </van-cell-group>
     </div>
-    <div></div>
     <van-popup v-model="showStartTime" position="bottom">
       <van-datetime-picker
         type="datetime"
@@ -120,11 +135,22 @@
     <van-popup v-model="showEndTime" position="bottom">
       <van-datetime-picker
         type="datetime"
-        :min-date="new Date()"
+        :min-date="model.end_time"
         @confirm="endTimeConfirm"
         @cancel="hideTimeDialog"
       />
     </van-popup>
+    <van-dialog
+      v-model="politicalDialogShow"
+      show-cancel-button
+      @confirm="createIssue"
+      @cancel="hidePoliticalDialog"
+    >
+      <div class="van-dialog__header">请选择议题类型</div>
+      <div class="issue-select">
+        <el-radio v-model="politicalSelect" :label="politicalIndex" v-for="(political, politicalIndex) in politicalList" :key="politicalIndex">{{political.name}}</el-radio>
+      </div>
+    </van-dialog>
   </div>
 </template>
 
@@ -135,18 +161,29 @@
       return {
         model: {
           title: '',
-          start_time: '',
-          end_time: '',
+          start_time: new Date(),
+          end_time: new Date((new Date).getTime() + 1 * 24 * 60 * 60 * 1000),
           issue_list: []
         },
         showStartTime: false,
-        showEndTime: false
+        showEndTime: false,
+        politicalList: [],
+        politicalSelect: 0,
+        politicalDialogShow: false
       }
     },
     created() {
-      this.addIssue()
+      this.getPoliticalList()
     },
     methods: {
+      getPoliticalList() {
+        let _this = this
+        _this.axios.get('/political').then(res => {
+          _this.politicalList = res.data
+        }).catch(error => {
+
+        })
+      },
       showStartTimeDialog() {
         this.showStartTime = true
       },
@@ -154,11 +191,11 @@
         this.showEndTime = true
       },
       startTimeConfirm(value) {
-        this.model.start_time = value.Format('yyyy-MM-dd hh:mm:ss')
+        this.model.start_time = value
         this.hideTimeDialog()
       },
       endTimeConfirm(value) {
-        this.model.end_time = value.Format('yyyy-MM-dd hh:mm:ss')
+        this.model.end_time = value
         this.hideTimeDialog()
       },
       hideTimeDialog(){
@@ -166,28 +203,49 @@
         this.showEndTime = false
       },
       addIssue() {
+        this.politicalDialogShow = true
+      },
+      createIssue() {
         this.model.issue_list.push({
           title: '',
+          political_id: this.politicalList[this.politicalSelect].id,
+          political_name: this.politicalList[this.politicalSelect].name,
+          political_short_name: this.politicalList[this.politicalSelect].short_name,
           content: '',
           images: [],
           files: [],
           votes: []
         })
+        this.hidePoliticalDialog()
+      },
+      hidePoliticalDialog() {
+        this.politicalDialogShow = false
+      },
+      removeIssue(issueIndex) {
+        this.$dialog.confirm({
+          title: '提示',
+          message: '是否移除此议题'
+        }).then(() => {
+          this.model.issue_list.splice(issueIndex, 1)
+        }).catch(() => {
+
+        })
       },
       addVote(issueIndex) {
-        // todo type
-        // this.$dialog.confirm({
-        //
-        // }).then(() => {
-        //
-        // }).catch(() => {
-        //
-        // })
+        let items = []
+        if (this.model.issue_list[issueIndex].political_short_name == 'tp') {
+          items = []
+        } else if (this.model.issue_list[issueIndex].political_short_name == 'bj') {
+          items = ['同意票', '反对票', '弃权票']
+        } else {
+          this.$toast("此议题不支持投票")
+          return
+        }
         this.model.issue_list[issueIndex].votes.push({
           title: '',
           inputVisible: false,
           inputValue: '',
-          items: []
+          items: items
         })
       },
       removeVote(issueIndex, voteIndex) {
@@ -198,7 +256,7 @@
           this.model.issue_list[issueIndex].votes.splice(voteIndex, 1)
         }).catch(() => {
 
-        });
+        })
       },
       handleCloseVoteItem(issueIndex, voteIndex, voteItemIndex) {
         this.model.issue_list[issueIndex].votes[voteIndex].items.splice(voteItemIndex, 1)
@@ -229,11 +287,16 @@
     margin-bottom: 10px;
   }
   .cell-group-title{
-    margin: 0;
+    display: flex;
+    flex-direction: row;
+    justify-content: space-between;
     font-weight: 400;
     font-size: 14px;
     color: rgba(69,90,100,.6);
     padding: 20px 15px 15px;
+  }
+  .cell-group-title span, .cell-group-title i{
+    display: inline-block;
   }
   .placeholder-text{
     color: #757575;
@@ -276,6 +339,14 @@
   .vote-item{
     margin-right: 10px;
     margin-bottom: 10px;
+  }
+  .issue-select{
+    width: 100%;
+    margin-top: 15px;
+    margin-bottom: 15px;
+    display: flex;
+    flex-direction: row;
+    justify-content: center;
   }
 </style>
 <style>

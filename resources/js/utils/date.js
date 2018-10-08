@@ -1,5 +1,4 @@
 Date.prototype.Format = function (fmt) {
-  console.log(fmt)
   let o = {
     "M+": this.getMonth() + 1, //月份         
     "d+": this.getDate(), //日         
@@ -30,6 +29,5 @@ Date.prototype.Format = function (fmt) {
       fmt = fmt.replace(RegExp.$1, (RegExp.$1.length == 1) ? (o[k]) : (("00" + o[k]).substr(("" + o[k]).length)))
     }
   }
-  console.log(fmt)
   return fmt
 }
