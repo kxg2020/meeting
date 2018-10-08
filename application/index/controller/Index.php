@@ -15,6 +15,7 @@ class Index extends Base{
         if (strpos(Request::domain(), 'localhost')){
             return view('index', ['token' => (new Aes(Config::get("aes_key")))->encrypt('whngqdcmhdxxf')]);
         }
+
         $code = Request::get("code");
         if($code){
             $userBasic = WeChat::getInstance()->setCode($code)->getUserBasic();
@@ -35,5 +36,4 @@ class Index extends Base{
            'token' => (new Aes(Config::get("aes_key")))->encrypt($userBasic["UserId"])
        ]);
     }
-
 }

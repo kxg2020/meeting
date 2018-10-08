@@ -6,10 +6,8 @@ use think\facade\Request;
 class MeetingRecord extends Base {
 
 
-    public function meetingCreate(){
-        $params = Request::post();
-        var_dump($params);
-    }
+    public function meetingCreate(){}
+
 
     public function meetingRecordList(){
         $typeId = Request::param("typeId");

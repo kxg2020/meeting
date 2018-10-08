@@ -22,6 +22,7 @@ class WeChat{
     // 获取部门列表信息
     const GET_DEPARTMENT    = "department/list?access_token=%s&id=%s";
 
+
     private $requestUrl;
     private $token = null;
     private $code  = null;
@@ -50,12 +51,14 @@ class WeChat{
      */
     public function getUserBasic(){
        return $this->getCompanyAccessToken()->setUrl("userBasic")->request();
+
     }
 
     /*
      * 获取成员部门详情
      */
     public function getUserInfo($userId){
+
        return $this->getCompanyAccessToken()->setUrl("userInfo",["user_id"=>$userId])->request();
     }
 

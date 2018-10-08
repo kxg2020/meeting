@@ -23,4 +23,5 @@ Route::group("/api/",function(){
 
     Route::get("department","Department/departmentList");
 
+
 })->middleware(\app\index\service\Auth::class);
