@@ -27,13 +27,16 @@ class Format{
 
     public function read(){
         $this->meetingInfo["content"] = $this->params["content"];
+        return $this->meetingInfo;
     }
 
     public function ballot(){
         $this->meetingInfo["content"] = "";
+        return $this->meetingInfo;
     }
 
     public function votes(){
         $this->meetingInfo["content"] = "";
+        return $this->meetingInfo;
     }
 }
