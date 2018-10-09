@@ -41,21 +41,21 @@
             class="issue-content"
           />
           <div class="upload-list">
+            <!-- todo file list component -->
             <div class="upload-item" v-for="(image, imageIndex) in issue.images" :key="issueIndex + '-' + imageIndex">
-              <img :src="image" alt="">
+              <img class="image" :src="image.file_url" alt="">
             </div>
-            <div class="upload-item upload-btn">
-              <i class="fa fa-camera"></i>
-            </div>
+            <Upload :multiple="true" @success="data => uploadIssueImageSuccess(issueIndex, data)"></Upload>
           </div>
           <div class="form-item issue-file-list">
             <div class="cell-title">
               附件
             </div>
+            <!-- todo file list style -->
             <div v-for="(file, fileIndex) in issue.files" :key="issueIndex + '-' + fileIndex" class="file-item">
-              <div>{{file.name}}</div>
+              <div class="file-name">{{file.file_name}}</div>
             </div>
-            <Upload :multiple="true"></Upload>
+            <Upload icon="fa fa-paperclip" :multiple="true" @success="data => uploadIssueFileSuccess(issueIndex, data)"></Upload>
           </div>
           <van-cell :title="issue.political_short_name == 'bj' ? '发起表决' : '发起投票'"
                     v-if="issue.political_short_name != 'yz'">
@@ -90,11 +90,9 @@
                     <div class="vote-file-list">
                       <div v-for="(file, fileIndex) in voteItem.files" :key="issueIndex + '-' + fileIndex"
                            class="file-item">
-                        <div>{{file.name}}</div>
+                        <div class="file">{{file.file_name}}</div>
                       </div>
-                      <div class="upload-item upload-btn">
-                        <i class="fa fa-paperclip"></i>
-                      </div>
+                      <Upload icon="fa fa-paperclip" :multiple="true" @success="data => uploadVoteFileSuccess(issueIndex, voteIndex, voteItemIndex, data)"></Upload>
                     </div>
                   </div>
                   <el-input
@@ -314,6 +312,16 @@
       },
       back() {
         this.$router.back()
+      },
+      //
+      uploadIssueImageSuccess(issueIndex, data) {
+        this.model.issue_list[issueIndex].images.push(data)
+      },
+      uploadIssueFileSuccess(issueIndex, data) {
+        this.model.issue_list[issueIndex].files.push(data)
+      },
+      uploadVoteFileSuccess(issueIndex, voteIndex, voteItemIndex, data) {
+        this.model.issue_list[issueIndex].votes[voteIndex].items[voteItemIndex].files.push(data)
       }
     }
   }
@@ -342,16 +350,19 @@
     color: #757575;
   }
 
-  .upload-btn {
+  .upload-item {
     display: inline-block;
     width: 50px;
     height: 50px;
-    text-align: center;
-    font-size: 25px;
     color: #ccc;
     border: 1px dashed #ccc;
     line-height: 50px;
     border-radius: 5px;
+  }
+
+  .upload-item .image{
+    width: 100%;
+    height: 100%;
   }
 
   .upload-list {

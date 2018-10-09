@@ -19,10 +19,6 @@
         type: String,
         default: 'file',
       },
-      success: {
-        type: Function,
-        default: function () {}
-      },
       multiple: {
         type: Boolean,
         default: false
@@ -41,7 +37,11 @@
           let formData = new FormData()
           formData.append('file', file)
           this.axios.post('/upload', formData).then(res => {
-            console.log(res)
+            if (res.status) {
+              this.$emit('success', res.data)
+            } else {
+              this.$toast(res.msg)
+            }
           }).catch(err => {
             console.log(err)
           })
