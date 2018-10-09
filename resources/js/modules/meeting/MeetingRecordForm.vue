@@ -10,11 +10,11 @@
           placeholder="请输入会议主题"
         />
         <van-cell class="form-item" title="开始时间" @click="showStartTimeDialog">
-          <span v-if="model.start_time">{{model.start_time.Format('yyyy-MM-dd hh:mm:ss')}}</span>
+          <span v-if="model.start_time">{{model.start_time.Format('yyyy-MM-dd HH:mm:ss')}}</span>
           <span class="placeholder-text" v-else>请选择</span>
         </van-cell>
         <van-cell class="form-item" title="结束时间" @click="showEndTimeDialog">
-          <span v-if="model.end_time">{{model.end_time.Format('yyyy-MM-dd hh:mm:ss')}}</span>
+          <span v-if="model.end_time">{{model.end_time.Format('yyyy-MM-dd HH:mm:ss')}}</span>
           <span class="placeholder-text" v-else>请选择</span>
         </van-cell>
       </van-cell-group>
@@ -55,9 +55,7 @@
             <div v-for="(file, fileIndex) in issue.files" :key="issueIndex + '-' + fileIndex" class="file-item">
               <div>{{file.name}}</div>
             </div>
-            <div class="upload-item upload-btn">
-              <i class="fa fa-paperclip"></i>
-            </div>
+            <Upload :multiple="true"></Upload>
           </div>
           <van-cell :title="issue.political_short_name == 'bj' ? '发起表决' : '发起投票'"
                     v-if="issue.political_short_name != 'yz'">
@@ -165,6 +163,7 @@
 </template>
 
 <script>
+  import Upload from '../../components/Upload'
   export default {
     name: "MeetingRecordForm",
     data() {
@@ -181,6 +180,9 @@
         politicalSelect: 0,
         politicalDialogShow: false
       }
+    },
+    components: {
+      Upload
     },
     created() {
       window.setTitle("创建会议")
