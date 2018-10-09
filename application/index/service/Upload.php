@@ -6,9 +6,9 @@ use think\facade\Url;
 class Upload{
     use Singleton;
     private $result   = [];
-    private $savePath = "static/uploads";
+    private $savePath = "static/uploads/";
     private $size     = 1024 * 1024 * 20;
-    private $extension = ['jpg,png,gif,docx,pptx,xls,xlsx,pdf,doc'];
+    private $extension= 'jpg,png,gif,docx,pptx,xls,xlsx,pdf,doc';
 
     public function uploadFile(){
         if($this->checkPath()){
@@ -16,7 +16,7 @@ class Upload{
             $root = Url::build("index/index");
             $info = $file->validate(['size'=>$this->size,'ext'=>$this->extension])->move($this->savePath,"");
             if($info){
-                $this->result["img_url"] = $root."static/uploads/".$info->getSaveName();
+                $this->result["img_url"]   = $root."static/uploads/".$info->getSaveName();
                 $this->result["file_name"] = $info->getFilename();
                 return json(["status" => true,"data" =>$this->result,"msg"=>"success"]);
             }else{
@@ -27,6 +27,7 @@ class Upload{
     }
 
     public function checkPath(){
+        $this->savePath .= date("Y-m-d");
         if(!is_dir($this->savePath)){
           $result = mkdir($this->savePath,0777);
           if($result){
