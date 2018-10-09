@@ -3,7 +3,7 @@
     <div @click="showError = !showError" class="debug-btn">
       <i class="fa fa-warning"></i>
     </div>
-    <div class="error-list" v-if="showError" @click="addError">
+    <div class="error-list" v-if="showError">
       <div v-for="(error, errorIndex) in errorList" :key="errorIndex" class="error-item">
         {{error}}
       </div>
