@@ -10,3 +10,9 @@ Number.prototype.ConvertToChinese = function() {
 window.setTitle = function (title) {
   document.title = title
 }
+
+if (process.env.NODE_ENV == 'development') {
+  window.onerror = function (errorMsg, url, lineNumber, column, errorObj) {
+    alert('Error: ' + errorMsg + ' Script: ' + url + ' Line: ' + lineNumber + ' Column: ' + column + ' StackTrace: ' +  errorObj);
+  }
+}
