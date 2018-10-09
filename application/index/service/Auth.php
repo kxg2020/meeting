@@ -13,6 +13,7 @@ class Auth{
             $userId = (new Aes(Config::get("aes_key")))->decrypt($token);
             // token先不做验证
             if($userId){
+                $request->userId = $userId;
                 return $next($request);
             }else{
                 return json(["msg" => "token validation failed.","status" => false,"code" => 0]);
