@@ -10,28 +10,30 @@ class Format{
     ];
     public $meeting;
     public $params;
+    public $meetingInfo;
 
     public function setMeetingType($type){
         $this->meeting = $this->meetingType[$type];
         return $this;
     }
 
-    public function meetingFormat($params){
+    public function meetingFormat($meetingInfo,$params){
         $this->params = $params;
+        $this->meetingInfo = $meetingInfo;
         if(method_exists($this,$this->meeting)){
             return call_user_func([$this,$this->meeting]);
         }
     }
 
     public function read(){
-        $this->params[] = "";
+        $this->meetingInfo["content"] = $this->params["content"];
     }
 
     public function ballot(){
-
+        $this->meetingInfo["content"] = "";
     }
 
     public function votes(){
-
+        $this->meetingInfo["content"] = "";
     }
 }
