@@ -60,7 +60,7 @@
             </div>
           </div>
           <van-cell :title="issue.political_short_name == 'bj' ? '发起表决' : '发起投票'"
-                    v-if="['bj', 'tp'].includes(issue.political_short_name)">
+                    v-if="issue.political_short_name != 'yz'">
             <div slot="right-icon" @click="addVote(issueIndex)">
               <i class="fa fa-plus-square"></i>
             </div>
@@ -142,7 +142,7 @@
     <van-popup v-model="showEndTime" position="bottom">
       <van-datetime-picker
         type="datetime"
-        :min-date="model.end_time"
+        :min-date="model.start_time"
         @confirm="endTimeConfirm"
         @cancel="hideTimeDialog"
       />
