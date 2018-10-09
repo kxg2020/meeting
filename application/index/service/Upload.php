@@ -12,7 +12,7 @@ class Upload{
 
     public function uploadFile(){
         if($this->checkPath()){
-            $file = Request::file("image");
+            $file = Request::file("file");
             $root = Url::build("index/index");
             $info = $file->validate(['size'=>$this->size,'ext'=>$this->extension])->move($this->savePath,"");
             if($info){

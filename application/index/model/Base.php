@@ -14,4 +14,10 @@ class Base  extends  Model{
         ];
         return $this->response;
     }
+
+    protected function formatLimit($pgNum,$pgSize){
+        $start = ($pgNum - 1) * $pgSize;
+        return $start;
+    }
+
 }
