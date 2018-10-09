@@ -1,41 +1,30 @@
 <template>
   <div class="main">
-    <van-nav-bar
-      :title="meetingType.title"
-      left-text="返回"
-      left-arrow
-      @click-left="back()"
-    />
-    <div class="main-container main-container-center">
-      <template v-if="loadding">
-        <div style="display: flex;justify-content: center;">
-          <van-loading type="spinner"/>
-        </div>
-      </template>
-      <template v-else>
-        <div v-if="meetingRecordList.length > 0" class="meeting-list">
-          <div v-for="(meetingItem, meetingIndex) in meetingRecordList" :key="meetingIndex" class="meeting-item">
-            <div class="meeting-title">
-              {{meetingItem.title}}
-            </div>
-            <div class="meeting-noti">
-              <span>主持人</span>
-              <span>{{meetingItem.create_user_id}}</span>
-            </div>
-            <div class="meeting-noti">
-              <span>开始时间</span>
-              <span>{{meetingItem.create_time}}</span>
-            </div>
-            <div class="meeting-noti">
-              <span>结束时间</span>
-              <span>{{meetingItem.create_time}}</span>
-            </div>
+    <div class="main-container">
+      <div v-if="meetingRecordList.length > 0" class="meeting-list">
+        <!--todo 待参加会议提醒-->
+
+        <div v-for="(meetingItem, meetingIndex) in meetingRecordList" :key="meetingIndex" class="meeting-item">
+          <div class="meeting-title">
+            {{meetingItem.title}}
+          </div>
+          <div class="meeting-noti">
+            <span>主持人</span>
+            <span>{{meetingItem.create_user_id}}</span>
+          </div>
+          <div class="meeting-noti">
+            <span>开始时间</span>
+            <span>{{meetingItem.create_time}}</span>
+          </div>
+          <div class="meeting-noti">
+            <span>结束时间</span>
+            <span>{{meetingItem.create_time}}</span>
           </div>
         </div>
-        <div v-else>
-          <h1>todo Empty</h1>
-        </div>
-      </template>
+      </div>
+      <div v-else>
+        <Empty></Empty>
+      </div>
     </div>
     <van-tabbar>
       <van-tabbar-item @click="toForm">
@@ -51,6 +40,7 @@
 </template>
 
 <script>
+  import Empty from '../../components/Empty'
   export default {
     name: "MeetingRecordList",
     data () {
@@ -59,9 +49,12 @@
           id: '',
           name: ''
         },
-        meetingRecordList: null,
+        meetingRecordList: [],
         loadding: false
     }
+    },
+    components: {
+      Empty
     },
     created() {
       if (this.$route.params.type_id != undefined) {
@@ -78,6 +71,7 @@
           _this.meetingRecordList = res.data.meetingRecords
           _this.meetingType = res.data.meetingType
           _this.loadding = false
+          window.setTitle(_this.meetingType.title)
         }).catch(err => {
 
         })
@@ -93,6 +87,9 @@
 </script>
 
 <style scoped>
+  .main{
+    background-color: #FFFFFF;
+  }
   .meeting-item {
     margin: 15px;
     height: 150px;

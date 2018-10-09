@@ -47,6 +47,7 @@ Vue.axios.interceptors.response.use(
 )
 
 require('./utils/date.js')
+require('./utils/function.js')
 
 import App from './App.vue'
 Vue.component('App', App)

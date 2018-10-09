@@ -1,12 +1,6 @@
 <template>
   <div class="main">
-    <van-nav-bar
-      title="发布会议"
-      left-text="返回"
-      left-arrow
-      @click-left="back()"
-    />
-    <div class="main-container main-container-center">
+    <div class="main-container">
       <van-cell-group>
         <van-field
           v-model="model.title"
@@ -26,8 +20,8 @@
       </van-cell-group>
       <div v-for="(issue, issueIndex) in model.issue_list" :key="issueIndex">
         <div class="cell-group-title">
-          <span>{{issue.political_name}}</span>
-          <i class="fa fa-minus-square" @click="removeIssue(issueIndex)"></i>
+          <span>议题{{(issueIndex + 1).ConvertToChinese()}}（{{issue.political_name}}）</span>
+          <i class="fa fa-times-rectangle" @click="removeIssue(issueIndex)"></i>
         </div>
         <van-cell-group>
           <van-field
@@ -65,7 +59,7 @@
               <i class="fa fa-paperclip"></i>
             </div>
           </div>
-          <van-cell title="投票" v-if="['bj', 'tp'].includes(issue.political_short_name)">
+          <van-cell :title="issue.political_short_name == 'bj' ? '发起表决' : '发起投票'" v-if="['bj', 'tp'].includes(issue.political_short_name)">
             <div slot="right-icon" @click="addVote(issueIndex)">
               <i class="fa fa-plus-square"></i>
             </div>
@@ -76,26 +70,35 @@
                 v-model="vote.title"
                 required
                 clearable
-                label="投票标题"
-                placeholder="请输入投票标题"
+                :label="issue.political_short_name == 'bj' ? '表决标题' : '投票标题'"
+                :placeholder="issue.political_short_name == 'bj' ? '请输入表决标题' : '请输入投票标题'"
               >
                 <div slot="button" @click="removeVote(issueIndex, voteIndex)">
                   <i class="fa fa-minus-square"></i>
                 </div>
               </van-field>
-              <van-cell title="投票选项">
+              <van-cell :title="issue.political_short_name == 'bj' ? '表决选项' : '投票选项'">
                 <template v-if="issue.political_short_name == 'tp'">
-                  <el-tag
-                    class="vote-item"
-                    :key="issueIndex + voteIndex + voteItemIndex"
-                    v-for="(voteItem, voteItemIndex) in vote.items"
-                    closable
-                    :disable-transitions="false"
-                    @close="handleCloseVoteItem(issueIndex, voteIndex, voteItemIndex)">
-                    {{voteItem}}
-                  </el-tag>
+                  <div class="vote-item" v-for="(voteItem, voteItemIndex) in vote.items">
+                    <el-tag
+                      class="vote-item-tag"
+                      :key="issueIndex + voteIndex + voteItemIndex"
+                      closable
+                      :disable-transitions="false"
+                      @close="handleCloseVoteItem(issueIndex, voteIndex, voteItemIndex)">
+                      {{voteItem.value}}
+                    </el-tag>
+                    <div class="vote-file-list">
+                      <div v-for="(file, fileIndex) in voteItem.files" :key="issueIndex + '-' + fileIndex" class="file-item">
+                        <div>{{file.name}}</div>
+                      </div>
+                      <div class="upload-item upload-btn">
+                        <i class="fa fa-paperclip"></i>
+                      </div>
+                    </div>
+                  </div>
                   <el-input
-                    class="vote-item input-vote-item"
+                    class="vote-item-tag input-vote-item-tag"
                     v-if="vote.inputVisible"
                     v-model="vote.inputValue"
                     :ref="'saveVoteInput' + issueIndex + voteIndex"
@@ -104,15 +107,15 @@
                     @blur="handleInputConfirmVoteItem(issueIndex, voteIndex)"
                   >
                   </el-input>
-                  <el-button v-else class="vote-item" size="small" @click="showInputVoteItem(issueIndex, voteIndex)">+ 投票选项</el-button>
+                  <el-button v-else class="vote-item-tag btn-vote-item-tag" size="small" @click="showInputVoteItem(issueIndex, voteIndex)">+ 投票选项</el-button>
                 </template>
                 <template v-if="issue.political_short_name == 'bj'">
                   <el-tag
-                    class="vote-item"
+                    class="vote-item-tag just-tag"
                     :key="issueIndex + voteIndex + voteItemIndex"
                     v-for="(voteItem, voteItemIndex) in vote.items"
                     :disable-transitions="false">
-                    {{voteItem}}
+                    {{voteItem.value}}
                   </el-tag>
                 </template>
               </van-cell>
@@ -173,6 +176,7 @@
       }
     },
     created() {
+      window.setTitle("创建会议")
       this.getPoliticalList()
     },
     methods: {
@@ -236,7 +240,20 @@
         if (this.model.issue_list[issueIndex].political_short_name == 'tp') {
           items = []
         } else if (this.model.issue_list[issueIndex].political_short_name == 'bj') {
-          items = ['同意票', '反对票', '弃权票']
+          items = [
+            {
+              value: '同意票',
+              files: []
+            },
+            {
+              value: '反对票',
+              files: []
+            },
+            {
+              value: '弃权票',
+              files: []
+            },
+          ]
         } else {
           this.$toast("此议题不支持投票")
           return
@@ -263,8 +280,17 @@
       },
       handleInputConfirmVoteItem(issueIndex, voteIndex){
         let inputValue = this.model.issue_list[issueIndex].votes[voteIndex].inputValue
-        if (inputValue && !this.model.issue_list[issueIndex].votes[voteIndex].items.includes(inputValue)) {
-          this.model.issue_list[issueIndex].votes[voteIndex].items.push(inputValue)
+        if (inputValue) {
+          let exist = false
+          for (let item of this.model.issue_list[issueIndex].votes[voteIndex].items) {
+            if (item.value == inputValue) {
+              exist = true
+            }
+          }
+          if (!exist) this.model.issue_list[issueIndex].votes[voteIndex].items.push({
+            value: inputValue,
+            files: []
+          })
         }
         this.model.issue_list[issueIndex].votes[voteIndex].inputVisible = false
         this.model.issue_list[issueIndex].votes[voteIndex].inputValue = ''
@@ -333,10 +359,26 @@
   .file-item {
 
   }
-  .input-vote-item{
+  .vote-item{
+    padding: 10px;
+    border: 1px solid #eee;
+  }
+  .vote-item:nth-child(n+1){
+    margin-top: 10px;
+  }
+  .vote-item-tag{
+
+  }
+  .input-vote-item-tag{
     max-width: 150px;
   }
-  .vote-item{
+  .input-vote-item-tag, .btn-vote-item-tag{
+    margin-top: 10px;
+  }
+  .vote-file-list{
+    margin-top: 10px;
+  }
+  .just-tag{
     margin-right: 10px;
     margin-bottom: 10px;
   }
