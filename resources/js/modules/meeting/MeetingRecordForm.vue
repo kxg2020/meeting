@@ -59,7 +59,8 @@
               <i class="fa fa-paperclip"></i>
             </div>
           </div>
-          <van-cell :title="issue.political_short_name == 'bj' ? '发起表决' : '发起投票'" v-if="['bj', 'tp'].includes(issue.political_short_name)">
+          <van-cell :title="issue.political_short_name == 'bj' ? '发起表决' : '发起投票'"
+                    v-if="['bj', 'tp'].includes(issue.political_short_name)">
             <div slot="right-icon" @click="addVote(issueIndex)">
               <i class="fa fa-plus-square"></i>
             </div>
@@ -89,7 +90,8 @@
                       {{voteItem.value}}
                     </el-tag>
                     <div class="vote-file-list">
-                      <div v-for="(file, fileIndex) in voteItem.files" :key="issueIndex + '-' + fileIndex" class="file-item">
+                      <div v-for="(file, fileIndex) in voteItem.files" :key="issueIndex + '-' + fileIndex"
+                           class="file-item">
                         <div>{{file.name}}</div>
                       </div>
                       <div class="upload-item upload-btn">
@@ -107,7 +109,9 @@
                     @blur="handleInputConfirmVoteItem(issueIndex, voteIndex)"
                   >
                   </el-input>
-                  <el-button v-else class="vote-item-tag btn-vote-item-tag" size="small" @click="showInputVoteItem(issueIndex, voteIndex)">+ 投票选项</el-button>
+                  <el-button v-else class="vote-item-tag btn-vote-item-tag" size="small"
+                             @click="showInputVoteItem(issueIndex, voteIndex)">+ 投票选项
+                  </el-button>
                 </template>
                 <template v-if="issue.political_short_name == 'bj'">
                   <el-tag
@@ -151,7 +155,10 @@
     >
       <div class="van-dialog__header">请选择议题类型</div>
       <div class="issue-select">
-        <el-radio v-model="politicalSelect" :label="politicalIndex" v-for="(political, politicalIndex) in politicalList" :key="politicalIndex">{{political.name}}</el-radio>
+        <el-radio v-model="politicalSelect" :label="politicalIndex" v-for="(political, politicalIndex) in politicalList"
+                  :key="politicalIndex">
+          {{political.name}}
+        </el-radio>
       </div>
     </van-dialog>
   </div>
@@ -202,7 +209,7 @@
         this.model.end_time = value
         this.hideTimeDialog()
       },
-      hideTimeDialog(){
+      hideTimeDialog() {
         this.showStartTime = false
         this.showEndTime = false
       },
@@ -210,17 +217,19 @@
         this.politicalDialogShow = true
       },
       createIssue() {
-        this.model.issue_list.push({
-          title: '',
-          political_id: this.politicalList[this.politicalSelect].id,
-          political_name: this.politicalList[this.politicalSelect].name,
-          political_short_name: this.politicalList[this.politicalSelect].short_name,
-          content: '',
-          images: [],
-          files: [],
-          votes: []
-        })
         this.hidePoliticalDialog()
+        this.$nextTick(() => {
+          this.model.issue_list.push({
+            title: '',
+            political_id: this.politicalList[this.politicalSelect].id,
+            political_name: this.politicalList[this.politicalSelect].name,
+            political_short_name: this.politicalList[this.politicalSelect].short_name,
+            content: '',
+            images: [],
+            files: [],
+            votes: []
+          })
+        })
       },
       hidePoliticalDialog() {
         this.politicalDialogShow = false
@@ -278,7 +287,7 @@
       handleCloseVoteItem(issueIndex, voteIndex, voteItemIndex) {
         this.model.issue_list[issueIndex].votes[voteIndex].items.splice(voteItemIndex, 1)
       },
-      handleInputConfirmVoteItem(issueIndex, voteIndex){
+      handleInputConfirmVoteItem(issueIndex, voteIndex) {
         let inputValue = this.model.issue_list[issueIndex].votes[voteIndex].inputValue
         if (inputValue) {
           let exist = false
@@ -301,7 +310,7 @@
           this.$refs['saveVoteInput' + issueIndex + voteIndex][0].$refs.input.focus()
         })
       },
-      back () {
+      back() {
         this.$router.back()
       }
     }
@@ -309,25 +318,29 @@
 </script>
 
 <style scoped>
-  .van-cell-group{
+  .van-cell-group {
     margin-bottom: 10px;
   }
-  .cell-group-title{
+
+  .cell-group-title {
     display: flex;
     flex-direction: row;
     justify-content: space-between;
     font-weight: 400;
     font-size: 14px;
-    color: rgba(69,90,100,.6);
+    color: rgba(69, 90, 100, .6);
     padding: 20px 15px 15px;
   }
-  .cell-group-title span, .cell-group-title i{
+
+  .cell-group-title span, .cell-group-title i {
     display: inline-block;
   }
-  .placeholder-text{
+
+  .placeholder-text {
     color: #757575;
   }
-  .upload-btn{
+
+  .upload-btn {
     display: inline-block;
     width: 50px;
     height: 50px;
@@ -338,17 +351,20 @@
     line-height: 50px;
     border-radius: 5px;
   }
-  .upload-list{
+
+  .upload-list {
     margin-left: 15px;
     border-bottom: 1px solid #eee;
     padding-bottom: 15px;
   }
-  .issue-file-list{
+
+  .issue-file-list {
     margin-left: 15px;
     border-bottom: 1px solid #eee;
     padding-bottom: 15px;
   }
-  .cell-title{
+
+  .cell-title {
     margin: 0;
     font-weight: 400;
     color: #333;
@@ -356,33 +372,42 @@
     line-height: 24px;
     padding: 10px 0 15px;
   }
+
   .file-item {
 
   }
-  .vote-item{
+
+  .vote-item {
     padding: 10px;
     border: 1px solid #eee;
   }
-  .vote-item:nth-child(n+1){
+
+  .vote-item:nth-child(n+1) {
     margin-top: 10px;
   }
-  .vote-item-tag{
+
+  .vote-item-tag {
 
   }
-  .input-vote-item-tag{
+
+  .input-vote-item-tag {
     max-width: 150px;
   }
-  .input-vote-item-tag, .btn-vote-item-tag{
+
+  .input-vote-item-tag, .btn-vote-item-tag {
     margin-top: 10px;
   }
-  .vote-file-list{
+
+  .vote-file-list {
     margin-top: 10px;
   }
-  .just-tag{
+
+  .just-tag {
     margin-right: 10px;
     margin-bottom: 10px;
   }
-  .issue-select{
+
+  .issue-select {
     width: 100%;
     margin-top: 15px;
     margin-bottom: 15px;
@@ -395,12 +420,15 @@
   .form-item .van-cell__title {
     max-width: 90px;
   }
-  .form-item .van-cell__value{
+
+  .form-item .van-cell__value {
     text-align: left;
   }
-  .issue-content::after{
+
+  .issue-content::after {
     border-bottom: unset;
   }
+
   .van-cell--required {
     overflow: hidden;
   }
