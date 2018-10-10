@@ -41,20 +41,14 @@
             class="issue-content"
           />
           <div class="upload-list">
-            <!-- todo file list component -->
-            <div class="upload-item" v-for="(image, imageIndex) in issue.images" :key="issueIndex + '-' + imageIndex">
-              <img class="image" :src="image.file_url" alt="">
-            </div>
-            <Upload :multiple="true" @success="data => uploadIssueImageSuccess(issueIndex, data)"></Upload>
+            <FileList :files="issue.images" @remove="index => removeIssueImage(issueIndex, index)"></FileList>
+            <Upload :multiple="true" accept="image/*" @success="data => uploadIssueImageSuccess(issueIndex, data)"></Upload>
           </div>
           <div class="form-item issue-file-list">
             <div class="cell-title">
               附件
             </div>
-            <!-- todo file list style -->
-            <div v-for="(file, fileIndex) in issue.files" :key="issueIndex + '-' + fileIndex" class="file-item">
-              <div class="file-name">{{file.file_name}}</div>
-            </div>
+            <FileList :files="issue.files" @remove="index => removeIssueFile(issueIndex, index)"></FileList>
             <Upload icon="fa fa-paperclip" :multiple="true" @success="data => uploadIssueFileSuccess(issueIndex, data)"></Upload>
           </div>
           <van-cell :title="issue.political_short_name == 'bj' ? '发起表决' : '发起投票'"
@@ -88,11 +82,8 @@
                       {{voteItem.value}}
                     </el-tag>
                     <div class="vote-file-list">
-                      <div v-for="(file, fileIndex) in voteItem.files" :key="issueIndex + '-' + fileIndex"
-                           class="file-item">
-                        <div class="file">{{file.file_name}}</div>
-                      </div>
-                      <Upload icon="fa fa-paperclip" :multiple="true" @success="data => uploadVoteFileSuccess(issueIndex, voteIndex, voteItemIndex, data)"></Upload>
+                      <FileList :files="voteItem.files" @remove="index => remoVoteFile(issueIndex, voteIndex, voteItemIndex, index)"></FileList>
+                      <Upload icon="fa fa-paperclip" accept="image/*, audio/*, video/*, application/*" :multiple="true" @success="data => uploadVoteFileSuccess(issueIndex, voteIndex, voteItemIndex, data)"></Upload>
                     </div>
                   </div>
                   <el-input
@@ -162,6 +153,7 @@
 
 <script>
   import Upload from '../../components/Upload'
+  import FileList from '../../components/FileList'
   export default {
     name: "MeetingRecordForm",
     data() {
@@ -180,7 +172,8 @@
       }
     },
     components: {
-      Upload
+      Upload,
+      FileList
     },
     created() {
       window.setTitle("创建会议")
@@ -192,7 +185,6 @@
         _this.axios.get('/political').then(res => {
           _this.politicalList = res.data
         }).catch(error => {
-
         })
       },
       showStartTimeDialog() {
@@ -241,7 +233,6 @@
         }).then(() => {
           this.model.issue_list.splice(issueIndex, 1)
         }).catch(() => {
-
         })
       },
       addVote(issueIndex) {
@@ -281,7 +272,6 @@
         }).then(() => {
           this.model.issue_list[issueIndex].votes.splice(voteIndex, 1)
         }).catch(() => {
-
         })
       },
       handleCloseVoteItem(issueIndex, voteIndex, voteItemIndex) {
@@ -322,6 +312,17 @@
       },
       uploadVoteFileSuccess(issueIndex, voteIndex, voteItemIndex, data) {
         this.model.issue_list[issueIndex].votes[voteIndex].items[voteItemIndex].files.push(data)
+      },
+      //
+      removeIssueImage(issueIndex, index) {
+        console.log(issueIndex, index)
+        this.model.issue_list[issueIndex].images.splice(index, 1)
+      },
+      removeIssueFile(issueIndex, index) {
+        this.model.issue_list[issueIndex].files.splice(index, 1)
+      },
+      remoVoteFile(issueIndex, voteIndex, voteItemIndex, index) {
+        this.model.issue_list[issueIndex].votes[voteIndex].items[voteItemIndex].files.splice(index, 1)
       }
     }
   }
@@ -331,7 +332,6 @@
   .van-cell-group {
     margin-bottom: 10px;
   }
-
   .cell-group-title {
     display: flex;
     flex-direction: row;
@@ -341,15 +341,12 @@
     color: rgba(69, 90, 100, .6);
     padding: 20px 15px 15px;
   }
-
   .cell-group-title span, .cell-group-title i {
     display: inline-block;
   }
-
   .placeholder-text {
     color: #757575;
   }
-
   .upload-item {
     display: inline-block;
     width: 50px;
@@ -359,24 +356,21 @@
     line-height: 50px;
     border-radius: 5px;
   }
-
   .upload-item .image{
     width: 100%;
     height: 100%;
+    border-radius: 5px;
   }
-
   .upload-list {
     margin-left: 15px;
     border-bottom: 1px solid #eee;
     padding-bottom: 15px;
   }
-
   .issue-file-list {
     margin-left: 15px;
     border-bottom: 1px solid #eee;
     padding-bottom: 15px;
   }
-
   .cell-title {
     margin: 0;
     font-weight: 400;
@@ -385,41 +379,30 @@
     line-height: 24px;
     padding: 10px 0 15px;
   }
-
   .file-item {
-
   }
-
   .vote-item {
     padding: 10px;
     border: 1px solid #eee;
   }
-
   .vote-item:nth-child(n+1) {
     margin-top: 10px;
   }
-
   .vote-item-tag {
-
   }
-
   .input-vote-item-tag {
     max-width: 150px;
   }
-
   .input-vote-item-tag, .btn-vote-item-tag {
     margin-top: 10px;
   }
-
   .vote-file-list {
     margin-top: 10px;
   }
-
   .just-tag {
     margin-right: 10px;
     margin-bottom: 10px;
   }
-
   .issue-select {
     width: 100%;
     margin-top: 15px;
@@ -433,15 +416,12 @@
   .form-item .van-cell__title {
     max-width: 90px;
   }
-
   .form-item .van-cell__value {
     text-align: left;
   }
-
   .issue-content::after {
     border-bottom: unset;
   }
-
   .van-cell--required {
     overflow: hidden;
   }
