@@ -11,7 +11,8 @@ class Base extends Controller{
     protected $redirect;
     protected $authApi = "https://open.weixin.qq.com/connect/oauth2/authorize?appid=%s&redirect_uri=%s&response_type=code&scope=snsapi_base&agentid=%s&state=1#wechat_redirect";
     protected $message = [
-        9999 => "测试"
+        4001 => "没有创建会议权限,会议创建失败",
+        4002 => "会议创建失败",
     ];
     private $response = [];
 
@@ -31,5 +32,14 @@ class Base extends Controller{
         return json($this->response);
     }
 
-
+    protected function formatPage($params){
+        $result = ["pgNum" => 1,"pgSize" => 3];
+        if(isset($params["pgNum"]) && $params["pgNum"]){
+            $result["pgNum"] = $params["pgNum"];
+        }
+        if(isset($params["pgSize"]) && $params["pgSize"]){
+            $result["pgSize"] = $params["pgSize"];
+        }
+        return $result;
+    }
 }

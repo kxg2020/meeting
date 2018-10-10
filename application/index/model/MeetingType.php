@@ -18,5 +18,9 @@ class MeetingType extends Base{
         return $this->returnResponse($result);
     }
 
+    public function getMeetingTypeById($id){
+        $result = Db::name("meeting_type")->where(["id"=>$id])->find();
+        return $this->returnResponse($result);
+    }
 
 }

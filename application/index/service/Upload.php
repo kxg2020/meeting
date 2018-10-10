@@ -12,11 +12,11 @@ class Upload{
 
     public function uploadFile(){
         if($this->checkPath()){
-            $file = Request::file("image");
+            $file = Request::file("file");
             $root = Url::build("index/index");
             $info = $file->validate(['size'=>$this->size,'ext'=>$this->extension])->move($this->savePath,"");
             if($info){
-                $this->result["img_url"]   = $root."static/uploads/".$info->getSaveName();
+                $this->result["file_url"]   = $root.$this->savePath.DIRECTORY_SEPARATOR.$info->getSaveName();
                 $this->result["file_name"] = $info->getFilename();
                 return json(["status" => true,"data" =>$this->result,"msg"=>"success"]);
             }else{
@@ -29,7 +29,7 @@ class Upload{
     public function checkPath(){
         $this->savePath .= date("Y-m-d");
         if(!is_dir($this->savePath)){
-          $result = mkdir($this->savePath,0777);
+          $result = mkdir($this->savePath,0777, true);
           if($result){
               return true;
           }

@@ -12,6 +12,7 @@ class Auth{
         if($token){
             $userId = Jwt::getInstance()->validateToken("user_id",$token);
             if($userId){
+                $request->userId = $userId;
                 return $next($request);
             }else{
                 return json(["msg" => "token validation failed.","status" => false,"code" => 0]);

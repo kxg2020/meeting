@@ -1,6 +1,6 @@
 <template>
   <div class="main">
-    <div class="main-container main-container-top">
+    <div class="main-container">
       <van-search
         v-model="searchValue"
         placeholder="请输入搜索关键词"
@@ -39,6 +39,7 @@
       Tabbar
     },
     created() {
+      window.setTitle("首页")
       this.getMeetingTypeList()
     },
     methods: {
