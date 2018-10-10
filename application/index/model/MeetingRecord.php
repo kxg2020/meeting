@@ -29,6 +29,7 @@ class MeetingRecord extends Base{
     }
 
     public function createMeetingRecord($params){
+        var_dump($params);die;
         // 创建人
         $createUserId = request()->userId;
         // 创建人
@@ -39,7 +40,6 @@ class MeetingRecord extends Base{
         if(!strpos($meetingType["data"]["permission"],$createUser["data"]["id"])){
             return $this->returnResponse([],4001);
         }
-        Db::startTrans();
         // 插入会议记录表
         $insertMeetingRecord = [
             "title"           => $params["title"],
@@ -49,68 +49,39 @@ class MeetingRecord extends Base{
             "start_time"      => $params["start_time"],
             "end_time"        => $params["end_time"],
         ];
+        Db::startTrans();
         $resultRecord = Db::name("meeting_record")->insertGetId($insertMeetingRecord);
         if($resultRecord){
-            foreach($params["issue_list"] as $key => $value){
-                if($value["political_id"] == Enum::READ){
-                    $this->meetingRead($value,$resultRecord,$params);
+            if(isset($params["issue_list"]) && $params["issue_list"]){
+                foreach($params["issue_list"] as $key => $value){
+                    $this->meetingInsert($value,$resultRecord,$params);
                 }
-                if($value["political_id"] == Enum::BALLOT){
-                    $this->meetingBallot($value,$resultRecord,$params);
-                }
-                if($value["political_id"] == Enum::VOTES){
-                    $this->meetingVotes($value,$resultRecord,$params);
-                }
+                $this->commit ? Db::commit() : Db::rollback();
             }
-           $this->commit ? Db::commit() : Db::rollback();
         }
         $this->returnResponse([],4001);
     }
 
-    private function meetingRead($value,$resultRecord,$params){
-        $fileId = [];
+    private function meetingInsert($value,$resultRecord,$params){
         $insertMeetingInfo = [
             "meeting_record_id" => $resultRecord,
-            "type" => $value["political_id"],
+            "type"        => $value["political_id"],
             "create_time" => time(),
         ];
-        $insertMeetingInfo =  \app\index\service\Format::getInstance()
-            ->setMeetingType($value["political_id"])
-            ->meetingFormat($insertMeetingInfo,$params);
-        if(isset($value["images"]) && $value["images"]){
-            foreach($value["images"] as $k => $v){
-                $fileId[] = $this->createFile($v);
-            }
+        \app\index\service\Format::getInstance()
+            ->fileContainerFlush()
+            ->setMeetingTypeValue($value)
+            ->meetingTypeDispatch($insertMeetingInfo,$params);
+
+        if(\app\index\service\Format::getInstance()->commit){
+            Db::commit();return;
         }
-        if(isset($value["files"]) && $value["files"]){
-            foreach($value["images"] as $k => $v){
-                $fileId[] = $this->createFile($v);
-            }
-        }
-        $insertMeetingInfo["file_id"] = implode("|",$fileId);
-        $result = Db::name("meeting_record")->insert($insertMeetingInfo);
-        $result ? : $this->commit = false;
+        Db::rollback();
     }
 
-    private function meetingBallot($value,$resultRecord,$params){
-
-    }
-
-    private function meetingVotes($value,$resultRecord,$params){
+    private function insertReadMeeting(){
 
     }
 
 
-    private function createFile($params){
-        $insert = [
-            "url" => $params["fil_url"],
-            "file_name" => $params["fil_name"],
-        ];
-        $result = Db::name("meeting_file")->insertGetId($insert);
-        if($result){
-             return $result;
-        }
-        $this->commit = false;
-        return false;
-    }
 }
