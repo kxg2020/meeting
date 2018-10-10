@@ -6,4 +6,5 @@
 .DS_Store
 /node_modules
 /config/database.php
+/composer.lock
 

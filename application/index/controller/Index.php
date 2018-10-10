@@ -14,7 +14,7 @@ class Index extends Base{
     public function index(){
         // dev
         if (strpos(Request::domain(), 'localhost')){
-            return view('index', ['token' => (new Aes(Config::get("aes_key")))->encrypt('whngqdcmhdxxf')]);
+            return view('index', ['token' => Jwt::getInstance()->createToken("user_id", "whngqdcmhdxxf")]);
         }
 
         $code = Request::get("code");
