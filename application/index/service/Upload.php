@@ -8,7 +8,7 @@ class Upload{
     private $result   = [];
     private $savePath = "static/uploads/";
     private $size     = 1024 * 1024 * 20;
-    private $extension= 'jpg,png,gif,docx,pptx,xls,xlsx,pdf,doc';
+    private $extension= 'bmp,gif,jpg,pic,png,tif,wmv,asf,asx,rm, rmvb,mp4,mp3,3gp,mov,m4v,avi,dat,mkv,flv,vod,txt,doc,xls,ppt,docx,xlsx,pptx';
 
     public function uploadFile(){
         if($this->checkPath()){

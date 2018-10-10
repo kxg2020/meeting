@@ -41,20 +41,14 @@
             class="issue-content"
           />
           <div class="upload-list">
-            <!-- todo file list component -->
-            <div class="upload-item" v-for="(image, imageIndex) in issue.images" :key="issueIndex + '-' + imageIndex">
-              <img class="image" :src="image.file_url" alt="">
-            </div>
-            <Upload :multiple="true" @success="data => uploadIssueImageSuccess(issueIndex, data)"></Upload>
+            <FileList :files="issue.images" @remove="index => removeIssueImage(issueIndex, index)"></FileList>
+            <Upload :multiple="true" accept="image/*" @success="data => uploadIssueImageSuccess(issueIndex, data)"></Upload>
           </div>
           <div class="form-item issue-file-list">
             <div class="cell-title">
               附件
             </div>
-            <!-- todo file list style -->
-            <div v-for="(file, fileIndex) in issue.files" :key="issueIndex + '-' + fileIndex" class="file-item">
-              <div class="file-name">{{file.file_name}}</div>
-            </div>
+            <FileList :files="issue.files" @remove="index => removeIssueFile(issueIndex, index)"></FileList>
             <Upload icon="fa fa-paperclip" :multiple="true" @success="data => uploadIssueFileSuccess(issueIndex, data)"></Upload>
           </div>
           <van-cell :title="issue.political_short_name == 'bj' ? '发起表决' : '发起投票'"
@@ -88,11 +82,8 @@
                       {{voteItem.value}}
                     </el-tag>
                     <div class="vote-file-list">
-                      <div v-for="(file, fileIndex) in voteItem.files" :key="issueIndex + '-' + fileIndex"
-                           class="file-item">
-                        <div class="file">{{file.file_name}}</div>
-                      </div>
-                      <Upload icon="fa fa-paperclip" :multiple="true" @success="data => uploadVoteFileSuccess(issueIndex, voteIndex, voteItemIndex, data)"></Upload>
+                      <FileList :files="voteItem.files" @remove="index => remoVoteFile(issueIndex, voteIndex, voteItemIndex, index)"></FileList>
+                      <Upload icon="fa fa-paperclip" accept="image/*, audio/*, video/*, application/*" :multiple="true" @success="data => uploadVoteFileSuccess(issueIndex, voteIndex, voteItemIndex, data)"></Upload>
                     </div>
                   </div>
                   <el-input
@@ -162,6 +153,7 @@
 
 <script>
   import Upload from '../../components/Upload'
+  import FileList from '../../components/FileList'
   export default {
     name: "MeetingRecordForm",
     data() {
@@ -180,7 +172,8 @@
       }
     },
     components: {
-      Upload
+      Upload,
+      FileList
     },
     created() {
       window.setTitle("创建会议")
@@ -322,6 +315,17 @@
       },
       uploadVoteFileSuccess(issueIndex, voteIndex, voteItemIndex, data) {
         this.model.issue_list[issueIndex].votes[voteIndex].items[voteItemIndex].files.push(data)
+      },
+      //
+      removeIssueImage(issueIndex, index) {
+        console.log(issueIndex, index)
+        this.model.issue_list[issueIndex].images.splice(index, 1)
+      },
+      removeIssueFile(issueIndex, index) {
+        this.model.issue_list[issueIndex].files.splice(index, 1)
+      },
+      remoVoteFile(issueIndex, voteIndex, voteItemIndex, index) {
+        this.model.issue_list[issueIndex].votes[voteIndex].items[voteItemIndex].files.splice(index, 1)
       }
     }
   }
@@ -363,6 +367,7 @@
   .upload-item .image{
     width: 100%;
     height: 100%;
+    border-radius: 5px;
   }
 
   .upload-list {
