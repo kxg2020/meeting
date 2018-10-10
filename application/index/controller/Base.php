@@ -1,8 +1,8 @@
 <?php
 namespace app\index\controller;
 use app\index\service\WeChat;
-use think\Cache;
 use think\Controller;
+
 use think\facade\Url;
 
 class Base extends Controller{
@@ -30,5 +30,6 @@ class Base extends Controller{
         }
         return json($this->response);
     }
+
 
 }

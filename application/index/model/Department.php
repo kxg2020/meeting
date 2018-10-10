@@ -37,6 +37,14 @@ class Department extends Base{
         }
     }
 
+    public function departmentMember($departmentId){
+        $member = WeChat::getInstance()->getDepartmentMember($departmentId);
+        if(isset($member["errcode"]) && $member["errcode"] == 0){
+            return $this->returnResponse($member["userlist"]);
+        }
+        return $this->returnResponse();
+    }
+
     private function yieldArray($params,$length){
         for($i = 0; $i < $length;$i++){
             yield $params[$i];

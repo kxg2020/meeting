@@ -10,8 +10,7 @@ class Auth{
     public function handle($request, \Closure $next){
         $token = Request::header("token");
         if($token){
-            $userId = (new Aes(Config::get("aes_key")))->decrypt($token);
-            // token先不做验证
+            $userId = Jwt::getInstance()->validateToken("user_id",$token);
             if($userId){
                 return $next($request);
             }else{

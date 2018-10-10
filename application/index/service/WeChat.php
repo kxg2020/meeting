@@ -21,8 +21,10 @@ class WeChat{
     const GET_MEMBER_INFO   = "user/get?access_token=%s&userid=%s";
     // 获取部门列表信息
     const GET_DEPARTMENT    = "department/list?access_token=%s&id=%s";
-    // 发送应用消息
+    // 发送应用卡片消息
     const SEND_AGENT_MESSAGE= "message/send?access_token=%s";
+    // 获取部门成员
+    const GET_DEPARTMENT_MEMBER = "user/simplelist?access_token=%s&department_id=%s&fetch_child=%s";
 
     private $requestUrl;
     private $token = null;
@@ -57,7 +59,7 @@ class WeChat{
     }
 
     /*
-     * 获取成员部门详情
+     * 获取用户详情
      */
     public function getUserInfo($userId){
 
@@ -76,6 +78,13 @@ class WeChat{
      */
     public function sendAgentMessage(){
        return $this->getCompanyAccessToken()->setUrl("sendAgentMessage")->request();
+    }
+
+    /*
+     * 获取部门成员
+     */
+    public function getDepartmentMember($departmentId){
+        return $this->getCompanyAccessToken()->setUrl("departmentMember",["id"=>$departmentId])->request();
     }
 
     /*
@@ -105,6 +114,9 @@ class WeChat{
                 break;
             case "sendAgentMessage":
                 $this->requestUrl = sprintf(self::COMPANY_BASE_API.self::SEND_AGENT_MESSAGE,$this->token);
+                break;
+            case "departmentMember":
+                $this->requestUrl = sprintf(self::COMPANY_BASE_API.self::GET_DEPARTMENT_MEMBER,$this->token,$param["id"],"");
                 break;
         }
         return $this;

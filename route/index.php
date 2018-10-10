@@ -12,6 +12,7 @@
 use think\facade\Route;
 
 Route::get("/","index/index");
+
 Route::get("/test","index/test");
 
 Route::get("/upload","static/uploads");
@@ -30,5 +31,6 @@ Route::group("/api/",function(){
 
     Route::get("political","MeetingPolitical/politicalList");
 
+    Route::get("member/:id","Department/departmentMember");
 
 })->middleware(\app\index\service\Auth::class);
