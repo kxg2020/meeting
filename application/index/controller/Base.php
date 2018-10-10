@@ -13,6 +13,8 @@ class Base extends Controller{
     protected $message = [
         4001 => "没有创建会议权限,会议创建失败",
         4002 => "会议创建失败",
+
+        9002 => "会议创建成功",
     ];
     private $response = [];
 

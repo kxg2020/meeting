@@ -3,12 +3,7 @@
     <label :for="id" class="upload-btn">
       <i :class="icon"></i>
     </label>
-    <template v-if="multiple">
-      <input :id="id" type="file" ref="input" name="file" :accept="accept" @change="handleChange" class="upload-input" :multiple = multiple>
-    </template>
-    <template>
-      <input :id="id" type="file" ref="input" name="file" @change="handleChange" class="upload-input">
-    </template>
+    <input :id="id" type="file" ref="input" name="file" @change="handleChange" class="upload-input" :multiple = multiple>
   </div>
 </template>
 
@@ -27,10 +22,6 @@
       multiple: {
         type: Boolean,
         default: false
-      },
-      accept: {
-        type: String,
-        default: "image/*, audio/*, video/*, application/*"
       }
     },
     data () {
@@ -42,9 +33,9 @@
       handleChange(event) {
         let files = event.target.files
         if (files.length < 1) return
-        for (let index = 0; index < files.length; index++) {
+        for (let file of files) {
           let formData = new FormData()
-          formData.append('file', files[index])
+          formData.append('file', file)
           this.axios.post('/upload', formData).then(res => {
             if (res.status) {
               this.$emit('success', res.data)

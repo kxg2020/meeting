@@ -25,11 +25,9 @@ class MeetingRecord extends Base{
             "total"         => $total
         ];
         return $this->returnResponse($result);
-
     }
 
     public function createMeetingRecord($params){
-        var_dump($params);die;
         // 创建人
         $createUserId = request()->userId;
         // 创建人
@@ -56,10 +54,14 @@ class MeetingRecord extends Base{
                 foreach($params["issue_list"] as $key => $value){
                     $this->meetingInsert($value,$resultRecord,$params);
                 }
-                $this->commit ? Db::commit() : Db::rollback();
             }
         }
-        $this->returnResponse([],4001);
+        if(\app\index\service\Format::getInstance()->commit){
+            Db::commit();
+            return $this->returnResponse([],9002);
+        }
+        Db::rollback();
+        return $this->returnResponse([],4002);
     }
 
     private function meetingInsert($value,$resultRecord,$params){
@@ -67,21 +69,14 @@ class MeetingRecord extends Base{
             "meeting_record_id" => $resultRecord,
             "type"        => $value["political_id"],
             "create_time" => time(),
+            "title"       => $value["title"]
         ];
         \app\index\service\Format::getInstance()
             ->fileContainerFlush()
             ->setMeetingTypeValue($value)
             ->meetingTypeDispatch($insertMeetingInfo,$params);
 
-        if(\app\index\service\Format::getInstance()->commit){
-            Db::commit();return;
-        }
-        Db::rollback();
     }
-
-    private function insertReadMeeting(){
-
-    }
-
+    
 
 }

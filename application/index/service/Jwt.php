@@ -3,6 +3,7 @@ namespace app\index\service;
 use Lcobucci\JWT\Builder;
 use Lcobucci\JWT\Parser;
 use Lcobucci\JWT\Signer\Hmac\Sha256;
+use think\Exception;
 use think\facade\Config;
 class Jwt{
     use Singleton;
@@ -20,11 +21,15 @@ class Jwt{
 
 
     public function validateToken($key,$token = null){
-        $token  = (new Parser())->parse((string) $token);
-        $signer = new Sha256();
-        if (!$token->verify($signer, Config::get("token"))) {
-            return false;
+        try{
+            $token  = (new Parser())->parse((string) $token);
+            $signer = new Sha256();
+            if (!$token->verify($signer, Config::get("token"))) {
+                return ["status" => false,"msg"=>"token illegal","claim" => ""];
+            }
+            return ["status" => true,"msg" => "","claim" => $token->getClaim($key)];
+        }catch (Exception $e){
+            return ["status" => false,"msg"=>$e->getMessage(),"claim" => ""];
         }
-        return $token->getClaim($key);
     }
 }

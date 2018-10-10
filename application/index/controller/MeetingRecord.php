@@ -8,10 +8,9 @@ class MeetingRecord extends Base {
 
 
     public function meetingCreate(){
-
-        \app\index\model\MeetingRecord::getInstance()
+       $result = \app\index\model\MeetingRecord::getInstance()
             ->createMeetingRecord(Request::post());
-
+        return $this->printResponse($result["code"]);
     }
 
 

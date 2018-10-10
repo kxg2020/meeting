@@ -10,12 +10,12 @@ import Vant from 'vant'
 
 Vue.use(Vant)
 
-import {Tag, Input, Button, Radio } from 'element-ui'
+import {Tag, input, button, radio} from 'element-ui'
 
 Vue.use(Tag)
-Vue.use(Input)
-Vue.use(Button)
-Vue.use(Radio)
+Vue.use(input)
+Vue.use(button)
+Vue.use(radio)
 
 Vue.axios.defaults.baseURL = '/api'
 
@@ -23,12 +23,10 @@ Vue.axios.defaults.headers.common = {
   'token': window.token,
 }
 
-import { showFullScreenLoading, tryHideFullScreenLoading} from "./utils/httpLoading";
-
 // 请求拦截
 Vue.axios.interceptors.request.use(
   config => {
-    showFullScreenLoading()
+    // todo add config
     return config
   },
   error => {
@@ -40,7 +38,6 @@ Vue.axios.interceptors.request.use(
 // 响应拦截
 Vue.axios.interceptors.response.use(
   response => {
-    tryHideFullScreenLoading()
     return response.data
   },
   error => {

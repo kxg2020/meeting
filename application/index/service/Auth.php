@@ -10,12 +10,12 @@ class Auth{
     public function handle($request, \Closure $next){
         $token = Request::header("token");
         if($token){
-            $userId = Jwt::getInstance()->validateToken("user_id",$token);
-            if($userId){
-                $request->userId = $userId;
+            $result = Jwt::getInstance()->validateToken("user_id",$token);
+            if($result["status"]){
+                $request->userId = $result["claim"];
                 return $next($request);
             }else{
-                return json(["msg" => "token validation failed.","status" => false,"code" => 500]);
+                return json(["msg" => $result["msg"],"status" => false,"code" => 500]);
             }
         }else{
             return json(["msg" => "token not exist.","status" => false,"code" => 500]);
