@@ -8,7 +8,7 @@ export default [
   },
   {
     name: 'MeetingRecordCreate',
-    path: '/meeting_record/create',
+    path: '/meeting_record/create/:type_id(\\d+)',
     component: MeetingRecordForm
   },
 ]

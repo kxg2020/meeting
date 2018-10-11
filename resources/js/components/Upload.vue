@@ -6,7 +6,7 @@
     <template v-if="multiple">
       <input :id="id" type="file" ref="input" name="file" :accept="accept" @change="handleChange" class="upload-input" :multiple = multiple>
     </template>
-    <template>
+    <template v-else>
       <input :id="id" type="file" ref="input" name="file" @change="handleChange" class="upload-input">
     </template>
   </div>
@@ -41,6 +41,7 @@
     methods: {
       handleChange(event) {
         let files = event.target.files
+        console.log(files)
         if (files.length < 1) return
         for (let index = 0; index < files.length; index++) {
           let formData = new FormData()
