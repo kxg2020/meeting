@@ -6,16 +6,14 @@
           v-model="model.title"
           required
           clearable
-          label="主题"
+          label="会议主题"
           placeholder="请输入会议主题"
         />
-        <van-cell class="form-item" title="开始时间" @click="showStartTimeDialog">
-          <span v-if="model.start_time">{{model.start_time.Format('yyyy-MM-dd HH:mm:ss')}}</span>
-          <span class="placeholder-text" v-else>请选择</span>
+        <van-cell class="form-item" title="开始时间">
+          <DateTimePacker :min-date="new Date()" @change="value => changeStartTime(value)"></DateTimePacker>
         </van-cell>
-        <van-cell class="form-item" title="结束时间" @click="showEndTimeDialog">
-          <span v-if="model.end_time">{{model.end_time.Format('yyyy-MM-dd HH:mm:ss')}}</span>
-          <span class="placeholder-text" v-else>请选择</span>
+        <van-cell class="form-item" title="结束时间">
+          <DateTimePacker :min-date="minDate" @change="value => changeEndTime(value)"></DateTimePacker>
         </van-cell>
       </van-cell-group>
       <div v-for="(issue, issueIndex) in model.issue_list" :key="issueIndex">
@@ -117,23 +115,21 @@
       <van-cell-group>
         <van-cell title="增加议题" icon="add-o" style="color: #38f;" @click="addIssue"/>
       </van-cell-group>
+      <van-cell-group>
+        <van-cell class="form-item" title="参会组织">
+          <el-checkbox-group v-model="checkList" class="check-box">
+            <el-checkbox label="组织一"></el-checkbox>
+            <el-checkbox label="组织二"></el-checkbox>
+            <el-checkbox label="组织三"></el-checkbox>
+            <el-checkbox label="组织四"></el-checkbox>
+          </el-checkbox-group>
+        </van-cell>
+      </van-cell-group>
+      <div class="submit">
+        <el-button class="submit-btn" type="primary" plain @click="submit" :loading="submitLoading">创建</el-button>
+      </div>
     </div>
-    <van-popup v-model="showStartTime" position="bottom">
-      <van-datetime-picker
-        type="datetime"
-        :min-date="new Date()"
-        @confirm="startTimeConfirm"
-        @cancel="hideTimeDialog"
-      />
-    </van-popup>
-    <van-popup v-model="showEndTime" position="bottom">
-      <van-datetime-picker
-        type="datetime"
-        :min-date="model.start_time"
-        @confirm="endTimeConfirm"
-        @cancel="hideTimeDialog"
-      />
-    </van-popup>
+    <!-- 议题类型 -->
     <van-dialog
       v-model="politicalDialogShow"
       show-cancel-button
@@ -154,29 +150,39 @@
 <script>
   import Upload from '../../components/Upload'
   import FileList from '../../components/FileList'
+  import DateTimePacker from '../../components/DateTimePicker'
   export default {
     name: "MeetingRecordForm",
     data() {
       return {
         model: {
+          meeting_type_id: 0,
           title: '',
-          start_time: new Date(),
-          end_time: new Date((new Date).getTime() + 1 * 24 * 60 * 60 * 1000),
+          start_time: '',
+          end_time: '',
           issue_list: []
         },
-        showStartTime: false,
-        showEndTime: false,
+        minDate: new Date(),
         politicalList: [],
         politicalSelect: 0,
-        politicalDialogShow: false
+        politicalDialogShow: false,
+        checkList: [],
+        submitLoading: false
       }
     },
     components: {
       Upload,
-      FileList
+      FileList,
+      DateTimePacker
     },
     created() {
       window.setTitle("创建会议")
+      if (this.$route.params.type_id != undefined){
+        this.model.meeting_type_id = this.$route.params.type_id
+      } else{
+        this.$toast("参数错误")
+        this.$router.back()
+      }
       this.getPoliticalList()
     },
     methods: {
@@ -187,23 +193,12 @@
         }).catch(error => {
         })
       },
-      showStartTimeDialog() {
-        this.showStartTime = true
-      },
-      showEndTimeDialog() {
-        this.showEndTime = true
-      },
-      startTimeConfirm(value) {
+      changeStartTime(value) {
         this.model.start_time = value
-        this.hideTimeDialog()
+        this.minDate = new Date(parseInt(this.model.start_time) * 1000)
       },
-      endTimeConfirm(value) {
+      changeEndTime(value) {
         this.model.end_time = value
-        this.hideTimeDialog()
-      },
-      hideTimeDialog() {
-        this.showStartTime = false
-        this.showEndTime = false
       },
       addIssue() {
         this.politicalDialogShow = true
@@ -323,6 +318,54 @@
       },
       remoVoteFile(issueIndex, voteIndex, voteItemIndex, index) {
         this.model.issue_list[issueIndex].votes[voteIndex].items[voteItemIndex].files.splice(index, 1)
+      },
+      submit() {
+        this.submitLoading = true
+        if (this.model.title.length < 1) {
+          this.submitLoading = false
+          this.$toast("会议主题不能为空")
+          return
+        }
+        if (this.model.start_time >= this.model.end_time) {
+          this.submitLoading = false
+          this.$toast("请选择结束时间")
+          return
+        }
+        if (this.model.issue_list.length < 1) {
+          this.submitLoading = false
+          this.$toast("请添加至少一个议题")
+          return
+        }
+        for (let issue of this.model.issue_list) {
+          if (issue.title.length < 1) {
+            this.submitLoading = false
+            this.$toast("议题标题不能为空")
+            return
+          }
+          for (let vote of issue.votes){
+            if (vote.title.length < 1) {
+              this.submitLoading = false
+              this.$toast("投票标题不能为空")
+              return
+            }
+            if (vote.items.length <1){
+              this.submitLoading = false
+              this.$toast("投票选项不能为空")
+              return
+            }
+          }
+        }
+        this.axios.post('/meetingRecord/create', this.model).then(res => {
+          this.$toast(res.msg)
+          this.submitLoading = false
+          setTimeout(() => {
+            if (res.code == 200){
+              this.$router.push({path: ''})
+            } 
+          },2000)
+        }).catch(error => {
+          this.submitLoading = false
+        })
       }
     }
   }
@@ -411,6 +454,17 @@
     flex-direction: row;
     justify-content: center;
   }
+  .check-box{
+    display: flex;
+    flex-direction: column;
+    text-align: left;
+  }
+  .submit{
+    padding: 10px;
+  }
+  .submit-btn{
+    width: 100%;
+  }
 </style>
 <style>
   .form-item .van-cell__title {
@@ -424,5 +478,8 @@
   }
   .van-cell--required {
     overflow: hidden;
+  }
+  .el-checkbox+.el-checkbox {
+    margin-left: 0;
   }
 </style>

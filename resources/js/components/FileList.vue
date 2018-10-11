@@ -42,7 +42,7 @@
         let fileExtMap = [
           {
             name: "image",
-            extensions: ["bmp", "gif", "jpg", "pic", "png", "tif"]
+            extensions: ["bmp", "gif", "jpg", "jpeg", "pic", "png", "tif"]
           },
           {
             name: "video",

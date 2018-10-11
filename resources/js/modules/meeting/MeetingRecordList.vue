@@ -45,6 +45,7 @@
     name: "MeetingRecordList",
     data () {
       return {
+        meeting_type_id: 0,
         meetingType: {
           id: '',
           name: ''
@@ -58,6 +59,7 @@
     },
     created() {
       if (this.$route.params.type_id != undefined) {
+        this.meeting_type_id = this.$route.params.type_id
         this.getMeetingList(this.$route.params.type_id)
       } else {
         this.$router.replace('/')
@@ -80,7 +82,7 @@
         this.$router.back()
       },
       toForm() {
-        this.$router.push({path: '/meeting_record/create'})
+        this.$router.push({path: '/meeting_record/create/' + this.meeting_type_id})
       }
     }
   }
