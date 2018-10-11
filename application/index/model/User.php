@@ -56,7 +56,7 @@ class User extends Base{
         $meeting = PositionMeetingMap::getInstance()->getPositionMeeting($userInfo["position"]);
         if($meeting["data"]){
             foreach ($meeting["data"] as $department){
-                $meetingId[] = $department["department_id"];
+                $meetingId[] = $department["id"];
             }
         }
         $meetingId = implode(",",$meetingId);
