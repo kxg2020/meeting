@@ -60,6 +60,7 @@ class User extends Base{
             }
         }
         $meetingId = implode(",",$meetingId);
+        echo $meetingId;die;
         $update = [
             "enable_sponsored_meeting_id" => $meetingId
         ];
