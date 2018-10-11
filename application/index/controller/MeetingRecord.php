@@ -2,6 +2,7 @@
 namespace app\index\controller;
 
 use app\index\model\MeetingType;
+use app\index\service\Tool;
 use think\facade\Request;
 
 class MeetingRecord extends Base {
@@ -9,7 +10,8 @@ class MeetingRecord extends Base {
 
     public function meetingCreate(){
         $params = Request::post();
-       $result = \app\index\model\MeetingRecord::getInstance()
+        $params = Tool::getInstance()->jsonDecode(file_get_contents("php://input"));
+        $result = \app\index\model\MeetingRecord::getInstance()
             ->createMeetingRecord($params);
         return $this->printResponse($result["code"]);
     }

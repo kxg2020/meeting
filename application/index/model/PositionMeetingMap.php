@@ -8,7 +8,7 @@ class PositionMeetingMap extends \app\index\model\Base{
     public function getPositionMeeting($position){
         $meetingType = Db::name("position_meeting_map")
             ->alias("a")
-            ->field("a.id")
+            ->field("b.id")
             ->leftJoin("meeting_type b","a.meeting_type_id = b.id")
             ->leftJoin("department c","b.department_id = c.department_id")
             ->where(["a.position_name"=>$position])
