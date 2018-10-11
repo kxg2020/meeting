@@ -51,15 +51,19 @@ class User extends Base{
     /*
      * 更新权限
      */
-    public function updatePermission($position){
-        $departmentId = [];
-        $meeting = PositionMeetingMap::getInstance()->getPositionMeeting($position);
+    public function updatePermission($userInfo){
+        $meetingId = [];
+        $meeting = PositionMeetingMap::getInstance()->getPositionMeeting($userInfo["position"]);
         if($meeting["data"]){
             foreach ($meeting["data"] as $department){
-                $departmentId[] = $department["department_id"];
+                $meetingId[] = $department["department_id"];
             }
         }
-        $departmentId = implode(",",$departmentId);
-        echo  $departmentId;
+        $meetingId = implode(",",$meetingId);
+        $update = [
+            "enable_sponsored_meeting_id" => $meetingId
+        ];
+        Db::name("user")->where(["user_id"=>$userInfo["userid"]])->update($update);
+        return $this;
     }
 }
