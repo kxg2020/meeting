@@ -62,9 +62,11 @@ class Format{
 
     public function ballot(){
         $this->commonFiles();
+        $infoId = Db::name("meeting_record_info")->insertGetId($this->meetingInfo);
         if(isset($this->issue["votes"]) && $this->issue["votes"]){
             foreach($this->issue["votes"] as $key => $value){
                 $insertMeetingVote["vote_name"] = $value["title"];
+                $insertMeetingVote["meeting_info_id"] = $infoId;
                 $votes = [];
                 if($value["items"]){
                     foreach($value["items"] as $item){
@@ -78,42 +80,34 @@ class Format{
                 }
             }
         }
-        $result = Db::name("meeting_record_info")->insert($this->meetingInfo);
-        if(!$result){
-            $this->commit = false;
-        }
+
     }
 
     public function votes(){
         $this->commonFiles();
+        $infoId = Db::name("meeting_record_info")->insert($this->meetingInfo);
         if(isset($this->issue["votes"]) && $this->issue["votes"]){
             foreach($this->issue["votes"] as $key => $value){
                 $insertMeetingVote["vote_name"] = $value["title"];
-                $votes = $fileId = [];
+                $insertMeetingVote["meeting_info_id"] = $infoId;
                 if($value["items"]){
                     foreach($value["items"] as $item){
-                        $votes[] = $item["value"];
                         if(isset($item["files"]) && !empty($item["files"])){
                             foreach($item["files"] as $file){
                               $fileId[] =  $this->createFile($file);
                             }
                         }
+                        $insertMeetingVote["vote_choose"] = $item["value"];
+                        $insertMeetingVote["file_id"]     = implode(",",$fileId);
+                        $result = Db::name("meeting_votes")->insertGetId($insertMeetingVote);
+                        if(!$result){
+                            $this->commit = false;
+                        }
                     }
-                }
-                $insertMeetingVote["vote_choose"] = implode(",",$votes);
-                $insertMeetingVote["file_id"]     = implode(",",$fileId);
-                $result = Db::name("meeting_votes")->insertGetId($insertMeetingVote);
-                if(!$result){
-                    $this->commit = false;
                 }
             }
         }
-        $result = Db::name("meeting_record_info")->insert($this->meetingInfo);
-        if(!$result){
-            $this->commit = false;
-        }
 
-        return $this->meetingInfo;
     }
 
     private function createFile($params){
