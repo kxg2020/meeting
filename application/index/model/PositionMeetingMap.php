@@ -1,6 +1,5 @@
 <?php
 namespace app\index\model;
-
 use app\index\service\Singleton;
 use think\Db;
 

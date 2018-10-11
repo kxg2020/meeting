@@ -1,6 +1,5 @@
 <?php
 namespace app\index\model;
-use app\index\controller\PositionMeetingMap;
 use app\index\service\Singleton;
 use think\Db;
 
