@@ -4,6 +4,7 @@ namespace app\index\model;
 use app\index\service\Enum;
 use app\index\service\Singleton;
 use think\Db;
+use think\facade\Log;
 
 
 class MeetingRecord extends Base{
@@ -34,6 +35,8 @@ class MeetingRecord extends Base{
         $createUser   = User::getInstance()->getUserByUserId($createUserId);
         // 会议类型
         $meetingType  = MeetingType::getInstance()->getMeetingTypeById($params["meeting_type_id"]);
+        Log::write($createUser["data"]["enable_sponsored_meeting_type_id"]);
+        Log::write($params["meeting_type_id"]);
         // 创建人是否有权限
         if(!substr_count($createUser["data"]["enable_sponsored_meeting_type_id"],$params["meeting_type_id"])){
             return $this->returnResponse([],4001);
