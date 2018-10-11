@@ -34,9 +34,8 @@ class MeetingRecord extends Base{
         $createUser   = User::getInstance()->getUserByUserId($createUserId);
         // 会议类型
         $meetingType  = MeetingType::getInstance()->getMeetingTypeById($params["meeting_type_id"]);
-        var_dump($meetingType);die;
         // 创建人是否有权限
-        if(!strpos($meetingType["data"]["permission"],$createUser["data"]["id"])){
+        if(!substr_count($createUser["data"]["enable_sponsored_meeting_type_id"],$params["meeting_type_id"])){
             return $this->returnResponse([],4001);
         }
         // 插入会议记录表

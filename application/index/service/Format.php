@@ -16,6 +16,7 @@ class Format{
     public $commit = true;
     public $issue;
     public $fileId = [];
+    public $meetingRecordId;
 
     public function setMeetingTypeValue($issue){
         $this->issue   = $issue;
@@ -47,13 +48,13 @@ class Format{
                 $this->fileId[] = $this->createFile($value);
             }
         }
-        $this->meetingInfo["content"] = $this->params["content"];
+        $this->meetingInfo["content"] = isset($this->params["content"]) ? $this->params["content"] : "";
         $this->meetingInfo["file_id"] = implode(",",$this->fileId);
     }
 
     public function read(){
         $this->commonFiles();
-        $result = Db::name("meeting_record")->insert($this->meetingInfo);
+        $result = Db::name("meeting_record_info")->insert($this->meetingInfo);
         if(!$result){
             $this->commit = false;
         }
@@ -77,7 +78,7 @@ class Format{
                 }
             }
         }
-        $result = Db::name("meeting_record")->insert($this->meetingInfo);
+        $result = Db::name("meeting_record_info")->insert($this->meetingInfo);
         if(!$result){
             $this->commit = false;
         }
@@ -107,7 +108,7 @@ class Format{
                 }
             }
         }
-        $result = Db::name("meeting_record")->insert($this->meetingInfo);
+        $result = Db::name("meeting_record_info")->insert($this->meetingInfo);
         if(!$result){
             $this->commit = false;
         }
@@ -117,8 +118,8 @@ class Format{
 
     private function createFile($params){
         $insert = [
-            "url" => $params["fil_url"],
-            "file_name" => $params["fil_name"],
+            "url"       => isset($params["fil_url"]) ? $params["fil_url"] : "",
+            "file_name" => isset($params["fil_name"]) ? $params["fil_name"] : "",
         ];
         $result = Db::name("meeting_file")->insertGetId($insert);
         if($result){
