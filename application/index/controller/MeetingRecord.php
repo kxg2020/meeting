@@ -8,14 +8,14 @@ class MeetingRecord extends Base {
 
 
     public function meetingCreate(){
+        $params = Request::post();
        $result = \app\index\model\MeetingRecord::getInstance()
-            ->createMeetingRecord(Request::post());
+            ->createMeetingRecord($params);
         return $this->printResponse($result["code"]);
     }
 
 
     public function meetingRecordList(){
-
         $typeId = Request::param("typeId");
         $params = $this->formatPage(Request::param());
         $records = \app\index\model\MeetingRecord::getInstance()->getMeetingRecords($typeId,$params);

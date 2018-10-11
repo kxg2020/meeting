@@ -6,9 +6,9 @@ use think\Db;
 class Format{
     use Singleton;
     private $meetingType = [
-        1 => "read",
-        2 => "ballot",
-        3 => "votes"
+        "yz" => "read",
+        "bj" => "ballot",
+        "tp" => "votes"
     ];
     public $meeting;
     public $params;
@@ -19,7 +19,7 @@ class Format{
 
     public function setMeetingTypeValue($issue){
         $this->issue   = $issue;
-        $this->meeting = $this->meetingType[$issue["political_id"]];
+        $this->meeting = $this->meetingType[$issue["political_short_name"]];
         return $this;
     }
 
@@ -48,7 +48,7 @@ class Format{
             }
         }
         $this->meetingInfo["content"] = $this->params["content"];
-        $this->meetingInfo["file_id"] = implode("|",$this->fileId);
+        $this->meetingInfo["file_id"] = implode(",",$this->fileId);
     }
 
     public function read(){
