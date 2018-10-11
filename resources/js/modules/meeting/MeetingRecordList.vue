@@ -3,7 +3,6 @@
     <div class="main-container">
       <div v-if="meetingRecordList.length > 0" class="meeting-list">
         <!--todo 待参加会议提醒-->
-
         <div v-for="(meetingItem, meetingIndex) in meetingRecordList" :key="meetingIndex" class="meeting-item">
           <div class="meeting-title">
             {{meetingItem.title}}
@@ -50,8 +49,11 @@
           id: '',
           name: ''
         },
+        page_size: 100,
+        page: 1,
+        total: 0,
+        hasMore: false,
         meetingRecordList: [],
-        loadding: false
     }
     },
     components: {
@@ -61,6 +63,7 @@
       if (this.$route.params.type_id != undefined) {
         this.meeting_type_id = this.$route.params.type_id
         this.getMeetingList(this.$route.params.type_id)
+
       } else {
         this.$router.replace('/')
       }
@@ -68,11 +71,16 @@
     methods: {
       getMeetingList (type_id) {
         let _this = this
-        _this.loadding = true
-        _this.axios.get('/meetingRecord/' + type_id).then(res => {
-          _this.meetingRecordList = res.data.meetingRecords
+        _this.axios.get('/meetingRecord/' + type_id + '/' + this.page + '/' + this.page_size).then(res => {
+          _this.meetingRecordList = _this.meetingRecordList.concat(res.data.meetingRecords)
           _this.meetingType = res.data.meetingType
-          _this.loadding = false
+          _this.total = res.data.total
+          _this.page++
+          if (Math.ceil(_this.total / _this.page_size) > _this.page_size){
+            _this.hasMore = true
+          } else {
+            _this.hasMore = false
+          }
           window.setTitle(_this.meetingType.title)
         }).catch(err => {
 

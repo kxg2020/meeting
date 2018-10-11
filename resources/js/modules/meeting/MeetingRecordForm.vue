@@ -117,18 +117,17 @@
       </van-cell-group>
       <van-cell-group>
         <van-cell class="form-item" title="参会组织">
-          <el-checkbox-group v-model="checkList" class="check-box">
-            <el-checkbox label="组织一"></el-checkbox>
-            <el-checkbox label="组织二"></el-checkbox>
-            <el-checkbox label="组织三"></el-checkbox>
-            <el-checkbox label="组织四"></el-checkbox>
-          </el-checkbox-group>
+          <span @click="showUserInvitationDialog">{{model.user_invitation_name}}</span>
         </van-cell>
       </van-cell-group>
       <div class="submit">
         <el-button class="submit-btn" type="primary" plain @click="submit" :loading="submitLoading">创建</el-button>
       </div>
     </div>
+    <!-- 参会组织 -->
+    <van-popup v-model="showUserInvitation" position="bottom">
+      <van-picker :show-toolbar="true" value-key="name" :columns="userInvitationList" @change="userInvitationChange" @confirm="hideuUerInvitationDialog" @cancel="hideuUerInvitationDialog" />
+    </van-popup>
     <!-- 议题类型 -->
     <van-dialog
       v-model="politicalDialogShow"
@@ -157,6 +156,8 @@
       return {
         model: {
           meeting_type_id: 0,
+          user_invitation_id: 0,
+          user_invitation_name: '',
           title: '',
           start_time: '',
           end_time: '',
@@ -166,6 +167,9 @@
         politicalList: [],
         politicalSelect: 0,
         politicalDialogShow: false,
+        userInvitationList: [],
+        userInvitationSelect: 0,
+        showUserInvitation: false,
         checkList: [],
         submitLoading: false
       }
@@ -184,12 +188,22 @@
         this.$router.back()
       }
       this.getPoliticalList()
+      this.getUserInvitations()
     },
     methods: {
       getPoliticalList() {
         let _this = this
         _this.axios.get('/political').then(res => {
           _this.politicalList = res.data
+        }).catch(error => {
+        })
+      },
+      getUserInvitations() {
+        let _this = this
+        _this.axios.get('/user/invitation').then(res => {
+          _this.userInvitationList = res.data.meeting
+          _this.model.user_invitation_id = _this.userInvitationList[0].id
+          _this.model.user_invitation_name = _this.userInvitationList[0].name
         }).catch(error => {
         })
       },
@@ -318,6 +332,16 @@
       },
       remoVoteFile(issueIndex, voteIndex, voteItemIndex, index) {
         this.model.issue_list[issueIndex].votes[voteIndex].items[voteItemIndex].files.splice(index, 1)
+      },
+      showUserInvitationDialog() {
+        this.showUserInvitation = true
+      },
+      userInvitationChange(event, value) {
+        this.model.user_invitation_id = value.id
+        this.model.user_invitation_name = value.name
+      },
+      hideuUerInvitationDialog() {
+        this.showUserInvitation = false
       },
       submit() {
         this.submitLoading = true
