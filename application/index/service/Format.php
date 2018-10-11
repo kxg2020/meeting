@@ -22,7 +22,7 @@ class Format{
     public function meetingTypeDispatch($meetingInfo,$params){
         $this->params      = $params;
         $this->meetingInfo = $meetingInfo;
-        if(method_exists($this,$this->meeting) && is_callable($this,$this->meeting)){
+        if(method_exists($this,$this->meeting) && is_callable([$this,$this->meeting])){
             return call_user_func([$this,$this->meeting]);
         }
     }
