@@ -33,4 +33,6 @@ Route::group("/api/",function(){
 
     Route::get("member/:id","Department/departmentMember");
 
+    Route::get("permission/:typeId","Permission/meetingPermission");
+
 })->middleware(\app\index\service\Auth::class);

@@ -25,14 +25,23 @@ class Department extends Base{
 
     public function createDepartment($params){
         foreach ($this->yieldArray($params,count($params)) as $key => $value){
-           $record = Db::name("department")->field("id")->where(["department_id"=>$value["id"]])->find();
-           $data   = ["name" => $value["name"],"parent_id" => $value["parentid"],"department_id"=>$value["id"]];
-           if($record){
-               // 更新
-               Db::name("department")->where(["department_id"=>$value["id"]])->update($data);
-           }else{
-               // 插入
-               Db::name("department")->insert($data);
+           if($value["parentid"] > 0){
+               $record = Db::name("department")->field("id")->where(["department_id"=>$value["id"]])->find();
+               $departmentData  = ["name" => $value["name"],"parent_id" => $value["parentid"],"department_id"=>$value["id"]];
+               $meetingTypeData = ["title"=> $value["name"], "department_id" => $value["id"]];
+               if($record){
+                   // 更新
+                   $meetingTypeData["update_time"] = time();
+                   $departmentData["update_time"]  = time();
+                   Db::name("department")->where(["department_id"=>$value["id"]])->update($departmentData);
+                   Db::name("meeting_type")->where(["department_id"=>$value["id"]])->update($meetingTypeData);
+               }else{
+                   // 插入
+                   $meetingTypeData["create_time"] = time();
+                   $departmentData["create_time"]  = time();
+                   Db::name("department")->insert($departmentData);
+                   Db::name("meeting_type")->insert($meetingTypeData);
+               }
            }
         }
     }

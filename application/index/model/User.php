@@ -1,5 +1,6 @@
 <?php
 namespace app\index\model;
+use app\index\controller\PositionMeetingMap;
 use app\index\service\Singleton;
 use think\Db;
 
@@ -46,5 +47,13 @@ class User extends Base{
             "department" => json_encode($params["department"]),
         ];
         return $this;
+    }
+
+    /*
+     * 更新权限
+     */
+    public function updatePermission($position){
+        $meeting = PositionMeetingMap::getInstance()->getPositionMeeting($position);
+        var_dump($meeting);die;
     }
 }
