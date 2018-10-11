@@ -117,7 +117,7 @@
       </van-cell-group>
       <van-cell-group>
         <van-cell class="form-item" title="参会组织">
-          <span @click="showUserInvitationDialog"></span>
+          <span @click="showUserInvitationDialog">{{model.user_invitation_name}}</span>
         </van-cell>
       </van-cell-group>
       <div class="submit">
@@ -126,7 +126,7 @@
     </div>
     <!-- 参会组织 -->
     <van-popup v-model="showUserInvitation" position="bottom">
-      <van-picker :show-toolbar="true" value-key="name" :columns="userInvitationList" @change="userInvitationChange" @confirm="hideUserInvitation" @cancel="hideUserInvitation" />
+      <van-picker :show-toolbar="true" value-key="name" :columns="userInvitationList" @change="userInvitationChange" @confirm="hideuUerInvitationDialog" @cancel="hideuUerInvitationDialog" />
     </van-popup>
     <!-- 议题类型 -->
     <van-dialog
@@ -156,6 +156,8 @@
       return {
         model: {
           meeting_type_id: 0,
+          user_invitation_id: 0,
+          user_invitation_name: '',
           title: '',
           start_time: '',
           end_time: '',
@@ -199,7 +201,9 @@
       getUserInvitations() {
         let _this = this
         _this.axios.get('/user/invitation').then(res => {
-          _this.userInvitations = res.data
+          _this.userInvitationList = res.data.meeting
+          _this.model.user_invitation_id = _this.userInvitationList[0].id
+          _this.model.user_invitation_name = _this.userInvitationList[0].name
         }).catch(error => {
         })
       },
@@ -332,8 +336,9 @@
       showUserInvitationDialog() {
         this.showUserInvitation = true
       },
-      userInvitationChange(value) {
-        console.log(value)
+      userInvitationChange(event, value) {
+        this.model.user_invitation_id = value.id
+        this.model.user_invitation_name = value.name
       },
       hideuUerInvitationDialog() {
         this.showUserInvitation = false
