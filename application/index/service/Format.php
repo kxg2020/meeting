@@ -5,11 +5,6 @@ use think\Db;
 
 class Format{
     use Singleton;
-    private $meetingType = [
-        "yz" => "read",
-        "bj" => "ballot",
-        "tp" => "votes"
-    ];
     public $meeting;
     public $params;
     public $meetingInfo;
@@ -20,14 +15,14 @@ class Format{
 
     public function setMeetingTypeValue($issue){
         $this->issue   = $issue;
-        $this->meeting = $this->meetingType[$issue["political_short_name"]];
+        $this->meeting = Enum::MeetingTypeShortName[$issue["political_short_name"]];
         return $this;
     }
 
     public function meetingTypeDispatch($meetingInfo,$params){
         $this->params      = $params;
         $this->meetingInfo = $meetingInfo;
-        if(method_exists($this,$this->meeting)){
+        if(method_exists($this,$this->meeting) && is_callable($this,$this->meeting)){
             return call_user_func([$this,$this->meeting]);
         }
     }
@@ -112,7 +107,7 @@ class Format{
 
     private function createFile($params){
         $insert = [
-            "url"       => isset($params["fil_url"]) ? $params["fil_url"] : "",
+            "url"       => isset($params["fil_url"])  ? $params["fil_url"]  : "",
             "file_name" => isset($params["fil_name"]) ? $params["fil_name"] : "",
         ];
         $result = Db::name("meeting_file")->insertGetId($insert);

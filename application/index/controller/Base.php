@@ -12,11 +12,11 @@ class Base extends Controller{
     protected $authApi = "https://open.weixin.qq.com/connect/oauth2/authorize?appid=%s&redirect_uri=%s&response_type=code&scope=snsapi_base&agentid=%s&state=1#wechat_redirect";
     protected $message = [
         4001 => "没有创建会议权限,会议创建失败",
-        4002 => "会议创建失败",
+        4002 => "会议预约失败",
         4003 => "用户不存在",
         4004 => "没有查看会议权限",
 
-        9002 => "会议创建成功",
+        9002 => "会议预约成功",
     ];
     private $response = [];
 
