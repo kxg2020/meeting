@@ -24,9 +24,9 @@ class Index extends Base{
             if($userBasic){
                 $user = User::getInstance()->getUserByUserId($userBasic["UserId"]);
                 if(!$user["data"]){
-                    User::getInstance()->setUserInfo($userInfo)->createUser();
+                    User::getInstance()->updatePermission($userInfo)->setUserInfo($userInfo)->createUser();
                 }else{
-                    User::getInstance()->setUserInfo($userInfo)->updateUser($userBasic["UserId"]);
+                    User::getInstance()->updatePermission($userInfo)->setUserInfo($userInfo)->updateUser($userBasic["UserId"]);
                 }
             }
         }else{

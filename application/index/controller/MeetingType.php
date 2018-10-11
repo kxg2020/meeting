@@ -12,4 +12,6 @@ class MeetingType extends  Base{
         }
         return $this->printResponse();
     }
+
 }
+
