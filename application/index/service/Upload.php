@@ -7,7 +7,8 @@ class Upload{
     use Singleton;
     private $result   = [];
     private $savePath = "static/uploads/";
-    private $fileSize     = 1024 * 1024 * 20;
+    private $fileSize = 1024 * 1024 * 20;
+    private $fileExt;
     private $extension= 'bmp,gif,jpg,jpeg,pic,png,tif,wmv,asf,asx,rm, rmvb,mp4,mp3,3gp,mov,m4v,avi,dat,mkv,flv,vod,txt,doc,xls,ppt,docx,xlsx,pptx';
 
     public function uploadFile(){
@@ -27,7 +28,8 @@ class Upload{
     }
 
     public function checkPath(){
-        $this->savePath .= date("Y-m-d");
+        $userId = \request()->userId;
+        $this->savePath .= date("Y-m-d").DIRECTORY_SEPARATOR.strtolower($userId);
         if(!is_dir($this->savePath)){
           $result = mkdir($this->savePath,0777, true);
           if($result){

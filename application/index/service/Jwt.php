@@ -28,7 +28,7 @@ class Jwt{
                 return ["status" => false,"msg"=>"token illegal","claim" => ""];
             }
             return ["status" => true,"msg" => "","claim" => $token->getClaim($key)];
-        }catch (Exception $e){
+        }catch (\Exception $e){
             return ["status" => false,"msg"=>$e->getMessage(),"claim" => ""];
         }
     }
