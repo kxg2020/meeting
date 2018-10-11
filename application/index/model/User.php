@@ -49,7 +49,7 @@ class User extends Base{
     }
 
     /*
-     * 更新权限
+     * 创建权限
      */
     public function updatePermission($userInfo){
         $meetingId = [];
@@ -61,7 +61,7 @@ class User extends Base{
         }
         $meetingId = implode(",",$meetingId);
         $update = [
-            "enable_sponsored_meeting_id" => $meetingId
+            "enable_sponsored_meeting_type_id" => $meetingId
         ];
         Db::name("user")->where(["user_id"=>$userInfo["userid"]])->update($update);
         return $this;

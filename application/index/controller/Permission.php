@@ -1,6 +1,7 @@
 <?php
 namespace app\index\controller;
 
+use think\Db;
 use think\facade\Request;
 
 class Permission extends Base{
@@ -9,8 +10,10 @@ class Permission extends Base{
         $meetingTypeId = Request::param("typeId");
         $result = \app\index\model\Permission::getInstance()->getUserPermission($meetingTypeId);
         if($result["status"]){
-            return $this->printResponse(200);
+            return $this->printResponse(200,$result["data"]);
         }
-        return $this->printResponse($result["code"]);
+        return $this->printResponse($result["code"],$result["data"]);
     }
+
+
 }

@@ -23,4 +23,11 @@ class MeetingType extends Base{
         return $this->returnResponse($result);
     }
 
+    public function getMeetingTypeDepartmentId($meetingTypeId){
+        $department = Db::name("meeting_type")->field("department_id")->where(["id" => $meetingTypeId])->select();
+        if($department){
+            return $this->returnResponse($department);
+        }
+        return $this->returnResponse();
+    }
 }
