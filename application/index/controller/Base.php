@@ -28,8 +28,9 @@ class Base extends Controller{
     }
 
     protected function printResponse($code = 200,$data = [],$msg = ""){
-        $this->response["status"] = $code ? true : false;
+        $this->response["status"] = ($code == 200 || $code > 9000) ? true : false;
         $this->response["data"]   = $data;
+        $this->response["msg"]    = $msg;
         if(isset($this->message[$code])){
             $this->response["msg"]    = $msg ? $msg : $this->message[$code];
         }

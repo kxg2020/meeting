@@ -49,21 +49,43 @@ class User extends Base{
     }
 
     /*
-     * 更新权限
+     * 创建权限
      */
     public function updatePermission($userInfo){
         $meetingId = [];
         $meeting = PositionMeetingMap::getInstance()->getPositionMeeting($userInfo["position"]);
         if($meeting["data"]){
             foreach ($meeting["data"] as $department){
-                $meetingId[] = $department["department_id"];
+                $meetingId[] = $department["id"];
             }
         }
         $meetingId = implode(",",$meetingId);
         $update = [
-            "enable_sponsored_meeting_id" => $meetingId
+            "enable_sponsored_meeting_type_id" => $meetingId
         ];
         Db::name("user")->where(["user_id"=>$userInfo["userid"]])->update($update);
         return $this;
+    }
+
+    /*
+     * 邀请部门
+     */
+    public function invitationDepartment(){
+        $userId = request()->userId;
+        $field  = "enable_sponsored_meeting_type_id";
+        $enableMeetingType = Db::name("user")->field($field)->where(["user_id" =>$userId])->find();
+        if($enableMeetingType){
+            $enableMeetingType = explode(",",$enableMeetingType["enable_sponsored_meeting_type_id"]);
+            $departmentName= [];
+            if($enableMeetingType){
+                $result = MeetingType::getInstance()->getSingleMeetingTypeDepartmentName($enableMeetingType);
+                if($result["data"]){
+                    $departmentName["meeting"] = $result["data"];
+                }
+                return $this->returnResponse($departmentName);
+            }
+            return $this->returnResponse();
+        }
+        return $this->returnResponse();
     }
 }

@@ -23,4 +23,23 @@ class MeetingType extends Base{
         return $this->returnResponse($result);
     }
 
+    public function getMeetingTypeDepartmentId($meetingTypeId){
+        $department = Db::name("meeting_type")->field("department_id")->where(["id" => $meetingTypeId])->select();
+        if($department){
+            return $this->returnResponse($department);
+        }
+        return $this->returnResponse();
+    }
+
+    public function getSingleMeetingTypeDepartmentName($meetingTypeId){
+        $department = Db::name("meeting_type")
+            ->alias("a")
+            ->field("b.name,b.id")
+            ->leftJoin("department b","a.department_id = b.department_id")
+            ->where("a.id","in",$meetingTypeId)->select();
+        if($department){
+            return $this->returnResponse($department);
+        }
+        return $this->returnResponse();
+    }
 }

@@ -33,7 +33,7 @@ class MeetingRecord extends Base{
         // 创建人
         $createUser   = User::getInstance()->getUserByUserId($createUserId);
         // 会议类型
-        $meetingType  = MeetingType::getInstance()->getMeetingTypeById($params["meeting_type"]);
+        $meetingType  = MeetingType::getInstance()->getMeetingTypeById($params["meeting_type_id"]);
         // 创建人是否有权限
         if(!strpos($meetingType["data"]["permission"],$createUser["data"]["id"])){
             return $this->returnResponse([],4001);
