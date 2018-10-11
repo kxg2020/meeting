@@ -3,6 +3,8 @@
   "title": "关系某某某大会",
   "start_time": 1539216000,
   "end_time": 1539313800,
+  "user_invitation_id": 78,
+  "user_invitation_name": "村支部委员会",
   "issue_list": [
     {
       "title": "阅知标题",
