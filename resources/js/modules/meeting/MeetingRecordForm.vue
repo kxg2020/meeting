@@ -117,18 +117,17 @@
       </van-cell-group>
       <van-cell-group>
         <van-cell class="form-item" title="参会组织">
-          <el-checkbox-group v-model="checkList" class="check-box">
-            <el-checkbox label="组织一"></el-checkbox>
-            <el-checkbox label="组织二"></el-checkbox>
-            <el-checkbox label="组织三"></el-checkbox>
-            <el-checkbox label="组织四"></el-checkbox>
-          </el-checkbox-group>
+          <span @click="showUserInvitationDialog"></span>
         </van-cell>
       </van-cell-group>
       <div class="submit">
         <el-button class="submit-btn" type="primary" plain @click="submit" :loading="submitLoading">创建</el-button>
       </div>
     </div>
+    <!-- 参会组织 -->
+    <van-popup v-model="showUserInvitation" position="bottom">
+      <van-picker :show-toolbar="true" value-key="name" :columns="userInvitationList" @change="userInvitationChange" @confirm="hideUserInvitation" @cancel="hideUserInvitation" />
+    </van-popup>
     <!-- 议题类型 -->
     <van-dialog
       v-model="politicalDialogShow"
@@ -166,6 +165,9 @@
         politicalList: [],
         politicalSelect: 0,
         politicalDialogShow: false,
+        userInvitationList: [],
+        userInvitationSelect: 0,
+        showUserInvitation: false,
         checkList: [],
         submitLoading: false
       }
@@ -184,12 +186,20 @@
         this.$router.back()
       }
       this.getPoliticalList()
+      this.getUserInvitations()
     },
     methods: {
       getPoliticalList() {
         let _this = this
         _this.axios.get('/political').then(res => {
           _this.politicalList = res.data
+        }).catch(error => {
+        })
+      },
+      getUserInvitations() {
+        let _this = this
+        _this.axios.get('/user/invitation').then(res => {
+          _this.userInvitations = res.data
         }).catch(error => {
         })
       },
@@ -318,6 +328,15 @@
       },
       remoVoteFile(issueIndex, voteIndex, voteItemIndex, index) {
         this.model.issue_list[issueIndex].votes[voteIndex].items[voteItemIndex].files.splice(index, 1)
+      },
+      showUserInvitationDialog() {
+        this.showUserInvitation = true
+      },
+      userInvitationChange(value) {
+        console.log(value)
+      },
+      hideuUerInvitationDialog() {
+        this.showUserInvitation = false
       },
       submit() {
         this.submitLoading = true

@@ -97,7 +97,7 @@
     text-align: center;
     font-size: 25px;
     color: #ccc;
-    border: 1px dashed #ccc;
+    border: 1px solid #ccc;
     line-height: 50px;
     border-radius: 5px;
     margin-right: 5px;
