@@ -52,7 +52,14 @@ class User extends Base{
      * 更新权限
      */
     public function updatePermission($position){
+        $departmentId = [];
         $meeting = PositionMeetingMap::getInstance()->getPositionMeeting($position);
-        var_dump($meeting);die;
+        if($meeting["data"]){
+            foreach ($meeting["data"] as $department){
+                $departmentId[] = $department["department_id"];
+            }
+        }
+        $departmentId = implode(",",$departmentId);
+        echo  $departmentId;
     }
 }

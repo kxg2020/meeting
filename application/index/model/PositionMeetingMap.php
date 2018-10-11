@@ -6,7 +6,6 @@ use think\Db;
 class PositionMeetingMap extends \app\index\model\Base{
     use Singleton;
     public function getPositionMeeting($position){
-        var_dump($position);
         $meetingType = Db::name("position_meeting_map")
             ->alias("a")
             ->field("c.department_id ")
