@@ -14,9 +14,9 @@ class TextCard extends AgentMessage{
     public function fillTemplateValue(){
         $template = "<br/><div class='normal'>会议名称:%s</div><br/><br/>";
         $template.= "<div class='normal'>会议主持:%s</div><br/><br/>";
-        $template.= "<div class='highlight'>开始时间:%s</div><br/><br/>";
-        $template.= "<div class='highlight'>结束时间:%s</div><br/>";
-        $description =  sprintf($template,"{$this->params["title"]}",$this->params["host"],$this->params["start_time"],$this->params["end_time"]);
+        $template.= "<div>开始时间:%s</div><br/><br/>";
+        $template.= "<div>结束时间:%s</div><br/>";
+        $description =  sprintf($template,$this->params["title"],$this->params["host"],$this->params["start_time"],$this->params["end_time"]);
         $this->value = [
             "description" => $description,
             "title"       => $this->title,
