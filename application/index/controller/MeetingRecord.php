@@ -9,7 +9,6 @@ class MeetingRecord extends Base {
 
 
     public function meetingCreate(){
-        $params = Request::post();
         $params = Tool::getInstance()->jsonDecode(file_get_contents("php://input"));
         $result = \app\index\model\MeetingRecord::getInstance()
             ->createMeetingRecord($params);
@@ -25,5 +24,9 @@ class MeetingRecord extends Base {
             return $this->printResponse(200, $records["data"]);
         }
         return $this->printResponse();
+    }
+
+    public function singleMeetingInfo(){
+
     }
 }

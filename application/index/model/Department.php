@@ -59,4 +59,12 @@ class Department extends Base{
             yield $params[$i];
         }
     }
+
+    public function departmentRealId($departmentId){
+        $result = Db::name("department")->field("department_id")->where(["id" => $departmentId])->find();
+        if($result){
+            return $this->returnResponse($result["department_id"]);
+        }
+        return $this->returnResponse();
+    }
 }

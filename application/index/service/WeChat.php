@@ -1,29 +1,31 @@
 <?php
 namespace app\index\service;
+use app\index\service\template\AgentMessage;
 use think\facade\Cache;
+use think\facade\Log;
 
 
 class WeChat{
     use Singleton;
-    // Ó¦ÓÃID
+    // åº”ç”¨ID
     const AGENT_ID     = 1000003;
-    // Ó¦ÓÃÃØÔ¿
+    // åº”ç”¨ç§˜é’¥
     const AGENT_SECRET = "RMJaW3iZxl7T0plKk4qG_qaaAIkM4xeWz2S5HmfNzxk";
-    // ÆóÒµID
+    // ä¼ä¸šID
     const COMPANY_ID   = "ww0d4cee19e94134fd";
-    // ÆóÒµ½Ó¿Ú
+    // ä¼ä¸šæ¥å£
     const COMPANY_BASE_API  = "https://qyapi.weixin.qq.com/cgi-bin/";
-    // »ñÈ¡access_token
+    // è·å–access_token
     const GET_ACCESS_TOKEN  = "gettoken?corpid=%s&corpsecret=%s";
-    // »ñÈ¡³ÉÔ±»ù´¡ĞÅÏ¢
+    // è·å–æˆå‘˜åŸºç¡€ä¿¡æ¯
     const GET_MEMBER_BASIC  = "user/getuserinfo?access_token=%s&code=%s";
-    // »ñÈ¡³ÉÔ±ÏêÏ¸ĞÅÏ¢
+    // è·å–æˆå‘˜è¯¦ç»†ä¿¡æ¯
     const GET_MEMBER_INFO   = "user/get?access_token=%s&userid=%s";
-    // »ñÈ¡²¿ÃÅÁĞ±íĞÅÏ¢
+    // è·å–éƒ¨é—¨åˆ—è¡¨ä¿¡æ¯
     const GET_DEPARTMENT    = "department/list?access_token=%s&id=%s";
-    // ·¢ËÍÓ¦ÓÃ¿¨Æ¬ÏûÏ¢
+    // å‘é€åº”ç”¨å¡ç‰‡æ¶ˆæ¯
     const SEND_AGENT_MESSAGE= "message/send?access_token=%s";
-    // »ñÈ¡²¿ÃÅ³ÉÔ±
+    // è·å–éƒ¨é—¨æˆå‘˜
     const GET_DEPARTMENT_MEMBER = "user/simplelist?access_token=%s&department_id=%s&fetch_child=%s";
 
     private $requestUrl;
@@ -33,7 +35,7 @@ class WeChat{
 
 
     /*
-    * »ñÈ¡access_token
+    * è·å–access_token
     */
     public function getCompanyAccessToken(){
         $this->token = \think\facade\Cache::get("access_token");
@@ -42,7 +44,7 @@ class WeChat{
             $result = Tool::getInstance()
                 ->jsonDecode(Http::getInstance()->request($this->requestUrl));
             if(isset($result["errcode"]) && $result["errcode"] == 0){
-                // »º´ætoken
+                // ç¼“å­˜token
                 Cache::set("access_token",$result["access_token"],$result["expires_in"]);
                 $this->token = $result["access_token"];
             }
@@ -51,7 +53,7 @@ class WeChat{
     }
 
     /*
-     * µÇÂ¼»ñÈ¡³ÉÔ±»ù´¡ĞÅÏ¢
+     * ç™»å½•è·å–æˆå‘˜åŸºç¡€ä¿¡æ¯
      */
     public function getUserBasic(){
        return $this->getCompanyAccessToken()->setUrl("userBasic")->request();
@@ -59,7 +61,7 @@ class WeChat{
     }
 
     /*
-     * »ñÈ¡ÓÃ»§ÏêÇé
+     * è·å–ç”¨æˆ·è¯¦æƒ…
      */
     public function getUserInfo($userId){
 
@@ -67,34 +69,35 @@ class WeChat{
     }
 
     /*
-     * »ñÈ¡²¿ÃÅÁĞ±í
+     * è·å–éƒ¨é—¨åˆ—è¡¨
      */
     public function getDepartmentList(){
         return $this->getCompanyAccessToken()->setUrl("departmentList")->request();
     }
 
     /*
-     * ·¢ËÍÓ¦ÓÃÏûÏ¢
+     * å‘é€åº”ç”¨æ¶ˆæ¯
      */
     public function sendAgentMessage(){
        return $this->getCompanyAccessToken()->setUrl("sendAgentMessage")->request();
     }
 
     /*
-     * »ñÈ¡²¿ÃÅ³ÉÔ±
+     * è·å–éƒ¨é—¨æˆå‘˜
      */
     public function getDepartmentMember($departmentId){
         return $this->getCompanyAccessToken()->setUrl("departmentMember",["id"=>$departmentId])->request();
     }
 
     /*
-     * ·¢ÆğÇëÇó
+     * å‘èµ·è¯·æ±‚
      */
     private function request(){
         $result = Tool::getInstance()->jsonDecode(Http::getInstance()->request($this->requestUrl,Tool::getInstance()->jsonEncode($this->post)));
         if(isset($result["errcode"]) && $result["errcode"] == 0){
             return $result;
         }
+        Log::error(json_encode($result));
         return false;
     }
 
@@ -127,20 +130,8 @@ class WeChat{
         return $this;
     }
 
-    public function setPost($params,$type){
-        $this->post = [
-            "touser"   => $params["toUser"],
-            "toparty"  => $params["toParty"],
-            "totag"    => $params["toTag"],
-            "msgtype"  => $type,
-            "agentid"  => self::AGENT_ID,
-            "textcard" => [
-                "title"       => $params["title"],
-                "description" => $params["description"],
-                "url"         => $params["url"],
-                "btntxt"      => $params["btnTxt"],
-            ],
-        ];
+    public function setPost(AgentMessage $agentMessage){
+        $this->post = $agentMessage->trigger();
         return $this;
     }
 }
