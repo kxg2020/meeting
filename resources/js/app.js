@@ -23,6 +23,7 @@ Vue.use(CheckboxGroup)
 Vue.axios.defaults.baseURL = '/api'
 
 Vue.axios.defaults.headers.common = {
+  'X-Requested-With': 'XMLHttpRequest',
   'token': window.token,
 }
 
