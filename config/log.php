@@ -18,7 +18,7 @@ return [
     // 日志保存目录
     'path'        => '',
     // 日志记录级别
-    'level'       => ["error","notice","warning","critical","emergency","alert","info"],
+    'level'       => ["error","notice","warning","critical","emergency","alert"],
     // 单文件日志写入
     'single'      => false,
     // 独立日志级别
