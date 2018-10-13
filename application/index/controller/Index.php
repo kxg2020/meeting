@@ -41,10 +41,10 @@ class Index extends Base{
     public function test(){
         $template = "<div class='normal'>会议名称:%s</div>";
         $template.= "<div class='normal'>主持人:%s</div>";
-        $template.= "<div class='highlight'>参会时间:%s</div>";
+        $template.= "<div class='highlight'>会议时间:%s</div>";
         $title = "第三次代表大会";
         $host  = "张涛";
-        $time  = "2018-5-20";
+        $time  = "2018-5-20 至 2018-5-20";
         $description =  sprintf($template,$title,$host,$time);
         $data = array (
             'toUser' => 'ZhangTao',
@@ -55,6 +55,7 @@ class Index extends Base{
             'url' => 'http://www.baidu.com',
             'btnTxt' => '更多',
         );
+        var_dump($data);die;
       $result =  WeChat::getInstance()->setPost($data,"textcard")->sendAgentMessage();
         var_dump($result);
     }

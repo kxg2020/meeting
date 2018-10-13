@@ -25,4 +25,8 @@ class MeetingRecord extends Base {
         }
         return $this->printResponse();
     }
+
+    public function singleMeetingInfo(){
+
+    }
 }

@@ -1,31 +1,39 @@
 <template>
   <div class="main">
-    <div class="main-container">
-      <div v-if="meetingRecordList.length > 0" class="meeting-list">
-        <!--todo 待参加会议提醒-->
-        <div v-for="(meetingItem, meetingIndex) in meetingRecordList" :key="meetingIndex" class="meeting-item">
-          <div class="meeting-title">
-            {{meetingItem.title}}
+    <div :class="sponsored ? 'main-container bt50' : 'main-container'">
+      <div v-if="meetingRecordList.length > 0">
+        <div class="meeting-list">
+          <!--todo 待参加会议提醒-->
+          <div v-for="(meetingItem, meetingIndex) in meetingRecordList" :key="meetingIndex" class="meeting-item">
+            <div class="meeting-title">
+              {{meetingItem.title}}
+            </div>
+            <div class="meeting-noti">
+              <span>主持人</span>
+              <span>{{meetingItem.create_user_id}}</span>
+            </div>
+            <div class="meeting-noti">
+              <span>开始时间</span>
+              <span>{{meetingItem.create_time}}</span>
+            </div>
+            <div class="meeting-noti">
+              <span>结束时间</span>
+              <span>{{meetingItem.create_time}}</span>
+            </div>
           </div>
-          <div class="meeting-noti">
-            <span>主持人</span>
-            <span>{{meetingItem.create_user_id}}</span>
-          </div>
-          <div class="meeting-noti">
-            <span>开始时间</span>
-            <span>{{meetingItem.create_time}}</span>
-          </div>
-          <div class="meeting-noti">
-            <span>结束时间</span>
-            <span>{{meetingItem.create_time}}</span>
-          </div>
+        </div>
+        <div v-if="hasMore"  @click="getMeetingList" class="bottom-noti link">
+          <span>查看更多</span>
+        </div>
+        <div v-else class="bottom-noti">
+          <span>没有更多内容了</span>
         </div>
       </div>
       <div v-else>
         <Empty></Empty>
       </div>
     </div>
-    <van-tabbar>
+    <van-tabbar v-if="sponsored">
       <van-tabbar-item @click="toForm">
         <span>发起会议</span>
         <i slot="icon" slot-scope="props" class="fa fa-edit"></i>
@@ -49,12 +57,13 @@
           id: '',
           name: ''
         },
-        page_size: 100,
+        page_size: 10,
         page: 1,
         total: 0,
         hasMore: false,
         meetingRecordList: [],
-    }
+        sponsored: false
+      }
     },
     components: {
       Empty
@@ -62,21 +71,22 @@
     created() {
       if (this.$route.params.type_id != undefined) {
         this.meeting_type_id = this.$route.params.type_id
-        this.getMeetingList(this.$route.params.type_id)
-
+        this.getMeetingList()
       } else {
         this.$router.replace('/')
       }
+      this.getPermission()
     },
     methods: {
-      getMeetingList (type_id) {
+      getMeetingList () {
         let _this = this
+        let type_id = this.meeting_type_id
         _this.axios.get('/meetingRecord/' + type_id + '/' + this.page + '/' + this.page_size).then(res => {
           _this.meetingRecordList = _this.meetingRecordList.concat(res.data.meetingRecords)
           _this.meetingType = res.data.meetingType
           _this.total = res.data.total
           _this.page++
-          if (Math.ceil(_this.total / _this.page_size) > _this.page_size){
+          if (Math.ceil(_this.total / _this.page_size) > _this.page){
             _this.hasMore = true
           } else {
             _this.hasMore = false
@@ -85,6 +95,11 @@
         }).catch(err => {
 
         })
+      },
+      getPermission() {
+        this.axios.get('/permission/' + this.meeting_type_id).then(res => {
+          this.sponsored = res.data.sponsored
+        }).catch(error => {})
       },
       back () {
         this.$router.back()
@@ -99,6 +114,16 @@
 <style scoped>
   .main{
     background-color: #FFFFFF;
+  }
+  .main-container{
+
+  }
+  .bt50{
+    position: fixed;
+    width: 100%;
+    height: calc(100% - 50px);
+    bottom: 50px;
+    overflow: scroll;
   }
   .meeting-item {
     margin: 15px;
@@ -125,5 +150,15 @@
   }
   .meeting-noti span:nth-child(2){
     width: 60%;
+  }
+  .bottom-noti{
+    text-align: center;
+    line-height: 1.5em;
+    margin-bottom: .5em;
+    color: #666;
+    font-size: 14px;
+  }
+  .link{
+    color: #38f;
   }
 </style>
