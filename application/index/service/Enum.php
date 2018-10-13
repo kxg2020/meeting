@@ -7,4 +7,8 @@ class Enum{
         "bj" => "ballot",
         "tp" => "votes"
     ];
+
+    const READ   = "yz";
+    const BALLOT = "bj";
+    const VOTE   = "tp";
 }
