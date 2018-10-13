@@ -27,6 +27,7 @@ class MeetingRecord extends Base {
     }
 
     public function singleMeetingInfo(){
-
+        $meetingId = Request::param("meetingId");
+        var_dump($meetingId);die;
     }
 }

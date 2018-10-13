@@ -36,7 +36,8 @@ class MeetingType extends Base{
             ->alias("a")
             ->field("b.name,b.id,b.img_url")
             ->leftJoin("department b","a.department_id = b.department_id")
-            ->where("a.id","in",$meetingTypeId)->select();
+            ->where("a.id","in",$meetingTypeId)
+            ->find();
         if($department){
             return $this->returnResponse($department);
         }
