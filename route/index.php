@@ -44,6 +44,6 @@ Route::group("/api/",function(){
     Route::get("permission/:typeId","Permission/meetingPermission");
 
     #用户邀请部门
-    Route::get("user/invitation","User/userInvitationDepartment");
+    Route::get("user/invitation/:id","User/userInvitationDepartment");
 
 })->middleware(\app\index\service\Auth::class);
