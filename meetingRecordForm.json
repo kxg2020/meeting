@@ -1,10 +1,10 @@
 {
-  "meeting_type_id": "1",
-  "title": "关系某某某大会",
+  "meeting_type_id": 63,
+  "title": "第4次党员大会",
   "start_time": 1539216000,
   "end_time": 1539313800,
-  "user_invitation_id": 78,
-  "user_invitation_name": "村支部委员会",
+  "user_invitation_id": 63,
+  "user_invitation_name": "党员大会",
   "issue_list": [
     {
       "title": "阅知标题",
@@ -36,7 +36,6 @@
       "files": [],
       "votes": [
         {
-          "title": "关于某某某的表决",
           "inputVisible": false,
           "inputValue": "",
           "items": [
@@ -66,7 +65,6 @@
       "files": [],
       "votes": [
         {
-          "title": "投票标题",
           "inputVisible": false,
           "inputValue": "",
           "items": [
