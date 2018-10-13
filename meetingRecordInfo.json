@@ -1,0 +1,67 @@
+{
+  "meetingId": 138,
+  "meetingTitle": "测试会议",
+  "start_time": "2018-10-13 08:00:00",
+  "end_time": "2018-10-13 08:10:00",
+  "create_user": "张涛",
+  "issue": [
+    {
+      "issue_id": 303,
+      "title": "阅知会议",
+      "political_name": "阅知",
+      "issue_file": [
+        {
+          "url": "https://meeting.it9g.com/static/uploads/2018-10-13/zhangtao/071211270918e826d6019690.jpg",
+          "file_name": "071211270918e826d6019690.jpg"
+        },
+        {
+          "url": "https://meeting.it9g.com/static/uploads/2018-10-13/zhangtao/文本(2018-07-13 150807).txt",
+          "file_name": "文本(2018-07-13 150807).txt"
+        }
+      ],
+      "issue_option": []
+    },
+    {
+      "issue_id": 304,
+      "title": "表决议题",
+      "political_name": "表决",
+      "issue_file": [
+        {
+          "url": "https://meeting.it9g.com/static/uploads/2018-10-13/zhangtao/09104201101875625e023571.jpg",
+          "file_name": "09104201101875625e023571.jpg"
+        },
+        {
+          "url": "https://meeting.it9g.com/static/uploads/2018-10-13/zhangtao/文本(2018-07-13 150807).txt",
+          "file_name": "文本(2018-07-13 150807).txt"
+        }
+      ],
+      "issue_option": []
+    },
+    {
+      "issue_id": 305,
+      "title": "投票议题",
+      "political_name": "投票",
+      "issue_file": [
+        {
+          "url": "https://meeting.it9g.com/static/uploads/2018-10-13/zhangtao/25be2acb8aaf4863adbd1f362072ef10.png",
+          "file_name": "25be2acb8aaf4863adbd1f362072ef10.png"
+        },
+        {
+          "url": "https://meeting.it9g.com/static/uploads/2018-10-13/zhangtao/文本(2018-07-13 150807).txt",
+          "file_name": "文本(2018-07-13 150807).txt"
+        }
+      ],
+      "issue_option": [
+        {
+          "file": [
+            {
+              "file_name": "25be2acb8aaf4863adbd1f362072ef10.png",
+              "url": "https://meeting.it9g.com/static/uploads/2018-10-13/zhangtao/25be2acb8aaf4863adbd1f362072ef10.png"
+            }
+          ],
+          "option": ["张三", "李四"]
+        }
+      ]
+    }
+  ]
+}

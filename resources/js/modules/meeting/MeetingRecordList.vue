@@ -4,7 +4,7 @@
       <div v-if="meetingRecordList.length > 0">
         <div class="meeting-list">
           <!--todo 待参加会议提醒-->
-          <div v-for="(meetingItem, meetingIndex) in meetingRecordList" :key="meetingIndex" class="meeting-item">
+          <div v-for="(meetingItem, meetingIndex) in meetingRecordList" :key="meetingIndex" class="meeting-item" @click="toInfo(meetingItem.id)">
             <div class="meeting-title">
               {{meetingItem.title}}
             </div>
@@ -106,6 +106,9 @@
       },
       toForm() {
         this.$router.push({path: '/meeting_record/create/' + this.meeting_type_id})
+      },
+      toInfo(id) {
+        this.$router.push({path: '/meeting_record/info/' + id})
       }
     }
   }
