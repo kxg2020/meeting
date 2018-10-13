@@ -5,6 +5,7 @@ use app\index\service\Singleton;
 use app\index\service\template\AgentMessageFacade;
 use app\index\service\WeChat;
 use think\Db;
+use think\facade\Cache;
 
 
 class MeetingRecord extends Base{
@@ -28,18 +29,18 @@ class MeetingRecord extends Base{
     }
 
     public function createMeetingRecord($params){
-        // ´´½¨ÈË
+        // åˆ›å»ºäºº
         $createUserId = request()->userId;
-        // ´´½¨ÈË
+        // åˆ›å»ºäºº
         $createUser   = User::getInstance()->getUserByUserId($createUserId);
         $params["host"] = $createUser["data"]["name"];
-        // »áÒéÀàĞÍ
+        // ä¼šè®®ç±»å‹
         $meetingType  = MeetingType::getInstance()->getMeetingTypeById($params["meeting_type_id"]);
-        // ´´½¨ÈËÊÇ·ñÓĞÈ¨ÏŞ
+        // åˆ›å»ºäººæ˜¯å¦æœ‰æƒé™
         if(!substr_count($createUser["data"]["enable_sponsored_meeting_type_id"],$params["meeting_type_id"])){
             return $this->returnResponse([],4001);
         }
-        // ²åÈë»áÒé¼ÇÂ¼±í
+        // æ’å…¥ä¼šè®®è®°å½•è¡¨
         $insertMeetingRecord = [
             "title"           => $params["title"],
             "create_user_id"  => $createUser["data"]["id"],
@@ -61,9 +62,9 @@ class MeetingRecord extends Base{
             }
         }
         if(\app\index\service\Format::getInstance()->commit){
-            // ÏûÏ¢Ä£°å
+            // æ¶ˆæ¯æ¨¡æ¿
             $template = AgentMessageFacade::TextCard()->setParams($params)->templateInit()->fillTemplateValue();
-            // ·¢ËÍÓ¦ÓÃÏûÏ¢
+            // å‘é€åº”ç”¨æ¶ˆæ¯
             WeChat::getInstance()->setPost($template)->sendAgentMessage();
 
             Db::commit();
@@ -89,7 +90,8 @@ class MeetingRecord extends Base{
     public function singleMeetingInfo($meetingRecordId){
         $result = [];
         $field = "c.title as typeTitle,b.*,d.short_name,a.title as meetingTitle";
-        $field.= ",e.name,a.start_time,a.end_time,a.invitation_department_id";
+        $field.= ",e.name,a.start_time,a.end_time,a.invitation_department_id,";
+        $field.= "a.id as meetingId,b.id as issue_id,d.name as political_name";
         $meetingIssue = Db::name("meeting_record")
             ->alias("a")
             ->field($field)
@@ -99,43 +101,65 @@ class MeetingRecord extends Base{
             ->leftJoin("user e","a.create_user_id = e.id")
             ->where(["a.id" => $meetingRecordId])
             ->select();
-        // ÒÑ¾­²Î»áÈËÔ±
-//        $alreadyJoinedUser = UserMeeting::getInstance()
-//            ->meetingJoinUser($meetingRecordId);
-//        if($alreadyJoinedUser["data"]){
-//            foreach($alreadyJoinedUser["data"] as $value){
-//                $result["join_user_name"][] = [
-//                    "user_name" => $value["name"],
-//                    "is_joined" => true
-//                ];
-//            }
-//        }
-        // ËùÓĞ²Î»áÈËÔ±
+
         if($meetingIssue){
-            $notJoinedYetUser = Department::getInstance()->departmentMember($meetingIssue[0]["invitation_department_id"]);
-            if($notJoinedYetUser["data"]){
-                foreach($notJoinedYetUser["data"] as $value){
-                    $result["join_user_name"][] = [
-                        "is_joined" => false
+           $result["meetingId"] = $meetingIssue[0]["meetingId"];
+            $this->classifyMeetingUser($result,$meetingRecordId,$meetingIssue);
+            foreach($meetingIssue as $key => $value){
+                $result["meetingTitle"] = $value["meetingTitle"];
+                $result["start_time"]   = date("Y-m-d H:i:s",$value["start_time"]);
+                $result["end_time"]     = date("Y-m-d H:i:s",$value["end_time"]);
+                $result["create_user"]  = $value["name"];
+                $result["issue"][] = [
+                    "issue_id" => $value["issue_id"],
+                    "title" => $value["title"],
+                    "political_name" => $value["political_name"],
+                ];
+            }
+
+            $meetingInfo = $this->returnResponse($result);
+            // ç¼“å­˜ä¼šè®®
+            Cache::set("$meetingRecordId-info",\app\index\service\Tool::getInstance()->jsonEncode($meetingInfo));
+           return $meetingInfo;
+        }
+        return $this->returnResponse();
+    }
+
+    private function classifyMeetingUser(&$result,$meetingRecordId,$meetingIssue){
+        $alreadyJoinedUserName = [];
+        $allUserInDatabase = User::getInstance()->allUserInDatabase("avatar,user_id");
+        $allUserAvatar = [];
+        if($allUserInDatabase["data"]){
+            array_walk($allUserInDatabase["data"],function($value) use (&$allUserAvatar){
+                $allUserAvatar[$value["user_id"]] = $value["avatar"];
+            });
+        }
+
+        $alreadyJoinedUser = UserMeeting::getInstance()
+            ->meetingJoinUser($meetingRecordId);
+        if($alreadyJoinedUser["data"]){
+            foreach($alreadyJoinedUser["data"] as $value){
+                $alreadyJoinedUserName[] = $value["name"];
+            }
+        }
+        $notJoinedYetUser = Department::getInstance()
+            ->departmentMember($meetingIssue[0]["invitation_department_id"]);
+        if($notJoinedYetUser["data"]){
+            foreach($notJoinedYetUser["data"] as $value){
+                if(in_array($value["name"],$alreadyJoinedUserName)){
+                    $result["join_user"][] = [
+                        "is_joined" => true,
+                        "avatar"    => $allUserAvatar[$value["userid"]],
+                        "username"  => $value["name"],
+                    ];
+                }else{
+                    $result["join_user"][] = [
+                        "is_joined" => false,
+                        "avatar"    => $allUserAvatar[$value["userid"]],
+                        "username"  => $value["name"],
                     ];
                 }
             }
-            var_dump($notJoinedYetUser);die;
         }
-
-        if($meetingIssue){
-            foreach($meetingIssue as $key => $value){
-                $result["meetingTitle"] = $value["meetingTitle"];
-                $result["start_time"]   = date("Y-m-d",$value["start_time"]);
-                $result["end_time"]     = date("Y-m-d",$value["end_time"]);
-                $result["create_user"]  = $value["name"];
-                $result["issue"][] = [
-                    "title" => $value["title"],
-                    "source"=> "Í¼Æ¬¡¢ÎÄµµ",
-                ];
-            }
-            var_dump($result);die;
-        }
-        return $this->returnResponse();
     }
 }

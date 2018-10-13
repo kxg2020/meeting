@@ -33,7 +33,7 @@ class UserMeeting extends Base{
     public function meetingJoinUser($meetingRecordId){
         $result = Db::name("user_meeting")
             ->alias("a")
-            ->field("b.name")
+            ->field("b.name,b.avatar,b.user_id")
             ->leftJoin("user b","a.user_id = b.user_id")
             ->where(["a.meeting_record_id" => $meetingRecordId])
             ->group("a.user_id")
