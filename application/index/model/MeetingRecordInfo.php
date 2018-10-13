@@ -46,24 +46,20 @@ class MeetingRecordInfo extends Base{
                     $option = Db::name("meeting_votes")
                         ->where(["meeting_info_id" => $value["issue_id"]])
                         ->select();
-                    $options = [];
-                    $files   = [];
+                    $files = $optionsName = [];
                     if($option){
-                        foreach($option as $i => $j){
+                        foreach($option as $index => $item){
+                            $optionsName[] = $item["vote_choose"];
                             // 查询选项的文件
                             $file = Db::name("meeting_file")
                                 ->field("file_name,url")
-                                ->where("id","in",$j["file_id"])
+                                ->where("id","in",$item["file_id"])
                                 ->select();
-                            $files = $file;
-                            // 单个选项
-                            $options[] = [
-                                "file" => $files,
-                                "option"=>$j["vote_choose"]
-                            ];
+                            $files[$item["vote_choose"]] = $file;
                         }
                     }
-                    $value["issue_option"]  = $options;
+                    $value["issue_option"]["file"]    = $files;
+                    $value["issue_option"]["option"]  = $optionsName;
                 }
             });
             return $this->returnResponse($meetingInfo);
