@@ -21,8 +21,9 @@
           <i class="fa fa-file"></i>
         </div>
       </template>
-      <div class="file-name">{{file.file_name}}</div>
-      <div class="file-btn" @click="removeFile(fileIndex)">
+      <div class="file-name" v-if="showDownload" @click="downloadFile(file.file_url)">{{file.file_name}}</div>
+      <div class="file-name" v-else>{{file.file_name}}</div>
+      <div class="file-btn" @click="removeFile(fileIndex)" v-if="showRemove">
         <i class="fa fa-window-close-o"></i>
       </div>
     </div>
@@ -35,6 +36,14 @@
     props: {
       files: {
         type: Array,
+      },
+      showRemove: {
+        type: Boolean,
+        default: true
+      },
+      showDownload: {
+        type: Boolean,
+        default: false
       }
     },
     methods: {
@@ -72,6 +81,9 @@
         }).catch(() => {
 
         })
+      },
+      downloadFile(url) {
+        this.$toast("todo download file")
       }
     }
   }

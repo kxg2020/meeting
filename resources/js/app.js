@@ -10,12 +10,14 @@ import Vant from 'vant'
 
 Vue.use(Vant)
 
-import {Tag, Input, Button, Radio, Checkbox, CheckboxButton, CheckboxGroup} from 'element-ui'
+import {Tag, Input, Button, Radio, RadioGroup, RadioButton, Checkbox, CheckboxButton, CheckboxGroup} from 'element-ui'
 
 Vue.use(Tag)
 Vue.use(Input)
 Vue.use(Button)
 Vue.use(Radio)
+Vue.use(RadioGroup)
+Vue.use(RadioButton)
 Vue.use(Checkbox)
 Vue.use(CheckboxButton)
 Vue.use(CheckboxGroup)
