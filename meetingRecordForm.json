@@ -36,8 +36,7 @@
       "files": [],
       "votes": [
         {
-          "inputVisible": false,
-          "inputValue": "",
+          "title": "投票标题xxxx",
           "items": [
             {
               "value": "同意票",
@@ -65,6 +64,7 @@
       "files": [],
       "votes": [
         {
+          "title": "投票选项xxxx",
           "items": [
             {
               "value": "投票选项一",
