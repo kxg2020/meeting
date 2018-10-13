@@ -1,14 +1,9 @@
 <?php
 namespace app\index\model;
-
-use app\index\service\Enum;
-use app\index\service\Format;
 use app\index\service\Singleton;
 use app\index\service\template\AgentMessageFacade;
-use app\index\service\template\TextCard;
 use app\index\service\WeChat;
 use think\Db;
-use think\facade\Log;
 
 
 class MeetingRecord extends Base{
@@ -58,15 +53,6 @@ class MeetingRecord extends Base{
         if($resultRecord){
             $departmentRealId = Department::getInstance()->departmentRealId($params["user_invitation_id"]);
             $params["department_real_id"] = $departmentRealId["data"];
-            $beInvitedUser    =  \app\index\model\Department::getInstance()->departmentMember($departmentRealId["data"]);
-            if(!empty($beInvitedUser["data"])){
-                foreach ($beInvitedUser["data"] as $key => $value){
-                    $result = UserMeeting::getInstance()->createUserMeetingMap($value,$resultRecord);
-                    if(!$result["data"]){
-                        Format::getInstance()->commit = false;
-                    }
-                }
-            }
             if(isset($params["issue_list"]) && $params["issue_list"]){
                 foreach($params["issue_list"] as $key => $value){
                     $this->meetingInsert($value,$resultRecord,$params);

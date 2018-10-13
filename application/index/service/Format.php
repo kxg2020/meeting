@@ -1,6 +1,5 @@
 <?php
 namespace app\index\service;
-
 use think\Db;
 use think\facade\Log;
 
