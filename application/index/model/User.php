@@ -79,4 +79,15 @@ class User extends Base{
         }
         return $this->returnResponse($departmentName);
     }
+
+    /*
+     * 所有用户
+     */
+    public function allUserInDatabase($field){
+        $result = Db::name("user")->field($field)->select();
+        if($result){
+            return $this->returnResponse($result);
+        }
+        return $this->returnResponse();
+    }
 }

@@ -2,6 +2,7 @@
 namespace app\index\controller;
 
 use app\index\model\MeetingType;
+use app\index\model\UserMeeting;
 use app\index\service\Tool;
 use think\facade\Request;
 
@@ -27,7 +28,17 @@ class MeetingRecord extends Base {
     }
 
     public function singleMeetingInfo(){
+        $userId    = request()->userId;
         $meetingId = Request::param("meetingId");
-        var_dump($meetingId);die;
+        $result = UserMeeting::getInstance()->userMeetingRecord($meetingId);
+        if(!$result["data"]){
+            UserMeeting::getInstance()->createUserMeetingMap($userId,$meetingId);
+        }
+       $result = \app\index\model\MeetingRecord::getInstance()
+            ->singleMeetingInfo($meetingId);
+        if($result["data"]){
+            return $this->printResponse(200,$result["data"]);
+        }
+        return $this->printResponse();
     }
 }

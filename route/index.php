@@ -18,6 +18,7 @@ Route::get("/test","index/test");
 Route::get("/upload","static/uploads");
 
 Route::group("/api/",function(){
+
     #首页会议类型
     Route::get("meetingTypes","MeetingType/meetingTypes");
 
@@ -34,7 +35,6 @@ Route::group("/api/",function(){
     Route::post("upload","File/upload");
 
     #会议议题类型
-
     Route::get("political","MeetingPolitical/politicalList");
 
     #部门成员列表
@@ -48,5 +48,8 @@ Route::group("/api/",function(){
 
     #单个会议详情
     Route::get("meetingRecord/info/:meetingId","MeetingRecord/singleMeetingInfo");
+
+    #会议议题详情
+    Route::get("meetingRecord/issue/:meetingId","MeetingRecordInfo/meetingRecordIssueInfo");
 
 })->middleware(\app\index\service\Auth::class);
