@@ -57,17 +57,10 @@
           </van-cell>
           <div class="form-item issue-vote-list">
             <div v-for="(vote, voteIndex) in issue.votes" :key="voteIndex">
-              <van-field
-                v-model="vote.title"
-                required
-                clearable
-                :label="issue.political_short_name == 'bj' ? '表决标题' : '投票标题'"
-                :placeholder="issue.political_short_name == 'bj' ? '请输入表决标题' : '请输入投票标题'"
-              >
-                <div slot="button" @click="removeVote(issueIndex, voteIndex)">
-                  <i class="fa fa-minus-square"></i>
-                </div>
-              </van-field>
+              <div class="cell-group-title">
+                <span>投票{{(voteIndex + 1).ConvertToChinese()}}</span>
+                <i class="fa fa-minus-square" @click="removeVote(issueIndex, voteIndex)"></i>
+              </div>
               <van-cell :title="issue.political_short_name == 'bj' ? '表决选项' : '投票选项'">
                 <template v-if="issue.political_short_name == 'tp'">
                   <div class="vote-item" v-for="(voteItem, voteItemIndex) in vote.items">
@@ -268,7 +261,6 @@
           return
         }
         this.model.issue_list[issueIndex].votes.push({
-          title: '',
           inputVisible: false,
           inputValue: '',
           items: items
@@ -367,11 +359,6 @@
             return
           }
           for (let vote of issue.votes){
-            if (vote.title.length < 1) {
-              this.submitLoading = false
-              this.$toast("投票标题不能为空")
-              return
-            }
             if (vote.items.length <1){
               this.submitLoading = false
               this.$toast("投票选项不能为空")
