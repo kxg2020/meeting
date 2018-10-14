@@ -1,5 +1,6 @@
 <?php
 namespace app\index\controller;
+use app\index\model\Department;
 use app\index\model\User;
 use app\index\service\Aes;
 use app\index\service\Jwt;
@@ -33,30 +34,12 @@ class Index extends Base{
             $redirect = sprintf($this->authApi,$this->companyId,$this->redirect,$this->agentId);
             return redirect($redirect);
         }
+        $viewPermission = Department::getInstance()->loginUserViewPermission($userInfo["department"]);
+
        return view('index', [
-           'token' => Jwt::getInstance()->createToken("user_id",$userBasic["UserId"])
+           'token' => Jwt::getInstance()->createToken("user_id",$userBasic["UserId"]),
+           "view"  => $viewPermission["data"]
        ]);
     }
 
-    public function test(){
-        $template = "<div class='normal'>会议名称:%s</div>";
-        $template.= "<div class='normal'>主持人:%s</div>";
-        $template.= "<div class='highlight'>会议时间:%s</div>";
-        $title = "第三次代表大会";
-        $host  = "张涛";
-        $time  = "2018-5-20 至 2018-5-20";
-        $description =  sprintf($template,$title,$host,$time);
-        $data = array (
-            'toUser' => 'ZhangTao',
-            'toParty' => '',
-            'toTag' => '',
-            'title' => '会议通知',
-            'description' => $description,
-            'url' => 'http://www.baidu.com',
-            'btnTxt' => '更多',
-        );
-        var_dump($data);die;
-      $result =  WeChat::getInstance()->setPost($data,"textcard")->sendAgentMessage();
-        var_dump($result);
-    }
 }

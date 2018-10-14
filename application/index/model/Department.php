@@ -67,4 +67,17 @@ class Department extends Base{
         }
         return $this->returnResponse();
     }
+
+    public function loginUserViewPermission($departmentId){
+        $result = Db::name("department")
+            ->alias("a")
+            ->field("b.id as meetingTypeId")
+            ->leftJoin("meeting_type b","a.department_id = b.department_id")
+            ->where("a.department_id","in",$departmentId)
+            ->select();
+        if($result){
+            return $this->returnResponse($result);
+        }
+        return $this->returnResponse();
+    }
 }

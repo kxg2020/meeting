@@ -13,8 +13,6 @@ use think\facade\Route;
 
 Route::get("/","index/index");
 
-Route::get("/test","index/test");
-
 Route::get("/upload","static/uploads");
 
 Route::group("/api/",function(){
