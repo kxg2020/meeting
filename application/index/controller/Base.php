@@ -41,10 +41,10 @@ class Base extends Controller{
 
     protected function formatPage($params){
         $result = ["pgNum" => 1,"pgSize" => 3];
-        if(isset($params["pgNum"]) && $params["pgNum"]){
+        if(isset($params["pgNum"]) && !empty($params["pgNum"]) && $params["pgNum"] < 1000){
             $result["pgNum"] = $params["pgNum"];
         }
-        if(isset($params["pgSize"]) && $params["pgSize"]){
+        if(isset($params["pgSize"]) && !empty($params["pgSize"]) && $params["pgSize"] < 5){
             $result["pgSize"] = $params["pgSize"];
         }
         return $result;

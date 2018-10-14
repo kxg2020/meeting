@@ -1,5 +1,5 @@
 {
-  "meeting_type_id": 63,
+  "meeting_type_id": 75,
   "title": "第4次党员大会",
   "start_time": 1539216000,
   "end_time": 1539313800,
@@ -36,8 +36,24 @@
       "files": [],
       "votes": [
         {
-          "inputVisible": false,
-          "inputValue": "",
+          "title": "班长表决",
+          "items": [
+            {
+              "value": "同意票",
+              "files": []
+            },
+            {
+              "value": "反对票",
+              "files": []
+            },
+            {
+              "value": "弃权票",
+              "files": []
+            }
+          ]
+        },
+        {
+          "title": "组长表决",
           "items": [
             {
               "value": "同意票",
@@ -65,9 +81,10 @@
       "files": [],
       "votes": [
         {
+          "title":"班长投票",
           "items": [
             {
-              "value": "投票选项一",
+              "value": "选项一",
               "files": [
                 {
                   "file_url": "http://meeting.localhost/static/uploads/2018-10-11\\测试文档.docx",
@@ -76,7 +93,30 @@
               ]
             },
             {
-              "value": "投票选项二",
+              "value": "选项二",
+              "files": [
+                {
+                  "file_url": "http://meeting.localhost/static/uploads/2018-10-11\\测试文档 - 副本.docx",
+                  "file_name": "测试文档 - 副本.docx"
+                }
+              ]
+            }
+          ]
+        },
+        {
+          "title":"组长投票",
+          "items": [
+            {
+              "value": "选项一",
+              "files": [
+                {
+                  "file_url": "http://meeting.localhost/static/uploads/2018-10-11\\测试文档.docx",
+                  "file_name": "测试文档.docx"
+                }
+              ]
+            },
+            {
+              "value": "选项二",
               "files": [
                 {
                   "file_url": "http://meeting.localhost/static/uploads/2018-10-11\\测试文档 - 副本.docx",

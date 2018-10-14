@@ -101,7 +101,6 @@ class MeetingRecord extends Base{
             ->leftJoin("user e","a.create_user_id = e.id")
             ->where(["a.id" => $meetingRecordId])
             ->select();
-
         if($meetingIssue){
            $result["meetingId"] = $meetingIssue[0]["meetingId"];
             $this->classifyMeetingUser($result,$meetingRecordId,$meetingIssue);
@@ -114,6 +113,7 @@ class MeetingRecord extends Base{
                     "issue_id" => $value["issue_id"],
                     "title" => $value["title"],
                     "political_name" => $value["political_name"],
+                    "political_type" => $value["short_name"],
                 ];
             }
 
