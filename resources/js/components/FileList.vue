@@ -29,7 +29,6 @@
       </div>
     </div>
     <van-popup v-model="showPreview" position="right" :overlay="false" class="prefile-popup">
-      <van-button class="prefile-btn" type="default" @click="hidePreview">关闭预览</van-button>
       <div class="prefile-view" v-if="showFile">
         <template v-if="getFileType(showFile.file_name) == 'image'">
           <img :src="showFile.file_url" alt="">
@@ -37,19 +36,15 @@
         <template v-else-if="getFileType(showFile.file_name) == 'video'">
           <video :src="showFile.file_url" controls="controls" width="100%"></video>
         </template>
-        <template v-else-if="getFileType(showFile.file_name) == 'doc'">
-          <template v-if="getFileExt(showFile.file_name) == 'pdf'">
-            <iframe :src="showFile.file_url" frameborder="0"></iframe>
-          </template>
-          <template v-else>
+        <template v-else>
+          <div style="text-align: center;width: 100%;">
             此文件不支持预览
             <a target="_blank" :href="showFile.file_url">点击下载</a>
-          </template>
+          </div>
         </template>
-        <template v-else>
-          此文件不支持预览
-          <a target="_blank" :href="showFile.file_url">点击下载</a>
-        </template>
+      </div>
+      <div style="height: 100px;display: flex;justify-content: center;align-items: center">
+        <van-button class="prefile-btn" plain type="danger" @click="hidePreview">关闭预览</van-button>
       </div>
     </van-popup>
   </div>
@@ -200,7 +195,9 @@
   }
   .prefile-view{
     width: 100%;
-    height: calc(100% - 65px);
+    height: calc(100% - 100px);
+    display: flex;
+    align-items: center;
   }
   .prefile-view img, .prefile-view video{
     width: 100%;
