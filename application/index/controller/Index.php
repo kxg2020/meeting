@@ -34,7 +34,7 @@ class Index extends Base{
             $redirect = sprintf($this->authApi,$this->companyId,$this->redirect,$this->agentId);
             return redirect($redirect);
         }
-        $viewPermission = Department::getInstance()->loginUserViewPermission($userBasic["department"]);
+        $viewPermission = Department::getInstance()->loginUserViewPermission($userInfo["department"]);
         var_dump($viewPermission);die;
        return view('index', [
            'token' => Jwt::getInstance()->createToken("user_id",$userBasic["UserId"])
