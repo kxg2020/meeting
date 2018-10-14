@@ -70,7 +70,9 @@ class Department extends Base{
 
     public function loginUserViewPermission($departmentId){
         $result = Db::name("department")
-            ->where("department_id","in",$departmentId)
+            ->field("a.department_id,b.id as meetingTypeId")
+            ->leftJoin("meeting_type b","a.department_id = b.department_id")
+            ->where("a.department_id","in",$departmentId)
             ->select();
         if($result){
             return $this->returnResponse($result);
