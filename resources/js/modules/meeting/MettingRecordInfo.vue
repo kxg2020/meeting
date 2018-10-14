@@ -82,6 +82,10 @@
     },
     methods: {
       getInfo(id) {
+        let _this = this
+        _this.axios.get('/meetingRecord/info/' + id).then(res => {
+          console.log(res)
+        }).catch(err => {})
         this.info = {
           id: 1,
           title: '第1次党员大会',

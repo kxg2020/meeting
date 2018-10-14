@@ -44,7 +44,7 @@ class Base extends Controller{
         if(isset($params["pgNum"]) && !empty($params["pgNum"]) && $params["pgNum"] < 1000){
             $result["pgNum"] = $params["pgNum"];
         }
-        if(isset($params["pgSize"]) && !empty($params["pgSize"]) && $params["pgSize"] < 5){
+        if(isset($params["pgSize"]) && !empty($params["pgSize"]) && $params["pgSize"] <= 5){
             $result["pgSize"] = $params["pgSize"];
         }
         return $result;

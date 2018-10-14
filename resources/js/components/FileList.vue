@@ -1,7 +1,7 @@
 <template>
   <div class="file-list">
     <div v-for="(file, fileIndex) in files" :key="fileIndex" class="file-item">
-      <div @click="viewFile(file)" style="display: flex;flex-direction: row;">
+      <div @click="viewFile(file)" style="display: flex;flex-direction: row;width: 100%">
         <template v-if="getFileType(file.file_name) == 'image'">
           <div class="file-thumb">
             <img :src="file.file_url" alt="" class="file-image">
