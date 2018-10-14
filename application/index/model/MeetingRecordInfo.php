@@ -40,11 +40,16 @@ class MeetingRecordInfo extends Base{
                         foreach($singleMainFile as $i => $j){
                             $ext = substr($j["url"],strpos(".",$j["url"]));
                             if($ext == "jpg" || $ext == "jpeg" || $ext == "png" || $ext == "gif"){
-                                $images["file_name"][] = $j["file_name"];
-                                $images["file_url"][] = $j["url"];
+                                $images[] = [
+                                    "file_name" => $j["file_name"],
+                                    "file_url"  => $j["url"]
+                                ];
                             }else{
-                                $file["file_name"][] = $j["file_name"];
-                                $file["file_url"][]  = $j["url"];
+
+                                $file[]  = [
+                                    "file_name" => $j["file_name"],
+                                    "file_url"  => $j["url"]
+                                ];
                             }
                         }
                     }
