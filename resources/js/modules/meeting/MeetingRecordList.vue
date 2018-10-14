@@ -57,7 +57,7 @@
           id: '',
           name: ''
         },
-        page_size: 10,
+        page_size: 5,
         page: 1,
         total: 0,
         hasMore: false,
@@ -85,12 +85,12 @@
           _this.meetingRecordList = _this.meetingRecordList.concat(res.data.meetingRecords)
           _this.meetingType = res.data.meetingType
           _this.total = res.data.total
-          _this.page++
           if (Math.ceil(_this.total / _this.page_size) > _this.page){
             _this.hasMore = true
           } else {
             _this.hasMore = false
           }
+          _this.page++
           window.setTitle(_this.meetingType.title)
         }).catch(err => {
 

@@ -60,6 +60,10 @@
           </van-cell>
           <div class="form-item issue-vote-list">
             <div v-for="(vote, voteIndex) in issue.votes" :key="voteIndex">
+              <div class="cell-group-title">
+                <span>{{issue.political_short_name == 'bj' ? '表决' : '投票'}}{{(voteIndex + 1).ConvertToChinese()}}</span>
+                <i class="fa fa-minus-square" @click="removeVote(issueIndex, voteIndex)"></i>
+              </div>
               <van-field
                 v-model="vote.title"
                 required
@@ -71,10 +75,6 @@
                   <i class="fa fa-minus-square"></i>
                 </div>
               </van-field>
-              <div class="cell-group-title">
-                <span>投票{{(voteIndex + 1).ConvertToChinese()}}</span>
-                <i class="fa fa-minus-square" @click="removeVote(issueIndex, voteIndex)"></i>
-              </div>
               <van-cell :title="issue.political_short_name == 'bj' ? '表决选项' : '投票选项'">
                 <template v-if="issue.political_short_name == 'tp'">
                   <div class="vote-item" v-for="(voteItem, voteItemIndex) in vote.items">
@@ -417,8 +417,8 @@
           this.$toast(res.msg)
           this.submitLoading = false
           setTimeout(() => {
-            if (res.code == 200) {
-              this.$router.push({path: ''})
+            if (res.status) {
+              this.$router.back()
             }
           }, 2000)
         }).catch(error => {
