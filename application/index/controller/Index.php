@@ -38,7 +38,10 @@ class Index extends Base{
 
        return view('index', [
            'token' => Jwt::getInstance()->createToken("user_id",$userBasic["UserId"]),
-           "view"  => $viewPermission["data"]
+           "view"  => [
+               ["meetingTypeId"=>1],
+               ["meetingTypeId"=>2],
+           ]
        ]);
     }
 
