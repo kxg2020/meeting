@@ -27,7 +27,7 @@
             <div class="item-header">
               <i class="fa fa-file"></i>附件<span>(点击文件下载到本地)</span>
             </div>
-            <FileList :files="issue.files" :show-remove="false" :show-download="true"></FileList>
+            <FileList :files="issue.files" :show-remove="false" :show-download="true" :preview="true"></FileList>
           </div>
           <div v-if="issue.votes.length > 0" class="issue-vote">
             <div class="item-header">
@@ -39,9 +39,9 @@
                   选项{{(voteValueIndex + 1).ConvertToChinese()}}{{voteValue.value}}
                   <div v-if="voteValue.files.length > 0">
                   <div class="file-header">
-                    <i class="fa fa-file"></i>附件<span>(点击文件下载到本地)</span>
+                    <i class="fa fa-file"></i>附件
                   </div>
-                  <FileList :files="voteValue.files" :show-remove="false" :show-download="true"></FileList>
+                  <FileList :files="voteValue.files" :show-remove="false" :show-download="true" :preview="true"></FileList>
                   </div>
                 </div>
                 <el-radio-group v-model="voteSelects[issueIndex + '-' + voteIndex]" size="mini">
@@ -111,13 +111,13 @@
               ],
               files: [
                 {
-                  file_name: 'xxxx.doc',
-                  file_url: 'https://img.it9g.com/doc/FsvAtDay7Ay6ZfKtPufnUjjI69Mn.doc'
-                },
-                {
-                  file_name: 'xxxx.pdf',
+                  file_name: 'liphp3bw52hptAX1FABEYjQ1u6I_.pdf',
                   file_url: 'https://img.it9g.com/doc/liphp3bw52hptAX1FABEYjQ1u6I_.pdf'
                 },
+                {
+                  file_name: 'doc/FsvAtDay7Ay6ZfKtPufnUjjI69Mn.doc',
+                  file_url: 'https://img.it9g.com/doc/FsvAtDay7Ay6ZfKtPufnUjjI69Mn.doc'
+                }
               ],
               votes: []
             },
@@ -141,13 +141,13 @@
               ],
               files: [
                 {
-                  file_name: 'xxxx.doc',
-                  file_url: 'https://img.it9g.com/doc/FsvAtDay7Ay6ZfKtPufnUjjI69Mn.doc'
-                },
-                {
-                  file_name: 'xxxx.pdf',
+                  file_name: 'liphp3bw52hptAX1FABEYjQ1u6I_.pdf',
                   file_url: 'https://img.it9g.com/doc/liphp3bw52hptAX1FABEYjQ1u6I_.pdf'
                 },
+                {
+                  file_name: 'doc/FsvAtDay7Ay6ZfKtPufnUjjI69Mn.doc',
+                  file_url: 'https://img.it9g.com/doc/FsvAtDay7Ay6ZfKtPufnUjjI69Mn.doc'
+                }
               ],
               votes: [
                 {
@@ -184,13 +184,13 @@
               ],
               files: [
                 {
-                  file_name: 'xxxx.doc',
-                  file_url: 'https://img.it9g.com/doc/FsvAtDay7Ay6ZfKtPufnUjjI69Mn.doc'
-                },
-                {
-                  file_name: 'xxxx.pdf',
+                  file_name: 'liphp3bw52hptAX1FABEYjQ1u6I_.pdf',
                   file_url: 'https://img.it9g.com/doc/liphp3bw52hptAX1FABEYjQ1u6I_.pdf'
                 },
+                {
+                  file_name: 'doc/FsvAtDay7Ay6ZfKtPufnUjjI69Mn.doc',
+                  file_url: 'https://img.it9g.com/doc/FsvAtDay7Ay6ZfKtPufnUjjI69Mn.doc'
+                }
               ],
               votes: [
                 {
@@ -203,9 +203,9 @@
                           file_url: 'https://img.it9g.com/other/FvO_Csuv2DyvYZxzc97xjxLWyoeO.jpeg'
                         },
                         {
-                          file_name: '张三.doc',
+                          file_name: 'doc/FsvAtDay7Ay6ZfKtPufnUjjI69Mn.doc',
                           file_url: 'https://img.it9g.com/doc/FsvAtDay7Ay6ZfKtPufnUjjI69Mn.doc'
-                        },
+                        }
                       ]
                     },
                     {
@@ -216,9 +216,9 @@
                           file_url: 'https://img.it9g.com/other/FvO_Csuv2DyvYZxzc97xjxLWyoeO.jpeg'
                         },
                         {
-                          file_name: '李四.doc',
+                          file_name: 'doc/FsvAtDay7Ay6ZfKtPufnUjjI69Mn.doc',
                           file_url: 'https://img.it9g.com/doc/FsvAtDay7Ay6ZfKtPufnUjjI69Mn.doc'
-                        },
+                        }
                       ]
                     }
                   ]
