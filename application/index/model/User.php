@@ -49,7 +49,7 @@ class User extends Base{
     }
 
     /*
-     * 创建权限
+     * 发起权限
      */
     public function updatePermission($userInfo){
         $meetingId = [];
@@ -65,6 +65,13 @@ class User extends Base{
         ];
         Db::name("user")->where(["user_id"=>$userInfo["userid"]])->update($update);
         return $this;
+    }
+
+    /*
+     * 浏览权限
+     */
+    public function viewPermission($userId){
+
     }
 
     /*

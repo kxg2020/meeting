@@ -67,4 +67,14 @@ class Department extends Base{
         }
         return $this->returnResponse();
     }
+
+    public function loginUserViewPermission($departmentId){
+        $result = Db::name("department")
+            ->where("department_id","in",$departmentId)
+            ->select();
+        if($result){
+            return $this->returnResponse($result);
+        }
+        return $this->returnResponse();
+    }
 }
