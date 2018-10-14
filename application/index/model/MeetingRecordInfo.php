@@ -1,12 +1,12 @@
 <?php
 namespace app\index\model;
-
 use app\index\service\Singleton;
 use think\Cache;
 use think\Db;
 
 class MeetingRecordInfo extends Base{
     use Singleton;
+    private $imageExt = ["jpg,jpeg,png,gif"];
 
     public function meetingIssueInfo($meetingId){
         $meetingInfo = \think\facade\Cache::get("$meetingId-info");
@@ -39,13 +39,12 @@ class MeetingRecordInfo extends Base{
                     if($singleMainFile){
                         foreach($singleMainFile as $i => $j){
                             $ext = substr($j["url"],strpos(".",$j["url"]));
-                            if($ext == "jpg" || $ext == "jpeg" || $ext == "png" || $ext == "gif"){
+                            if(in_array($ext,$this->imageExt)){
                                 $images[] = [
                                     "file_name" => $j["file_name"],
                                     "file_url"  => $j["url"]
                                 ];
                             }else{
-
                                 $file[]  = [
                                     "file_name" => $j["file_name"],
                                     "file_url"  => $j["url"]
