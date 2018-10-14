@@ -35,21 +35,16 @@
           <img :src="showFile.file_url" alt="">
         </template>
         <template v-else-if="getFileType(showFile.file_name) == 'video'">
-          <video :src="showFile.file_url" controls="controls"></video>
+          <video :src="showFile.file_url" controls="controls" width="100%"></video>
         </template>
         <template v-else-if="getFileType(showFile.file_name) == 'doc'">
-          <iframe :src="showFile.file_url" width="100%" height="100%"></iframe>
-          <!--<template v-if="getFileExt(showFile.file_name) == 'pdf'">-->
-            <!--<iframe :src="showFile.file_url" width="100%" height="100%"></iframe>-->
-          <!--</template>-->
-          <!--<template v-else>-->
-            <!--&lt;!&ndash;<iframe :src="'https://view.officeapps.live.com/op/view.aspx?src=' + encodeURI(showFile.file_url)" width='100%'&ndash;&gt;-->
-            <!--<iframe-->
-              <!--sandbox="allow-forms allow-scripts allow-same-origin"-->
-              <!--src="https://view.officeapps.live.com/op/view.aspx?src=https%3A%2F%2Fimg.it9g.com%2Fdoc%2FFsvAtDay7Ay6ZfKtPufnUjjI69Mn.doc" width='100%'-->
-              <!--height='100%' frameborder='1'>-->
-            <!--</iframe>-->
-          <!--</template>-->
+          <template v-if="getFileExt(showFile.file_name) == 'pdf'">
+            <iframe :src="showFile.file_url" frameborder="0"></iframe>
+          </template>
+          <template v-else>
+            此文件不支持预览
+            <a target="_blank" :href="showFile.file_url">点击下载</a>
+          </template>
         </template>
         <template v-else>
           此文件不支持预览
@@ -135,6 +130,7 @@
       },
       hidePreview() {
         this.showPreview = false
+        this.showFile = null
       }
     }
   }
@@ -205,5 +201,13 @@
   .prefile-view{
     width: 100%;
     height: calc(100% - 65px);
+  }
+  .prefile-view img, .prefile-view video{
+    width: 100%;
+  }
+  iframe{
+    width: 100%;
+    height: 100%;
+    overflow: scroll;
   }
 </style>

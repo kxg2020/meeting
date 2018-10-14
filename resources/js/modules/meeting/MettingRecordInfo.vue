@@ -111,13 +111,21 @@
               ],
               files: [
                 {
+                  file_name: '1080/FgyEK7REr6E1tvbCh4KVzemLTRZ5.jpeg',
+                  file_url: 'https://img.it9g.com/1080/FgyEK7REr6E1tvbCh4KVzemLTRZ5.jpeg'
+                },
+                {
                   file_name: 'liphp3bw52hptAX1FABEYjQ1u6I_.pdf',
                   file_url: 'https://img.it9g.com/doc/liphp3bw52hptAX1FABEYjQ1u6I_.pdf'
                 },
                 {
                   file_name: 'doc/FsvAtDay7Ay6ZfKtPufnUjjI69Mn.doc',
                   file_url: 'https://img.it9g.com/doc/FsvAtDay7Ay6ZfKtPufnUjjI69Mn.doc'
-                }
+                },
+                {
+                  file_name: 'other/llSwheM4_-zSYrVBhsMLIgn18Dqa.mp4',
+                  file_url: 'https://img.it9g.com/other/llSwheM4_-zSYrVBhsMLIgn18Dqa.mp4'
+                },
               ],
               votes: []
             },
