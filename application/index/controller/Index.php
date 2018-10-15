@@ -13,12 +13,15 @@ use think\facade\Request;
 class Index extends Base{
 
     /*
-     * ÓÃ»§µÇÂ½
+     * ï¿½Ã»ï¿½ï¿½ï¿½Â½
      */
     public function index(){
         // dev
         if (strpos(Request::domain(), 'localhost')){
-            return view('index', ['token' => Jwt::getInstance()->createToken("user_id", "whngqdcmhdxxf")]);
+            return view('index', [
+                'token' => Jwt::getInstance()->createToken("user_id", "whngqdcmhdxxf"),
+                'permission_ids' => [87, 88]
+            ]);
         }
 
         $code = Request::get("code");
@@ -46,7 +49,7 @@ class Index extends Base{
         }
        return view('index', [
            'token' => Jwt::getInstance()->createToken("user_id",$userBasic["UserId"]),
-           "view"  => $viewPermissionId,
+           "permission_ids"  => $viewPermissionId,
        ]);
     }
 

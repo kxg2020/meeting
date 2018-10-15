@@ -32,7 +32,8 @@
     data() {
       return {
         searchValue: '',
-        meetingTypeList: []
+        meetingTypeList: [],
+        permission_ids: []
       }
     },
     components: {
@@ -41,6 +42,7 @@
     created() {
       window.setTitle("首页")
       this.getMeetingTypeList()
+      this.permission_ids = window.permission_ids
     },
     methods: {
       getMeetingTypeList() {
@@ -52,7 +54,11 @@
         })
       },
       toMeetingList (group_id) {
-        this.$router.push({path: '/meeting_record/list/' + group_id})
+        if (this.permission_ids.includes(group_id)) {
+          this.$router.push({path: '/meeting_record/list/' + group_id})
+        } else {
+          this.$toast("没有访问权限")
+        }
       },
       onSearch () {
         this.$toast(this.searchValue)
