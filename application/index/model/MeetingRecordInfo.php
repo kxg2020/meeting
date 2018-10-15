@@ -1,5 +1,7 @@
 <?php
 namespace app\index\model;
+use app\index\service\Enum;
+use app\index\service\MeetingVotes;
 use app\index\service\Singleton;
 use think\Cache;
 use think\Db;
@@ -8,94 +10,101 @@ class MeetingRecordInfo extends Base{
     use Singleton;
     private $imageExt = ["jpg,jpeg,png,gif"];
 
-    public function meetingIssueInfo($meetingId){
-        $meetingInfo = \think\facade\Cache::get("$meetingId-info");
+    public function meetingIssueInfo($issueId){
+        $meetingInfo = \think\facade\Cache::get("$issueId-info");
         if($meetingInfo){
             $meetingInfo = \app\index\service\Tool::getInstance()
                 ->jsonDecode($meetingInfo);
             unset($meetingInfo["data"]["join_user"]);
         }else{
-            $meetingInfo = \app\index\model\MeetingRecord::getInstance()->singleMeetingInfo($meetingId);
+            $meetingInfo = $this->singleIssueInfo($issueId);
             unset($meetingInfo["data"]["join_user"]);
         }
-        return $this->ifIssueExist($meetingInfo);
+
     }
 
+    private function singleIssueInfo($issueId){
+        $result = [];
+        // 议题详情
+        $issueDetail = Db::name("meeting_record_info")
+            ->alias("a")
+            ->field("b.name,b.short_name,a.title,a.file_id,a.content")
+            ->leftJoin("meeting_political b","a.type = b.id")
+            ->where(["a.id" => $issueId])
+            ->find();
 
-    private function ifIssueExist(&$meetingInfo){
-        if(isset($meetingInfo["data"]["issue"]) && !empty($meetingInfo["data"]["issue"])){
-            foreach($meetingInfo["data"]["issue"] as $key => $value){
-                // 查询单个议题的主体文件
-                $singleMainFileId = Db::name("meeting_record_info")
-                    ->field("file_id")
-                    ->where(["id" => $value["issue_id"]])
-                    ->find();
-                if($singleMainFileId){
-                    $singleMainFile = Db::name("meeting_file")
-                        ->where("id","in",$singleMainFileId["file_id"])
-                        ->select();
-                    $images = [];
-                    $file   = [];
-                    if($singleMainFile){
-                        foreach($singleMainFile as $i => $j){
-                            $ext = substr($j["url"],strpos(".",$j["url"]));
-                            if(in_array($ext,$this->imageExt)){
-                                $images[] = [
-                                    "file_name" => $j["file_name"],
-                                    "file_url"  => $j["url"]
-                                ];
-                            }else{
-                                $file[]  = [
-                                    "file_name" => $j["file_name"],
-                                    "file_url"  => $j["url"]
-                                ];
-                            }
-                        }
-                    }
-                    $meetingInfo["issue_list"][$key] = [
-                        "image"=> $images,
-                        "file" => $file,
-                        "title"=> $value["title"],
-                        "vote" => [],
-                    ];
-                    // 查询单个议题的所有小节
-                    $singleIssueChild = Db::name("meeting_votes")
-                        ->where(["meeting_info_id"=>$value["issue_id"]])
-                        ->select();
-                    if($singleIssueChild){
-                        foreach($singleIssueChild as $index => $item){
-                            $file = Db::name("meeting_file")
-                                ->where("id","in",$item["file_id"])
-                                ->select();
-                            $meetingInfo["issue_list"][$key]["vote"][] = [
-                                "file"   => $file,
-                                "option" => $item["vote_choose"],
+        if($issueDetail){
+            $result["content"] = $issueDetail["content"];
+            $result["issue_name"] = $issueDetail["title"];
+            $result["issue_short_name"] = $issueDetail["short_name"];
+            // 查询议题的文件列表
+            if(isset($issueDetail["file_id"]) && !empty($issueDetail["file_id"])){
+                // 查询文件
+                $files = MeetingFile::getInstance()->issueFileList($issueDetail["file_id"]);
+                if($files["data"]){
+                    $result["images"] = [];
+                    $result["files"]  = [];
+                    foreach($files["data"] as $file){
+                        $ext = substr($file["file_name"],strpos($file["file_name"],"."));
+                        if(in_array($ext,$this->imageExt)){
+                            $result["images"][] = [
+                                "file_name" => $file["file_name"],
+                                "file_url"  => $file["url"],
+                            ];
+                        }else{
+                            $result["files"][] = [
+                                "file_name" => $file["file_name"],
+                                "file_url"  => $file["url"],
                             ];
                         }
-                    }else{
-                        $meetingInfo["issue_list"][$key]["vote"] = [];
                     }
-                }else{
-                    $meetingInfo["issue_list"][$key] = [
-                        "file" => [],
-                        "vote" => [],
-                    ];
+                    // 投票选项
+                    $votes = \app\index\model\MeetingVotes::getInstance()->votesList($issueId);
+
+
+                    if($votes){
+                        // 判断议题类型
+                        switch($issueDetail["short_name"]){
+                            case Enum::READ:
+                                $result["votes"] = [];
+                                break;
+                            case Enum::BALLOT:
+                                if(isset($votes["data"]) && !empty($votes["data"])){
+                                    array_walk($votes["data"],function($value) use (&$result){
+                                        $ballotFile = MeetingFile::getInstance()
+                                            ->votesFileList($value["file_id"]);
+                                        $result["option"][] = [
+                                            "vote_name" => $value["vote_name"],
+                                            "options"   => explode(",",$value["vote_choose"]),
+                                            "file"      => $ballotFile
+                                        ];
+                                    });
+                                }
+                                break;
+                            case Enum::VOTE:
+                                if(isset($votes["data"]) && !empty($votes["data"])){
+                                    foreach($votes["data"] as $index => $item){
+                                        // 查询投票文件
+                                        $voteFile = MeetingFile::getInstance()
+                                            ->votesFileList($item["file_id"]);
+                                       
+                                    }
+                                }else{
+                                    $result["option"] = [];
+                                }
+                                var_dump($result);die;
+                                break;
+                        }
+
+                    }else{
+                        $result["votes"] = [];
+                    }
                 }
-
+            }else{
+                $result["image"] = [];
+                $result["file"]  = [];
             }
-            unset($meetingInfo["data"]["issue"]);
-
-            $finalResult = [
-                "meetingId"    => $meetingInfo["data"]["meetingId"],
-                "meetingTitle" => $meetingInfo["data"]["meetingTitle"],
-                "start_time"   => $meetingInfo["data"]["start_time"],
-                "end_time"     => $meetingInfo["data"]["end_time"],
-                "create_user"  => $meetingInfo["data"]["create_user"],
-            ];
-            $finalResult["issue_list"] = $meetingInfo["issue_list"];
-            return $this->returnResponse($finalResult);
         }
-        return $this->returnResponse([],4006);
+        return $this->returnResponse();
     }
-
 }
