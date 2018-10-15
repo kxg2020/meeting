@@ -49,7 +49,7 @@ class User extends Base{
     }
 
     /*
-     * 创建权限
+     * 发起权限
      */
     public function updatePermission($userInfo){
         $meetingId = [];
@@ -68,23 +68,32 @@ class User extends Base{
     }
 
     /*
+     * 浏览权限
+     */
+    public function viewPermission($userId){
+
+    }
+
+    /*
      * 邀请部门
      */
-    public function invitationDepartment(){
-        $userId = request()->userId;
-        $field  = "enable_sponsored_meeting_type_id";
-        $enableMeetingType = Db::name("user")->field($field)->where(["user_id" =>$userId])->find();
-        if($enableMeetingType){
-            $enableMeetingType = explode(",",$enableMeetingType["enable_sponsored_meeting_type_id"]);
-            $departmentName= [];
-            if($enableMeetingType){
-                $result = MeetingType::getInstance()->getSingleMeetingTypeDepartmentName($enableMeetingType);
-                if($result["data"]){
-                    $departmentName["meeting"] = $result["data"];
-                }
-                return $this->returnResponse($departmentName);
-            }
-            return $this->returnResponse();
+    public function invitationDepartment($meetingTypeId){
+        $departmentName= [];
+        $result = MeetingType::getInstance()
+            ->getSingleMeetingTypeDepartmentName($meetingTypeId);
+        if($result["data"]){
+            $departmentName["meeting"] = $result["data"];
+        }
+        return $this->returnResponse($departmentName);
+    }
+
+    /*
+     * 所有用户
+     */
+    public function allUserInDatabase($field){
+        $result = Db::name("user")->field($field)->select();
+        if($result){
+            return $this->returnResponse($result);
         }
         return $this->returnResponse();
     }

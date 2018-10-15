@@ -11,12 +11,14 @@ class Base extends Controller{
     protected $redirect;
     protected $authApi = "https://open.weixin.qq.com/connect/oauth2/authorize?appid=%s&redirect_uri=%s&response_type=code&scope=snsapi_base&agentid=%s&state=1#wechat_redirect";
     protected $message = [
-        4001 => "没有创建会议权限,会议创建失败",
+        4001 => "没有创建会议权限,创建失败",
         4002 => "会议预约失败",
         4003 => "用户不存在",
         4004 => "没有查看会议权限",
+        4005 => "议题不存在",
+        4006 => "会议不存在",
 
-        9002 => "会议预约成功",
+        9002 => "会议创建成功",
     ];
     private $response = [];
 
@@ -39,10 +41,10 @@ class Base extends Controller{
 
     protected function formatPage($params){
         $result = ["pgNum" => 1,"pgSize" => 3];
-        if(isset($params["pgNum"]) && $params["pgNum"]){
+        if(isset($params["pgNum"]) && !empty($params["pgNum"]) && $params["pgNum"] < 1000){
             $result["pgNum"] = $params["pgNum"];
         }
-        if(isset($params["pgSize"]) && $params["pgSize"]){
+        if(isset($params["pgSize"]) && !empty($params["pgSize"]) && $params["pgSize"] <= 5){
             $result["pgSize"] = $params["pgSize"];
         }
         return $result;

@@ -1,14 +1,15 @@
 <template>
   <div class="main">
     <div class="main-container">
+      <div v-if="model.meeting_image_url" class="meeting-image" >
+        <img :src="model.meeting_image_url"/>
+      </div>
       <van-cell-group>
-        <van-field
-          v-model="model.title"
-          required
-          clearable
-          label="会议主题"
-          placeholder="请输入会议主题"
-        />
+        <van-cell class="form-item" title="会议主题">
+          <div @click="showCountDialog">
+            {{model.title}}
+          </div>
+        </van-cell>
         <van-cell class="form-item" title="开始时间">
           <DateTimePacker :min-date="new Date()" @change="value => changeStartTime(value)"></DateTimePacker>
         </van-cell>
@@ -40,14 +41,16 @@
           />
           <div class="upload-list">
             <FileList :files="issue.images" @remove="index => removeIssueImage(issueIndex, index)"></FileList>
-            <Upload :multiple="true" accept="image/*" @success="data => uploadIssueImageSuccess(issueIndex, data)"></Upload>
+            <Upload :multiple="true" accept="image/*"
+                    @success="data => uploadIssueImageSuccess(issueIndex, data)"></Upload>
           </div>
           <div class="form-item issue-file-list">
             <div class="cell-title">
               附件
             </div>
             <FileList :files="issue.files" @remove="index => removeIssueFile(issueIndex, index)"></FileList>
-            <Upload icon="fa fa-paperclip" :multiple="true" @success="data => uploadIssueFileSuccess(issueIndex, data)"></Upload>
+            <Upload icon="fa fa-paperclip" :multiple="true"
+                    @success="data => uploadIssueFileSuccess(issueIndex, data)"></Upload>
           </div>
           <van-cell :title="issue.political_short_name == 'bj' ? '发起表决' : '发起投票'"
                     v-if="issue.political_short_name != 'yz'">
@@ -57,6 +60,10 @@
           </van-cell>
           <div class="form-item issue-vote-list">
             <div v-for="(vote, voteIndex) in issue.votes" :key="voteIndex">
+              <div class="cell-group-title">
+                <span>{{issue.political_short_name == 'bj' ? '表决' : '投票'}}{{(voteIndex + 1).ConvertToChinese()}}</span>
+                <i class="fa fa-minus-square" @click="removeVote(issueIndex, voteIndex)"></i>
+              </div>
               <van-field
                 v-model="vote.title"
                 required
@@ -80,8 +87,10 @@
                       {{voteItem.value}}
                     </el-tag>
                     <div class="vote-file-list">
-                      <FileList :files="voteItem.files" @remove="index => remoVoteFile(issueIndex, voteIndex, voteItemIndex, index)"></FileList>
-                      <Upload icon="fa fa-paperclip" accept="image/*, audio/*, video/*, application/*" :multiple="true" @success="data => uploadVoteFileSuccess(issueIndex, voteIndex, voteItemIndex, data)"></Upload>
+                      <FileList :files="voteItem.files"
+                                @remove="index => remoVoteFile(issueIndex, voteIndex, voteItemIndex, index)"></FileList>
+                      <Upload icon="fa fa-paperclip" accept="image/*, audio/*, video/*, application/*" :multiple="true"
+                              @success="data => uploadVoteFileSuccess(issueIndex, voteIndex, voteItemIndex, data)"></Upload>
                     </div>
                   </div>
                   <el-input
@@ -116,17 +125,26 @@
         <van-cell title="增加议题" icon="add-o" style="color: #38f;" @click="addIssue"/>
       </van-cell-group>
       <van-cell-group>
+        <!--<van-cell class="form-item" title="参会组织">-->
+        <!--<span @click="showUserInvitationDialog">{{model.user_invitation_name}}</span>-->
+        <!--</van-cell>-->
         <van-cell class="form-item" title="参会组织">
-          <span @click="showUserInvitationDialog">{{model.user_invitation_name}}</span>
+          {{model.meeting_name}}
         </van-cell>
       </van-cell-group>
       <div class="submit">
         <el-button class="submit-btn" type="primary" plain @click="submit" :loading="submitLoading">创建</el-button>
       </div>
     </div>
+    <!-- 第N次 -->
+    <van-popup v-model="showCount" position="bottom">
+      <van-picker :show-toolbar="true" :columns="countList" @change="countChange" @confirm="hideCountDialog"
+                  @cancel="hideCountDialog"/>
+    </van-popup>
     <!-- 参会组织 -->
     <van-popup v-model="showUserInvitation" position="bottom">
-      <van-picker :show-toolbar="true" value-key="name" :columns="userInvitationList" @change="userInvitationChange" @confirm="hideuUerInvitationDialog" @cancel="hideuUerInvitationDialog" />
+      <van-picker :show-toolbar="true" value-key="name" :columns="userInvitationList" @change="userInvitationChange"
+                  @confirm="hideuUerInvitationDialog" @cancel="hideuUerInvitationDialog"/>
     </van-popup>
     <!-- 议题类型 -->
     <van-dialog
@@ -150,12 +168,16 @@
   import Upload from '../../components/Upload'
   import FileList from '../../components/FileList'
   import DateTimePacker from '../../components/DateTimePicker'
+
   export default {
     name: "MeetingRecordForm",
     data() {
       return {
         model: {
+          count: 1,
           meeting_type_id: 0,
+          meeting_name: '',
+          meeting_image_url: '',
           user_invitation_id: 0,
           user_invitation_name: '',
           title: '',
@@ -171,7 +193,9 @@
         userInvitationSelect: 0,
         showUserInvitation: false,
         checkList: [],
-        submitLoading: false
+        submitLoading: false,
+        showCount: false,
+        countList: []
       }
     },
     components: {
@@ -180,10 +204,13 @@
       DateTimePacker
     },
     created() {
+      for (let i = 1; i <= 100; i++) {
+        this.countList.push(i)
+      }
       window.setTitle("创建会议")
-      if (this.$route.params.type_id != undefined){
+      if (this.$route.params.type_id != undefined) {
         this.model.meeting_type_id = this.$route.params.type_id
-      } else{
+      } else {
         this.$toast("参数错误")
         this.$router.back()
       }
@@ -200,10 +227,12 @@
       },
       getUserInvitations() {
         let _this = this
-        _this.axios.get('/user/invitation').then(res => {
-          _this.userInvitationList = res.data.meeting
-          _this.model.user_invitation_id = _this.userInvitationList[0].id
-          _this.model.user_invitation_name = _this.userInvitationList[0].name
+        _this.axios.get('/user/invitation/' + this.model.meeting_type_id).then(res => {
+          _this.model.meeting_name = res.data.meeting.name
+          _this.model.meeting_image_url = res.data.meeting.img_url
+          _this.model.title = "第" + _this.model.count +  "次" + _this.model.meeting_name
+          _this.model.user_invitation_id = _this.model.meeting_type_id
+          _this.model.user_invitation_name = _this.model.meeting_name
         }).catch(error => {
         })
       },
@@ -343,6 +372,16 @@
       hideuUerInvitationDialog() {
         this.showUserInvitation = false
       },
+      showCountDialog() {
+        this.showCount = true
+      },
+      countChange(event, value) {
+        this.model.count = value
+        this.model.title = "第" + this.model.count + "次" + this.model.meeting_name
+      },
+      hideCountDialog() {
+        this.showCount = false
+      },
       submit() {
         this.submitLoading = true
         if (this.model.title.length < 1) {
@@ -366,13 +405,8 @@
             this.$toast("议题标题不能为空")
             return
           }
-          for (let vote of issue.votes){
-            if (vote.title.length < 1) {
-              this.submitLoading = false
-              this.$toast("投票标题不能为空")
-              return
-            }
-            if (vote.items.length <1){
+          for (let vote of issue.votes) {
+            if (vote.items.length < 1) {
               this.submitLoading = false
               this.$toast("投票选项不能为空")
               return
@@ -383,10 +417,10 @@
           this.$toast(res.msg)
           this.submitLoading = false
           setTimeout(() => {
-            if (res.code == 200){
-              this.$router.push({path: ''})
-            } 
-          },2000)
+            if (res.status) {
+              this.$router.back()
+            }
+          }, 2000)
         }).catch(error => {
           this.submitLoading = false
         })
@@ -399,6 +433,7 @@
   .van-cell-group {
     margin-bottom: 10px;
   }
+
   .cell-group-title {
     display: flex;
     flex-direction: row;
@@ -408,12 +443,15 @@
     color: rgba(69, 90, 100, .6);
     padding: 20px 15px 15px;
   }
+
   .cell-group-title span, .cell-group-title i {
     display: inline-block;
   }
+
   .placeholder-text {
     color: #757575;
   }
+
   .upload-item {
     display: inline-block;
     width: 50px;
@@ -423,21 +461,25 @@
     line-height: 50px;
     border-radius: 5px;
   }
-  .upload-item .image{
+
+  .upload-item .image {
     width: 100%;
     height: 100%;
     border-radius: 5px;
   }
+
   .upload-list {
     margin-left: 15px;
     border-bottom: 1px solid #eee;
     padding-bottom: 15px;
   }
+
   .issue-file-list {
     margin-left: 15px;
     border-bottom: 1px solid #eee;
     padding-bottom: 15px;
   }
+
   .cell-title {
     margin: 0;
     font-weight: 400;
@@ -446,30 +488,39 @@
     line-height: 24px;
     padding: 10px 0 15px;
   }
+
   .file-item {
   }
+
   .vote-item {
     padding: 10px;
     border: 1px solid #eee;
   }
+
   .vote-item:nth-child(n+1) {
     margin-top: 10px;
   }
+
   .vote-item-tag {
   }
+
   .input-vote-item-tag {
     max-width: 150px;
   }
+
   .input-vote-item-tag, .btn-vote-item-tag {
     margin-top: 10px;
   }
+
   .vote-file-list {
     margin-top: 10px;
   }
+
   .just-tag {
     margin-right: 10px;
     margin-bottom: 10px;
   }
+
   .issue-select {
     width: 100%;
     margin-top: 15px;
@@ -478,32 +529,50 @@
     flex-direction: row;
     justify-content: center;
   }
-  .check-box{
+
+  .check-box {
     display: flex;
     flex-direction: column;
     text-align: left;
   }
-  .submit{
+
+  .submit {
     padding: 10px;
   }
-  .submit-btn{
+
+  .submit-btn {
     width: 100%;
+  }
+
+  .meeting-image{
+    display: flex;
+    justify-content: center;
+    padding: 10px 0;
+    background-color: #ffffff;
+  }
+  .meeting-image img{
+    width: 50px;
+    height: 50px;
   }
 </style>
 <style>
   .form-item .van-cell__title {
     max-width: 90px;
   }
+
   .form-item .van-cell__value {
     text-align: left;
   }
+
   .issue-content::after {
     border-bottom: unset;
   }
+
   .van-cell--required {
     overflow: hidden;
   }
-  .el-checkbox+.el-checkbox {
+
+  .el-checkbox + .el-checkbox {
     margin-left: 0;
   }
 </style>

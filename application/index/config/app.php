@@ -1,4 +1,4 @@
 <?php
 return [
-    "token"   => "meeting",
+    "token" => "meeting",
 ];

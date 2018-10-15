@@ -59,4 +59,25 @@ class Department extends Base{
             yield $params[$i];
         }
     }
+
+    public function departmentRealId($departmentId){
+        $result = Db::name("department")->field("department_id")->where(["id" => $departmentId])->find();
+        if($result){
+            return $this->returnResponse($result["department_id"]);
+        }
+        return $this->returnResponse();
+    }
+
+    public function loginUserViewPermission($departmentId){
+        $result = Db::name("department")
+            ->alias("a")
+            ->field("b.id as meetingTypeId")
+            ->leftJoin("meeting_type b","a.department_id = b.department_id")
+            ->where("a.department_id","in",$departmentId)
+            ->select();
+        if($result){
+            return $this->returnResponse($result);
+        }
+        return $this->returnResponse();
+    }
 }

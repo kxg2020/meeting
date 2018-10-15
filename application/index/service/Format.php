@@ -1,6 +1,5 @@
 <?php
 namespace app\index\service;
-
 use think\Db;
 use think\facade\Log;
 
@@ -85,10 +84,10 @@ class Format{
         if(isset($this->issue["votes"]) && $this->issue["votes"]){
             foreach($this->issue["votes"] as $key => $value){
                 $insertMeetingVote["meeting_info_id"] = $infoId;
+                $insertMeetingVote["vote_name"]       = $value["title"];
                 if($value["items"]){
                     foreach($value["items"] as $item){
                         $fileId = [];
-                        $insertMeetingVote["vote_name"] = $item["value"];
                         if(isset($item["files"]) && !empty($item["files"])){
                             foreach($item["files"] as $file){
                               $fileId[] =  $this->createFile($file);

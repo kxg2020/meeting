@@ -34,9 +34,10 @@ class MeetingType extends Base{
     public function getSingleMeetingTypeDepartmentName($meetingTypeId){
         $department = Db::name("meeting_type")
             ->alias("a")
-            ->field("b.name,b.id")
+            ->field("b.name,b.id,b.img_url")
             ->leftJoin("department b","a.department_id = b.department_id")
-            ->where("a.id","in",$meetingTypeId)->select();
+            ->where("a.id","in",$meetingTypeId)
+            ->find();
         if($department){
             return $this->returnResponse($department);
         }
