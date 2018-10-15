@@ -48,6 +48,6 @@ Route::group("/api/",function(){
     Route::get("meetingRecord/info/:meetingId","MeetingRecord/singleMeetingInfo");
 
     #会议议题详情
-    Route::get("meetingRecord/issue/:meetingId","MeetingRecordInfo/meetingRecordIssueInfo");
+    Route::get("meetingRecord/detail/:meetingId","MeetingRecordInfo/meetingRecordIssueInfo");
 
 })->middleware(\app\index\service\Auth::class);
