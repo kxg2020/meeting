@@ -156,7 +156,7 @@ class MeetingRecord extends Base{
                 }else{
                     $result["join_user"][] = [
                         "is_joined" => false,
-                        "avatar"    => $allUserAvatar[$value["userid"]],
+                        "avatar"    => isset($allUserAvatar[$value["userid"]]) ? $allUserAvatar[$value["userid"]] : "",
                         "username"  => $value["name"],
                     ];
                 }
