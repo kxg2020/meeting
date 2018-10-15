@@ -23,7 +23,7 @@ class MeetingRecordInfo extends Base{
 
 
     private function ifIssueExist(&$meetingInfo){
-        if($meetingInfo["data"]["issue"]){
+        if(isset($meetingInfo["data"]["issue"]) && !empty($meetingInfo["data"]["issue"])){
             foreach($meetingInfo["data"]["issue"] as $key => $value){
                 // 查询单个议题的主体文件
                 $singleMainFileId = Db::name("meeting_record_info")

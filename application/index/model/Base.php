@@ -1,10 +1,10 @@
 <?php
 namespace app\index\model;
-
 use think\Model;
 
 class Base  extends  Model{
     protected $response = [];
+    protected $maxTime  = 1.5;
 
     protected  function returnResponse($data = [],$code = 200){
         $this->response = [
