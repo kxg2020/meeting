@@ -1,6 +1,7 @@
 <?php
 namespace app\index\model;
 use app\index\service\Enum;
+use app\index\service\Format;
 use app\index\service\Singleton;
 use app\index\service\template\AgentMessageFacade;
 use app\index\service\WeChat;
@@ -10,7 +11,6 @@ use think\facade\Cache;
 
 class MeetingRecord extends Base{
     use Singleton;
-    private $commit = true;
 
     public function getMeetingRecords($type,$params){
         $records = Db::name("meeting_record")
@@ -40,6 +40,7 @@ class MeetingRecord extends Base{
         if(!substr_count($createUser["data"]["enable_sponsored_meeting_type_id"],$params["meeting_type_id"])){
             return $this->returnResponse([],4001);
         }
+
         // 插入会议记录表
         $insertMeetingRecord = [
             "title"           => $params["title"],
@@ -50,9 +51,22 @@ class MeetingRecord extends Base{
             "end_time"        => $params["end_time"],
             "invitation_department_id" => $params["user_invitation_id"],
         ];
+
         Db::startTrans();
         $resultRecord = Db::name("meeting_record")->insertGetId($insertMeetingRecord);
         if($resultRecord){
+            // 创建人添加一条记录
+            $insertUserMeetingMap = [
+                "meeting_record_id" => $resultRecord,
+                "create_time"       => time(),
+                "user_id"           => $createUser["data"]["id"],
+                "role"              => 1
+            ];
+            $userMeetingId = UserMeeting::getInstance()
+                ->createUserMeetingMap(false,false,$insertUserMeetingMap);
+            if(!$userMeetingId["data"]){
+                Format::getInstance()->commit = false;
+            }
             $departmentRealId = Department::getInstance()->departmentRealId($params["user_invitation_id"]);
             $params["department_real_id"] = $departmentRealId["data"];
             if(isset($params["issue_list"]) && $params["issue_list"]){

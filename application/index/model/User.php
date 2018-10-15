@@ -68,13 +68,6 @@ class User extends Base{
     }
 
     /*
-     * 浏览权限
-     */
-    public function viewPermission($userId){
-
-    }
-
-    /*
      * 邀请部门
      */
     public function invitationDepartment($meetingTypeId){

@@ -7,12 +7,16 @@ use think\Db;
 class UserMeeting extends Base{
     use Singleton;
 
-    public function createUserMeetingMap($userId,$meetingRecordId){
-        $insert = [
-            "meeting_record_id" => $meetingRecordId,
-            "user_id"     => $userId,
-            "create_time" => time(),
-        ];
+    public function createUserMeetingMap($userId,$meetingRecordId,$insertData = []){
+        if($insertData){
+            $insert = $insertData;
+        }else{
+            $insert = [
+                "meeting_record_id" => $meetingRecordId,
+                "user_id"     => $userId,
+                "create_time" => time(),
+            ];
+        }
         $result = Db::name("user_meeting")->insertGetId($insert);
         if($result){
             return $this->returnResponse($result);
