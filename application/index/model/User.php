@@ -54,7 +54,6 @@ class User extends Base{
     public function updatePermission($userInfo){
         $meetingId = [];
         $meeting = PositionMeetingMap::getInstance()->getPositionMeeting($userInfo["position"]);
-        var_dump($meeting);die;
         if($meeting["data"]){
             foreach ($meeting["data"] as $department){
                 $meetingId[] = $department["id"];
