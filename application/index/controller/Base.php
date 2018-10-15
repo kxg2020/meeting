@@ -39,6 +39,9 @@ class Base extends Controller{
         return json($this->response);
     }
 
+    /*
+     * 分页格式
+     */
     protected function formatPage($params){
         $result = ["pgNum" => 1,"pgSize" => 3];
         if(isset($params["pgNum"]) && !empty($params["pgNum"]) && $params["pgNum"] < 1000){

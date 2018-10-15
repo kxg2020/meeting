@@ -44,7 +44,7 @@ Route::group("/api/",function(){
     #用户邀请部门
     Route::get("user/invitation/:id","User/userInvitationDepartment");
 
-    #单个会议详情
+    #单个会议议题
     Route::get("meetingRecord/info/:meetingId","MeetingRecord/singleMeetingInfo");
 
     #会议议题详情
