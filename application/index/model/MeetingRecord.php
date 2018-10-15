@@ -141,6 +141,7 @@ class MeetingRecord extends Base{
                 $alreadyJoinedUserName[] = $value["name"];
             }
         }
+
         $notJoinedYetUser = Department::getInstance()
             ->departmentMember($meetingIssue[0]["invitation_department_id"]);
 
