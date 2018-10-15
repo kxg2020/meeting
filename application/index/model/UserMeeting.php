@@ -22,12 +22,13 @@ class UserMeeting extends Base{
 
     public function userMeetingRecord($meetingRecordId){
         $result = Db::name("user_meeting")
+            ->field("id")
             ->where(["meeting_record_id"=>$meetingRecordId])
-            ->find();
+            ->count();
         if($result){
-            return $this->returnResponse(false);
+            return $this->returnResponse(true);
         }
-        return $this->returnResponse(true);
+        return $this->returnResponse(false);
     }
 
     public function meetingJoinUser($meetingRecordId){
