@@ -22,6 +22,7 @@ class Index extends Base{
         if($code){
             $userBasic = WeChat::getInstance()->setCode($code)->getUserBasic();
             $userInfo  = WeChat::getInstance()->getUserInfo($userBasic["UserId"]);
+            var_dump($userInfo);die;
             if($userBasic){
                 $user = User::getInstance()->getUserByUserId($userBasic["UserId"]);
                 if(!$user["data"]){
@@ -35,14 +36,15 @@ class Index extends Base{
             return redirect($redirect);
         }
         $viewPermission = Department::getInstance()->loginUserViewPermission($userInfo["department"]);
-        echo "<pre>";
-        var_dump($viewPermission);die;
+        $viewPermissionId = [];
+        if($viewPermission["data"]){
+            array_walk($viewPermission["data"],function ($value) use (&$viewPermissionId){
+                $viewPermissionId[] = $value["meetingTypeId"];
+            });
+        }
        return view('index', [
            'token' => Jwt::getInstance()->createToken("user_id",$userBasic["UserId"]),
-           "view"  => [
-               ["meetingTypeId"=>1],
-               ["meetingTypeId"=>2],
-           ]
+           "view"  => $viewPermissionId,
        ]);
     }
 
