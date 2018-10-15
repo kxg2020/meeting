@@ -22,7 +22,6 @@ class Index extends Base{
         if($code){
             $userBasic = WeChat::getInstance()->setCode($code)->getUserBasic();
             $userInfo  = WeChat::getInstance()->getUserInfo($userBasic["UserId"]);
-            var_dump($userInfo);die;
             if($userBasic){
                 $user = User::getInstance()->getUserByUserId($userBasic["UserId"]);
                 if(!$user["data"]){
