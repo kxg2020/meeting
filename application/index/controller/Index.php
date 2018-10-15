@@ -35,7 +35,8 @@ class Index extends Base{
             return redirect($redirect);
         }
         $viewPermission = Department::getInstance()->loginUserViewPermission($userInfo["department"]);
-
+        echo "<pre>";
+        var_dump($viewPermission);die;
        return view('index', [
            'token' => Jwt::getInstance()->createToken("user_id",$userBasic["UserId"]),
            "view"  => [
