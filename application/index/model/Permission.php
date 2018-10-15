@@ -12,19 +12,8 @@ class Permission extends Base{
         $userId = request()->userId;
         $user = Db::name("user")->where(["user_id"=>$userId])->find();
         if($user){
-            $departmentId = [];
-            $department = MeetingType::getInstance()->getMeetingTypeDepartmentId($meetingTypeId);
-            if(!empty($department["data"])){
-                foreach ($department["data"] as $value){
-                    $departmentId[] = $value["department_id"];
-                }
-            }
-            $userDepartmentId = Tool::getInstance()->jsonDecode($user["department"]);
-            if(array_intersect($departmentId,$userDepartmentId)){
-                if(substr_count($user["enable_sponsored_meeting_type_id"],$meetingTypeId)){
-                    return $this->returnResponse(["sponsored" => true]);
-                }
-                return $this->returnResponse();
+            if(substr_count($user["enable_sponsored_meeting_type_id"],$meetingTypeId)){
+                return $this->returnResponse(["sponsored" => true]);
             }
             return $this->returnResponse(["sponsored" => false],4004);
         }
