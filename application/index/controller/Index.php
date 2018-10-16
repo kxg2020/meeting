@@ -8,6 +8,7 @@ use app\index\service\WeChat;
 use think\Exception;
 use think\facade\Config;
 use think\facade\Request;
+use think\facade\Url;
 
 
 class Index extends Base{
@@ -35,6 +36,10 @@ class Index extends Base{
                 }else{
                     User::getInstance()->setUserInfo($userInfo)->updateUser($userBasic["UserId"])->updatePermission($userInfo);
                 }
+            }else{
+                $this->redirect = Request::url(true);
+                $redirect = sprintf($this->authApi,$this->companyId,$this->redirect,$this->agentId);
+                return redirect($redirect);
             }
         }else{
             $redirect = sprintf($this->authApi,$this->companyId,$this->redirect,$this->agentId);
