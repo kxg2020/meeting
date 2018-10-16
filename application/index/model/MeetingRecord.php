@@ -63,7 +63,7 @@ class MeetingRecord extends Base{
             "meeting_type_id" => $meetingType["data"]["id"],
             "start_time"      => $params["start_time"],
             "end_time"        => $params["end_time"],
-            "invitation_department_id" => $params["user_invitation_id"],
+            "invitation_department_id" => $params["department_id"],
         ];
 
         Db::startTrans();
@@ -131,7 +131,6 @@ class MeetingRecord extends Base{
                 ->leftJoin("user e","a.create_user_id = e.id")
                 ->where(["a.id" => $meetingRecordId])
                 ->select();
-
             if($meetingIssue){
                 $result["meetingId"] = $meetingIssue[0]["meetingId"];
                 $this->classifyMeetingUser($result,$meetingRecordId,$meetingIssue);
