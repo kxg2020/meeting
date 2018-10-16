@@ -138,8 +138,8 @@ class MeetingRecord extends Base{
                     $result["meetingTitle"] = $value["meetingTitle"];
                     $result["start_time"]   = date("Y-m-d H:i:s",$value["start_time"]);
                     $result["end_time"]     = date("Y-m-d H:i:s",$value["end_time"]);
-                    $result["create_user"]  = $value["name"];
-                    $result["create_user"]  = $value["avatar"];
+                    $result["create_user_name"]  = $value["name"];
+                    $result["create_user_avatar"]= $value["avatar"];
 
                     $result["issue"][] = [
                         "issue_id" => $value["issue_id"],
