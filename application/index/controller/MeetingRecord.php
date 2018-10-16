@@ -5,6 +5,7 @@ use app\index\model\MeetingType;
 use app\index\model\UserMeeting;
 use app\index\service\Tool;
 use think\facade\Request;
+use think\facade\Url;
 
 class MeetingRecord extends Base {
 
