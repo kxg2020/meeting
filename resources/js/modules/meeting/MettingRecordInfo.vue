@@ -1,22 +1,39 @@
 <template>
   <div class="main">
     <div class="meeting-record-info" v-if="info">
-      <h2 class="info-title">{{info.meetingTitle}}</h2>
-      <div class="info-create-user">
-        <span>-</span>
-        <!--<img class="create-user-avatar" :src="info.create_user_avatar" alt="">-->
-        <span class="create-user-name">{{info.create_user}}</span>
-        <span>-</span>
+      <div  class="block">
+        <h2 class="info-title">{{info.meetingTitle}}</h2>
+        <div class="info-create-user">
+          <span>-</span>
+          <img class="create-user-avatar" :src="info.create_user_avatar" alt="">
+          <span class="create-user-name">{{info.create_user_name}}</span>
+          <span>-</span>
+        </div>
+        <div class="info-time">
+          <i class="fa fa-clock-o"></i>
+          <span class="time">{{info.start_time}}</span>
+          <span>-</span>
+          <span class="time">{{info.end_time}}</span>
+        </div>
+        <div class="issue-list">
+          <div class="issue-item" v-for="(issue, issueIndex) in info.issue" :key="issueIndex" @click="toIssueInfo(issue.issue_id)">
+            <h3 class="issue-title"><span>第{{(issueIndex + 1).ConvertToChinese()}}项、</span>{{issue.title}}</h3>
+          </div>
+        </div>
       </div>
-      <div class="info-time">
-        <i class="fa fa-clock-o"></i>
-        <span class="time">{{info.start_time}}</span>
-        <span>-</span>
-        <span class="time">{{info.end_time}}</span>
-      </div>
-      <div class="issue-list">
-        <div class="issue-item" v-for="(issue, issueIndex) in info.issue" :key="issueIndex" @click="toIssueInfo(issue.issue_id)">
-          <h3 class="issue-title"><span>第{{(issueIndex + 1).ConvertToChinese()}}项、</span>{{issue.title}}</h3>
+      <div class="block">
+        <div class="join-user-title">
+          <div><i class="fa fa-users"></i><span>参会人员</span></div>
+          <div style="display: flex;flex-direction: row;">
+            <div class="color-block true"><span class="view-true"><i class="fa fa-eye"></i></span> 已阅</div>
+            <div class="color-block false"><span class="view-false"><i class="fa fa-eye"></i></span> 未阅</div>
+          </div>
+        </div>
+        <div class="join-user-list">
+          <div class="join-user" v-for="(user, userIndex) in info.join_user" :key="userIndex" v-if="info.join_user.length > 0">
+            <img class="user-avatar" :src="user.avatar" alt="">
+            <span class="user-name">{{user.username}} <span :class="user.is_joined ? 'view-true' : 'view-false'"><i class="fa fa-eye"></i></span></span>
+          </div>
         </div>
       </div>
     </div>
@@ -166,5 +183,54 @@
   }
   .vote-item:nth-child(n+1) {
     margin-top: 15px;
+  }
+  .block{
+    display: block;
+    padding: 20px 10px 10px;
+    background-color: #fff;
+    margin-bottom: 14px;
+    background-color: #FFFFFF;
+    border-radius: 10px;
+  }
+  .join-user-title{
+    font-size: 14px;
+    color: rgb(149, 149, 149);
+    line-height: 30px;
+    display: flex;
+    flex-direction: row;
+    justify-content: space-between;
+  }
+  .join-user-title span{
+    margin-left: 1em;
+  }
+  .join-user-list{
+    display: flex;
+    flex-direction: row;
+    flex-wrap: wrap;
+    align-items: center;
+    justify-content: start;
+  }
+  .join-user{
+    padding: 10px;
+    display: flex;
+    flex-direction: column;
+    text-align: center;
+  }
+
+  .user-avatar{
+    width: 50px;
+    height: 50px;
+    margin: 5px auto;
+    border-radius: 5px;
+  }
+  .user-name{
+    line-height: 1.2em;
+    height: 2.4em;
+  }
+  .view-true{
+    color: yellowgreen;
+  }
+  .view-false{
+    color: #c9c9c9;
   }
 </style>

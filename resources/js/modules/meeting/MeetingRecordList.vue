@@ -115,9 +115,6 @@
 </script>
 
 <style scoped>
-  .main{
-    background-color: #FFFFFF;
-  }
   .main-container{
 
   }
@@ -133,6 +130,7 @@
     height: 150px;
     border: 1px solid #f1f4f8;
     border-radius: 5px;
+    background-color: #FFFFFF;
   }
 
   .meeting-title {

@@ -11,30 +11,33 @@
       </div>
       <div class="issue-files">
         <div class="item-header">
-          <i class="fa fa-file"></i>附件<span>(点击文件下载到本地)</span>
+          <!--<i class="fa fa-file"></i><span style="margin-left: 1em;">附件</span>-->
         </div>
         <FileList :files="issue.files" :show-remove="false" :show-download="true" :preview="true"></FileList>
       </div>
       <div v-if="issue.votes.length > 0" class="issue-vote">
         <div class="item-header">
-          <i class="fa fa-hand-paper-o"></i>{{issue.political_name}}
+          <i class="fa fa-hand-paper-o"></i><span style="margin-left: 1em;">{{issue.political_name}}</span>
         </div>
         <div class="vote-list">
           <div class="vote-item" v-for="(vote, voteIndex) in issue.votes" :key="'v' + voteIndex">
             <div v-for="(voteValue, voteValueIndex) in vote.values" class="vote-item-notice" :key="'i' + voteValueIndex">
-              选项{{(voteValueIndex + 1).ConvertToChinese()}}{{voteValue.value}}
+              选项{{(voteValueIndex + 1).ConvertToChinese()}}  <span style="color: #409EFF;">{{voteValue.value}}</span>
               <div v-if="voteValue.files.length > 0">
                 <div class="file-header">
-                  <i class="fa fa-file"></i>附件
+                  <!--<i class="fa fa-file"></i><span style="margin-left: 1em;">附件</span>-->
                 </div>
                 <FileList :files="voteValue.files" :show-remove="false" :show-download="true" :preview="true"></FileList>
               </div>
             </div>
-            <el-radio-group v-model="voteSelects[voteIndex]" size="mini">
-              <el-radio :label="voteValueIndex" border v-for="(voteValue, voteValueIndex) in vote.values"
-                        :key="'r' + voteValueIndex">{{voteValue.value}}
-              </el-radio>
-            </el-radio-group>
+            <div style="margin-top: 10px;padding-top: 10px;border-top: 1px solid #eee;">
+              <span>请{{issue.political_name}}</span>
+              <el-radio-group v-model="voteSelects[voteIndex]" size="mini">
+                <el-radio :label="voteValueIndex" border v-for="(voteValue, voteValueIndex) in vote.values"
+                          :key="'r' + voteValueIndex">{{voteValue.value}}
+                </el-radio>
+              </el-radio-group>
+            </div>
           </div>
         </div>
       </div>
@@ -67,7 +70,7 @@
       getIssue(id) {
         let _this = this
         _this.axios.get('/meetingRecord/detail/' + id).then(res => {
-          // _this.issue = res.data
+          _this.issue = res.data
           _this.issue = {
             id: 1,
             title: '关于xxx议题',
