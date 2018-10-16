@@ -5,6 +5,9 @@ use think\facade\Request;
 
 class User extends Base{
 
+    /*
+     * 创建会议邀请的部门
+     */
     public function userInvitationDepartment(){
         $meetingType = Request::param("id");
         $result = \app\index\model\User::getInstance()

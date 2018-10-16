@@ -230,6 +230,7 @@
         _this.axios.get('/user/invitation/' + this.model.meeting_type_id).then(res => {
           _this.model.meeting_name = res.data.meeting.name
           _this.model.meeting_image_url = res.data.meeting.img_url
+          _this.model.department_id = res.data.meeting.department_id
           _this.model.title = "第" + _this.model.count +  "次" + _this.model.meeting_name
           _this.model.user_invitation_id = _this.model.meeting_type_id
           _this.model.user_invitation_name = _this.model.meeting_name

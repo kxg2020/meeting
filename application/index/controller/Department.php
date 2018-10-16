@@ -6,6 +6,9 @@ use think\facade\Request;
 
 class Department extends Base{
 
+    /*
+     * 部门列表
+     */
     public function departmentList(){
         $result = \app\index\model\Department::getInstance()->getDepartmentList();
         if($result["status"]){
@@ -14,6 +17,9 @@ class Department extends Base{
        return $this->printResponse();
     }
 
+    /*
+     * 部门成员
+     */
     public function departmentMember(){
         $departmentId = Request::param("id");
         $result = \app\index\model\Department::getInstance()->departmentMember($departmentId);

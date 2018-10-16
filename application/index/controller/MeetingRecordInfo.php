@@ -5,8 +5,11 @@ use think\facade\Request;
 
 class MeetingRecordInfo extends Base{
 
+    /*
+     * 会议所有议题列表
+     */
     public function meetingRecordIssueInfo(){
-        $meetingId = Request::param("meetingId");
+        $meetingId = Request::param("issueId");
        $result = \app\index\model\MeetingRecordInfo::getInstance()->meetingIssueInfo($meetingId);
         if($result["status"]){
             return $this->printResponse(200,$result["data"]);

@@ -12,10 +12,16 @@ use think\facade\Request;
 
 class Index extends Base{
 
+    /*
+     * �û���½
+     */
     public function index(){
         // dev
         if (strpos(Request::domain(), 'localhost')){
-            return view('index', ['token' => Jwt::getInstance()->createToken("user_id", "whngqdcmhdxxf")]);
+            return view('index', [
+                'token' => Jwt::getInstance()->createToken("user_id", "whngqdcmhdxxf"),
+                'permission_ids' => [87, 88]
+            ]);
         }
 
         $code = Request::get("code");
@@ -25,9 +31,9 @@ class Index extends Base{
             if($userBasic){
                 $user = User::getInstance()->getUserByUserId($userBasic["UserId"]);
                 if(!$user["data"]){
-                    User::getInstance()->updatePermission($userInfo)->setUserInfo($userInfo)->createUser();
+                    User::getInstance()->setUserInfo($userInfo)->createUser()->updatePermission($userInfo);
                 }else{
-                    User::getInstance()->updatePermission($userInfo)->setUserInfo($userInfo)->updateUser($userBasic["UserId"]);
+                    User::getInstance()->setUserInfo($userInfo)->updateUser($userBasic["UserId"])->updatePermission($userInfo);
                 }
             }
         }else{
@@ -35,13 +41,15 @@ class Index extends Base{
             return redirect($redirect);
         }
         $viewPermission = Department::getInstance()->loginUserViewPermission($userInfo["department"]);
-
+        $viewPermissionId = [];
+        if($viewPermission["data"]){
+            array_walk($viewPermission["data"],function ($value) use (&$viewPermissionId){
+                $viewPermissionId[] = $value["meetingTypeId"];
+            });
+        }
        return view('index', [
            'token' => Jwt::getInstance()->createToken("user_id",$userBasic["UserId"]),
-           "view"  => [
-               ["meetingTypeId"=>1],
-               ["meetingTypeId"=>2],
-           ]
+           "permission_ids"  => $viewPermissionId,
        ]);
     }
 

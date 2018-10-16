@@ -7,12 +7,16 @@ use think\Db;
 class UserMeeting extends Base{
     use Singleton;
 
-    public function createUserMeetingMap($userId,$meetingRecordId){
-        $insert = [
-            "meeting_record_id" => $meetingRecordId,
-            "user_id"     => $userId,
-            "create_time" => time(),
-        ];
+    public function createUserMeetingMap($userId,$meetingRecordId,$insertData = []){
+        if($insertData){
+            $insert = $insertData;
+        }else{
+            $insert = [
+                "meeting_record_id" => $meetingRecordId,
+                "user_id"     => $userId,
+                "create_time" => time(),
+            ];
+        }
         $result = Db::name("user_meeting")->insertGetId($insert);
         if($result){
             return $this->returnResponse($result);
@@ -22,12 +26,13 @@ class UserMeeting extends Base{
 
     public function userMeetingRecord($meetingRecordId){
         $result = Db::name("user_meeting")
+            ->field("id")
             ->where(["meeting_record_id"=>$meetingRecordId])
-            ->find();
+            ->count();
         if($result){
-            return $this->returnResponse(false);
+            return $this->returnResponse(true);
         }
-        return $this->returnResponse(true);
+        return $this->returnResponse(false);
     }
 
     public function meetingJoinUser($meetingRecordId){

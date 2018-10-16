@@ -8,7 +8,9 @@ use think\facade\Request;
 
 class MeetingRecord extends Base {
 
-
+    /*
+     * 部门列表创建会议
+     */
     public function meetingCreate(){
         $params = Tool::getInstance()->jsonDecode(file_get_contents("php://input"));
         $result = \app\index\model\MeetingRecord::getInstance()
@@ -16,7 +18,9 @@ class MeetingRecord extends Base {
         return $this->printResponse($result["code"]);
     }
 
-
+    /*
+     *某种会议的会议列表
+     */
     public function meetingRecordList(){
         $typeId = Request::param("typeId");
         $params = $this->formatPage(Request::param());
@@ -27,6 +31,9 @@ class MeetingRecord extends Base {
         return $this->printResponse();
     }
 
+    /*
+     * 会议的所有议题列表
+     */
     public function singleMeetingInfo(){
         $userId    = request()->userId;
         $meetingId = Request::param("meetingId");

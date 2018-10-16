@@ -10,7 +10,6 @@ class PositionMeetingMap extends \app\index\model\Base{
             ->alias("a")
             ->field("b.id")
             ->leftJoin("meeting_type b","a.meeting_type_id = b.id")
-            ->leftJoin("department c","b.department_id = c.department_id")
             ->where(["a.position_name"=>$position])
             ->select();
         if($meetingType){

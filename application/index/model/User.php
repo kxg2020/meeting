@@ -19,16 +19,16 @@ class User extends Base{
      * 添加用户
      */
     public function createUser(){
-        $result = Db::name("user")->insertGetId($this->userInfo);
-        return $this->returnResponse($result);
+        Db::name("user")->insertGetId($this->userInfo);
+        return $this;
     }
 
     /*
      * 更新用户
      */
     public function updateUser($userId){
-        $result = Db::name("user")->where(["user_id"=>$userId])->update($this->userInfo);
-        return $this->returnResponse($result);
+        Db::name("user")->where(["user_id"=>$userId])->update($this->userInfo);
+        return $this;
     }
 
 
@@ -54,7 +54,7 @@ class User extends Base{
     public function updatePermission($userInfo){
         $meetingId = [];
         $meeting = PositionMeetingMap::getInstance()->getPositionMeeting($userInfo["position"]);
-        if($meeting["data"]){
+        if(isset($meeting["data"]) && !empty($meeting["data"])){
             foreach ($meeting["data"] as $department){
                 $meetingId[] = $department["id"];
             }
@@ -65,13 +65,6 @@ class User extends Base{
         ];
         Db::name("user")->where(["user_id"=>$userInfo["userid"]])->update($update);
         return $this;
-    }
-
-    /*
-     * 浏览权限
-     */
-    public function viewPermission($userId){
-
     }
 
     /*

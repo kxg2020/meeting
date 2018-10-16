@@ -14,7 +14,7 @@ class Base extends Controller{
         4001 => "没有创建会议权限,创建失败",
         4002 => "会议预约失败",
         4003 => "用户不存在",
-        4004 => "没有查看会议权限",
+        4004 => "没有创建会议权限",
         4005 => "议题不存在",
         4006 => "会议不存在",
 
@@ -39,6 +39,9 @@ class Base extends Controller{
         return json($this->response);
     }
 
+    /*
+     * 分页格式
+     */
     protected function formatPage($params){
         $result = ["pgNum" => 1,"pgSize" => 3];
         if(isset($params["pgNum"]) && !empty($params["pgNum"]) && $params["pgNum"] < 1000){
