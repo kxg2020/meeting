@@ -4,6 +4,7 @@ use app\index\service\Enum;
 use app\index\service\Format;
 use app\index\service\Singleton;
 use app\index\service\template\AgentMessageFacade;
+use app\index\service\Tool;
 use app\index\service\WeChat;
 use think\Db;
 use think\facade\Cache;
@@ -115,43 +116,47 @@ class MeetingRecord extends Base{
     }
 
     public function singleMeetingInfo($meetingRecordId){
-        $result = [];
-        $field = "c.title as typeTitle,b.*,d.short_name,a.title as meetingTitle";
-        $field.= ",e.name,a.start_time,a.end_time,a.invitation_department_id,";
-        $field.= "a.id as meetingId,b.id as issue_id,d.name as political_name";
-        $meetingIssue = Db::name("meeting_record")
-            ->alias("a")
-            ->field($field)
-            ->leftJoin("meeting_record_info b","a.id = b.meeting_record_id")
-            ->leftJoin("meeting_type c","a.meeting_type_id = c.id")
-            ->leftJoin("meeting_political d","b.type = d.id")
-            ->leftJoin("user e","a.create_user_id = e.id")
-            ->where(["a.id" => $meetingRecordId])
-            ->select();
+        $meetingInfo = Tool::getInstance()->jsonDecode(Cache::get("$meetingRecordId-info"));
+        if(!$meetingInfo){
+            $result = [];
+            $field = "c.title as typeTitle,b.*,d.short_name,a.title as meetingTitle";
+            $field.= ",e.name,a.start_time,a.end_time,a.invitation_department_id,";
+            $field.= "a.id as meetingId,b.id as issue_id,d.name as political_name";
+            $meetingIssue = Db::name("meeting_record")
+                ->alias("a")
+                ->field($field)
+                ->leftJoin("meeting_record_info b","a.id = b.meeting_record_id")
+                ->leftJoin("meeting_type c","a.meeting_type_id = c.id")
+                ->leftJoin("meeting_political d","b.type = d.id")
+                ->leftJoin("user e","a.create_user_id = e.id")
+                ->where(["a.id" => $meetingRecordId])
+                ->select();
 
-        if($meetingIssue){
-           $result["meetingId"] = $meetingIssue[0]["meetingId"];
-            $this->classifyMeetingUser($result,$meetingRecordId,$meetingIssue);
-            foreach($meetingIssue as $key => $value){
-                $result["meetingTitle"] = $value["meetingTitle"];
-                $result["start_time"]   = date("Y-m-d H:i:s",$value["start_time"]);
-                $result["end_time"]     = date("Y-m-d H:i:s",$value["end_time"]);
-                $result["create_user"]  = $value["name"];
+            if($meetingIssue){
+                $result["meetingId"] = $meetingIssue[0]["meetingId"];
+                $this->classifyMeetingUser($result,$meetingRecordId,$meetingIssue);
+                foreach($meetingIssue as $key => $value){
+                    $result["meetingTitle"] = $value["meetingTitle"];
+                    $result["start_time"]   = date("Y-m-d H:i:s",$value["start_time"]);
+                    $result["end_time"]     = date("Y-m-d H:i:s",$value["end_time"]);
+                    $result["create_user"]  = $value["name"];
 
-                $result["issue"][] = [
-                    "issue_id" => $value["issue_id"],
-                    "title" => $value["title"],
-                    "political_name" => $value["political_name"],
-                    "political_type" => $value["short_name"],
-                ];
+                    $result["issue"][] = [
+                        "issue_id" => $value["issue_id"],
+                        "title" => $value["title"],
+                        "political_name" => $value["political_name"],
+                        "political_type" => $value["short_name"],
+                    ];
+                }
+
+                $meetingInfo = $this->returnResponse($result);
+                // 缓存会议
+                Cache::set("$meetingRecordId-info",\app\index\service\Tool::getInstance()->jsonEncode($meetingInfo));
+                return $meetingInfo;
             }
-
-            $meetingInfo = $this->returnResponse($result);
-            // 缓存会议
-            Cache::set("$meetingRecordId-info",\app\index\service\Tool::getInstance()->jsonEncode($meetingInfo));
-           return $meetingInfo;
+            return $this->returnResponse();
         }
-        return $this->returnResponse();
+        return $meetingInfo;
     }
 
     private function classifyMeetingUser(&$result,$meetingRecordId,$meetingIssue){
