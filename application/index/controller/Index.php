@@ -9,7 +9,9 @@ use think\Exception;
 use think\facade\Config;
 use think\facade\Log;
 use think\facade\Request;
+use think\facade\Response;
 use think\facade\Url;
+use think\response\Redirect;
 
 
 class Index extends Base{
@@ -50,14 +52,12 @@ class Index extends Base{
                 ]);
             }else{
                 $this->redirect = Request::url(true);
-                Log::error($this->redirect);
-                Log::error(1);
                 $redirect = sprintf($this->authApi,$this->companyId,$this->redirect,$this->agentId);
-                header(sprintf("Location: %s;",$redirect));
+                return Response::create($redirect);
             }
         }else{
             $redirect = sprintf($this->authApi,$this->companyId,$this->redirect,$this->agentId);
-            header(sprintf("Location: %s;",$redirect));
+            return Response::create($redirect);
         }
 
     }
