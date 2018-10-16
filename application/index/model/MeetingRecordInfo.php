@@ -56,12 +56,11 @@ class MeetingRecordInfo extends Base{
                             ];
                         }
                     }
-                    $result = $this->classify($issueId,$issueDetail,$result);
-                    // 缓存议题
-                    \think\facade\Cache::set("$issueId-issue-detail",Tool::getInstance()->jsonEncode($result));
-                    return $this->returnResponse($result);
                 }
             }
+            $result = $this->classify($issueId,$issueDetail,$result);
+            // 缓存议题
+            \think\facade\Cache::set("$issueId-issue-detail",Tool::getInstance()->jsonEncode($result));
             return $this->returnResponse($result);
         }
         return $this->returnResponse();
