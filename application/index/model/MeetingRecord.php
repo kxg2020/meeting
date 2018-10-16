@@ -120,8 +120,8 @@ class MeetingRecord extends Base{
         if(!$meetingInfo){
             $result = [];
             $field = "c.title as typeTitle,b.*,d.short_name,a.title as meetingTitle";
-            $field.= ",e.name,a.start_time,a.end_time,a.invitation_department_id,";
-            $field.= "a.id as meetingId,b.id as issue_id,d.name as political_name";
+            $field.= ",e.name,a.start_time,a.end_time,a.invitation_department_id,e.avatar";
+            $field.= ",a.id as meetingId,b.id as issue_id,d.name as political_name";
             $meetingIssue = Db::name("meeting_record")
                 ->alias("a")
                 ->field($field)
@@ -140,6 +140,7 @@ class MeetingRecord extends Base{
                     $result["start_time"]   = date("Y-m-d H:i:s",$value["start_time"]);
                     $result["end_time"]     = date("Y-m-d H:i:s",$value["end_time"]);
                     $result["create_user"]  = $value["name"];
+                    $result["create_user"]  = $value["avatar"];
 
                     $result["issue"][] = [
                         "issue_id" => $value["issue_id"],

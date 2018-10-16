@@ -12,8 +12,13 @@ class MeetingRecordInfo extends Base{
     private $imageExt = ["jpg,jpeg,png,gif"];
 
     public function meetingIssueInfo($issueId){
-        $meetingInfo = $this->singleIssueInfo($issueId);
-        return $this->returnResponse($meetingInfo["data"]);
+        $meetingInfo = Tool::getInstance()->jsonDecode(\think\facade\Cache::get("$issueId-issue-detail"));
+        if(!$meetingInfo){
+            $meetingInfo = $this->singleIssueInfo($issueId);
+            return $this->returnResponse($meetingInfo["data"]);
+        }else{
+            return $this->returnResponse($meetingInfo);
+        }
     }
 
     private function singleIssueInfo($issueId){
@@ -52,6 +57,8 @@ class MeetingRecordInfo extends Base{
                         }
                     }
                     $result = $this->classify($issueId,$issueDetail,$result);
+                    // »º´æÒéÌâ
+                    \think\facade\Cache::set("$issueId-issue-detail",Tool::getInstance()->jsonEncode($result));
                     return $this->returnResponse($result);
                 }
             }
