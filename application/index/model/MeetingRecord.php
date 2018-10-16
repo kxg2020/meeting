@@ -13,24 +13,29 @@ class MeetingRecord extends Base{
     use Singleton;
 
     public function getMeetingRecords($type,$params){
+        $result = [];
         $records = Db::name("meeting_record")
-            ->where(["meeting_type_id"=>$type])
+            ->alias("a")
+            ->field("b.name as create_user_name,a.title,a.create_time,a.start_time,a.end_time,a.id")
+            ->leftJoin("user b","a.create_user_id = b.id")
+            ->where(["a.meeting_type_id"=>$type])
             ->limit($this->formatLimit($params["pgNum"],$params["pgSize"]),$params["pgSize"])
             ->select();
         $total   = Db::name("meeting_record")
             ->where(["meeting_type_id"=>$type])->count();
         $recordType = Db::name("meeting_type")->where(["id"=>$type])->find();
+        if($recordType){
+            $recordType["create_time"] = date("Y-m-d H:i:s",$recordType["create_time"]);
+        }
         if($records){
-            array_walk($records,function (&$value){
+            array_walk($records,function (&$value) use (&$result){
                 $value["create_time"] = date("Y-m-d H:i:s",$value["create_time"]);
-                $value["end_time"] = date("Y-m-d H:i:s",$value["end_time"]);
-                $value["start_time"] = date("Y-m-d H:i:s",$value["start_time"]);
+                $value["end_time"]    = date("Y-m-d H:i:s",$value["end_time"]);
+                $value["start_time"]  = date("Y-m-d H:i:s",$value["start_time"]);
             });
-            $result = [
-                "meetingRecords"=> $records,
-                "meetingType"   => $recordType,
-                "total"         => $total
-            ];
+            $result["meetingRecords"] = $records;
+            $result["meetingType"]    = $recordType;
+            $result["total"]          = $total;
             return $this->returnResponse($result);
         }
         return $this->returnResponse();
@@ -123,6 +128,7 @@ class MeetingRecord extends Base{
             ->leftJoin("user e","a.create_user_id = e.id")
             ->where(["a.id" => $meetingRecordId])
             ->select();
+
         if($meetingIssue){
            $result["meetingId"] = $meetingIssue[0]["meetingId"];
             $this->classifyMeetingUser($result,$meetingRecordId,$meetingIssue);
@@ -131,6 +137,7 @@ class MeetingRecord extends Base{
                 $result["start_time"]   = date("Y-m-d H:i:s",$value["start_time"]);
                 $result["end_time"]     = date("Y-m-d H:i:s",$value["end_time"]);
                 $result["create_user"]  = $value["name"];
+
                 $result["issue"][] = [
                     "issue_id" => $value["issue_id"],
                     "title" => $value["title"],
