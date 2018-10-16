@@ -53,11 +53,11 @@ class Index extends Base{
             }else{
                 $this->redirect = Request::url(true);
                 $redirect = sprintf($this->authApi,$this->companyId,$this->redirect,$this->agentId);
-                return Response::create($redirect);
+                return \redirect($redirect);
             }
         }else{
             $redirect = sprintf($this->authApi,$this->companyId,$this->redirect,$this->agentId);
-            return Response::create($redirect);
+            return \redirect($redirect);
         }
 
     }
