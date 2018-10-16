@@ -40,11 +40,11 @@ class Index extends Base{
             }else{
                 $this->redirect = Request::url(true);
                 $redirect = sprintf($this->authApi,$this->companyId,$this->redirect,$this->agentId);
-                header("Location:%s",$redirect);
+                header(sprintf("Location: %s;",$redirect));
             }
         }else{
             $redirect = sprintf($this->authApi,$this->companyId,$this->redirect,$this->agentId);
-            header("Location:%s",$redirect);
+            header(sprintf("Location: %s;",$redirect));
         }
         $viewPermission = Department::getInstance()->loginUserViewPermission($userInfo["department"]);
         $viewPermissionId = [];
