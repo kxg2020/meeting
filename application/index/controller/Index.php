@@ -30,6 +30,13 @@ class Index extends Base{
         if($code){
             $userBasic = WeChat::getInstance()->setCode($code)->getUserBasic();
             $userInfo  = WeChat::getInstance()->getUserInfo($userBasic["UserId"]);
+            $viewPermission = Department::getInstance()->loginUserViewPermission($userInfo["department"]);
+            $viewPermissionId = [];
+            if($viewPermission["data"]){
+                array_walk($viewPermission["data"],function ($value) use (&$viewPermissionId){
+                    $viewPermissionId[] = $value["meetingTypeId"];
+                });
+            }
             if($userBasic){
                 $user = User::getInstance()->getUserByUserId($userBasic["UserId"]);
                 if(!$user["data"]){
@@ -37,6 +44,10 @@ class Index extends Base{
                 }else{
                     User::getInstance()->setUserInfo($userInfo)->updateUser($userBasic["UserId"])->updatePermission($userInfo);
                 }
+                return view('index', [
+                    'token' => Jwt::getInstance()->createToken("user_id",$userBasic["UserId"]),
+                    "permission_ids"  => $viewPermissionId,
+                ]);
             }else{
                 $this->redirect = Request::url(true);
                 $redirect = sprintf($this->authApi,$this->companyId,$this->redirect,$this->agentId);
@@ -46,17 +57,7 @@ class Index extends Base{
             $redirect = sprintf($this->authApi,$this->companyId,$this->redirect,$this->agentId);
             header(sprintf("Location: %s;",$redirect));
         }
-        $viewPermission = Department::getInstance()->loginUserViewPermission($userInfo["department"]);
-        $viewPermissionId = [];
-        if($viewPermission["data"]){
-            array_walk($viewPermission["data"],function ($value) use (&$viewPermissionId){
-                $viewPermissionId[] = $value["meetingTypeId"];
-            });
-        }
-       return view('index', [
-           'token' => Jwt::getInstance()->createToken("user_id",$userBasic["UserId"]),
-           "permission_ids"  => $viewPermissionId,
-       ]);
+
     }
 
 }
