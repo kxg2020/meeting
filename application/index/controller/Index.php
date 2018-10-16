@@ -39,13 +39,12 @@ class Index extends Base{
                 }
             }else{
                 $this->redirect = Request::url(true);
-                Log::write("request url :".$this->redirect);
                 $redirect = sprintf($this->authApi,$this->companyId,$this->redirect,$this->agentId);
-                return redirect($redirect);
+                header("Location:%s",$redirect);
             }
         }else{
             $redirect = sprintf($this->authApi,$this->companyId,$this->redirect,$this->agentId);
-            return redirect($redirect);
+            header("Location:%s",$redirect);
         }
         $viewPermission = Department::getInstance()->loginUserViewPermission($userInfo["department"]);
         $viewPermissionId = [];
