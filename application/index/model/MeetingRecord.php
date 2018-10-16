@@ -107,7 +107,8 @@ class MeetingRecord extends Base{
             "meeting_record_id" => $resultRecord,
             "type"        => $value["political_id"],
             "create_time" => time(),
-            "title"       => $value["title"]
+            "title"       => $value["title"],
+            "content"     => $value["content"]
         ];
         \app\index\service\Format::getInstance()
             ->fileContainerFlush()
