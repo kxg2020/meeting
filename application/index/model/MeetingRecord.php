@@ -81,8 +81,7 @@ class MeetingRecord extends Base{
             if(!$userMeetingId["data"]){
                 Format::getInstance()->commit = false;
             }
-            $departmentRealId = Department::getInstance()->departmentRealId($params["user_invitation_id"]);
-            $params["department_real_id"] = $departmentRealId["data"];
+            $params["department_real_id"] = $params["department_id"];
             if(isset($params["issue_list"]) && $params["issue_list"]){
                 foreach($params["issue_list"] as $key => $value){
                     $this->meetingInsert($value,$resultRecord,$params);
