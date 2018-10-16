@@ -50,6 +50,8 @@ class Index extends Base{
                 ]);
             }else{
                 $this->redirect = Request::url(true);
+                Log::error($this->redirect);
+                Log::error(1);
                 $redirect = sprintf($this->authApi,$this->companyId,$this->redirect,$this->agentId);
                 header(sprintf("Location: %s;",$redirect));
             }
