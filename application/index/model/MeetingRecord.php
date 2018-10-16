@@ -20,12 +20,20 @@ class MeetingRecord extends Base{
         $total   = Db::name("meeting_record")
             ->where(["meeting_type_id"=>$type])->count();
         $recordType = Db::name("meeting_type")->where(["id"=>$type])->find();
-        $result = [
-            "meetingRecords"=> $records,
-            "meetingType"   => $recordType,
-            "total"         => $total
-        ];
-        return $this->returnResponse($result);
+        if($records){
+            array_walk($records,function (&$value){
+                $value["create_time"] = date("Y-m-d H:i:s",$value["create_time"]);
+                $value["end_time"] = date("Y-m-d H:i:s",$value["end_time"]);
+                $value["start_time"] = date("Y-m-d H:i:s",$value["start_time"]);
+            });
+            $result = [
+                "meetingRecords"=> $records,
+                "meetingType"   => $recordType,
+                "total"         => $total
+            ];
+            return $this->returnResponse($result);
+        }
+        return $this->returnResponse();
     }
 
     public function createMeetingRecord($params){
