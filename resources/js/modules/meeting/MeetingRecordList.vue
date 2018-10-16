@@ -10,15 +10,15 @@
             </div>
             <div class="meeting-noti">
               <span>主持人</span>
-              <span>{{meetingItem.create_user_id}}</span>
+              <span>{{meetingItem.create_user_name}}</span>
             </div>
             <div class="meeting-noti">
               <span>开始时间</span>
-              <span>{{meetingItem.create_time}}</span>
+              <span>{{meetingItem.start_time}}</span>
             </div>
             <div class="meeting-noti">
               <span>结束时间</span>
-              <span>{{meetingItem.create_time}}</span>
+              <span>{{meetingItem.end_time}}</span>
             </div>
           </div>
         </div>
