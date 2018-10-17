@@ -184,14 +184,6 @@
   .vote-item:nth-child(n+1) {
     margin-top: 15px;
   }
-  .block{
-    display: block;
-    padding: 20px 10px 10px;
-    background-color: #fff;
-    margin-bottom: 14px;
-    background-color: #FFFFFF;
-    border-radius: 10px;
-  }
   .join-user-title{
     font-size: 14px;
     color: rgb(149, 149, 149);

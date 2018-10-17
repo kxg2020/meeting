@@ -537,14 +537,6 @@
     text-align: left;
   }
 
-  .submit {
-    padding: 10px;
-  }
-
-  .submit-btn {
-    width: 100%;
-  }
-
   .meeting-image{
     display: flex;
     justify-content: center;

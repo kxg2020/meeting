@@ -1,45 +1,53 @@
 <template>
   <div class="main">
-    <div class="issue-info" v-if="issue">
-      <h3 class="issue-title">{{issue.title}}</h3>
-      <div class="issue-content">
-        {{issue.content}}
-      </div>
-      <div class="issue-images">
-        <img class="issue-image" v-for="(image, imageIndex) in issue.images" :key="imageIndex" :src="image.file_url"
-             alt="">
-      </div>
-      <div class="issue-files">
-        <div class="item-header">
-          <!--<i class="fa fa-file"></i><span style="margin-left: 1em;">附件</span>-->
+    <div class="issue">
+      <div class="block" v-if="issue">
+        <h3 class="issue-title">{{issue.issue_name}}</h3>
+        <div class="issue-content">
+          {{issue.content}}
         </div>
-        <FileList :files="issue.files" :show-remove="false" :show-download="true" :preview="true"></FileList>
-      </div>
-      <div v-if="issue.votes.length > 0" class="issue-vote">
-        <div class="item-header">
-          <i class="fa fa-hand-paper-o"></i><span style="margin-left: 1em;">{{issue.political_name}}</span>
+        <div class="issue-images">
+          <img class="issue-image" v-for="(image, imageIndex) in issue.images" :key="imageIndex" :src="image.file_url"
+               alt="">
         </div>
-        <div class="vote-list">
-          <div class="vote-item" v-for="(vote, voteIndex) in issue.votes" :key="'v' + voteIndex">
-            <div v-for="(voteValue, voteValueIndex) in vote.values" class="vote-item-notice" :key="'i' + voteValueIndex">
-              选项{{(voteValueIndex + 1).ConvertToChinese()}}  <span style="color: #409EFF;">{{voteValue.value}}</span>
-              <div v-if="voteValue.files.length > 0">
-                <div class="file-header">
-                  <!--<i class="fa fa-file"></i><span style="margin-left: 1em;">附件</span>-->
-                </div>
-                <FileList :files="voteValue.files" :show-remove="false" :show-download="true" :preview="true"></FileList>
-              </div>
-            </div>
-            <div style="margin-top: 10px;padding-top: 10px;border-top: 1px solid #eee;">
-              <span>请{{issue.political_name}}</span>
-              <el-radio-group v-model="voteSelects[voteIndex]" size="mini">
-                <el-radio :label="voteValueIndex" border v-for="(voteValue, voteValueIndex) in vote.values"
-                          :key="'r' + voteValueIndex">{{voteValue.value}}
-                </el-radio>
-              </el-radio-group>
+        <div class="issue-files">
+          <FileList :files="issue.files" :show-remove="false" :show-download="true" :preview="true"></FileList>
+        </div>
+      </div>
+      <div v-if="bjVotes.length > 0" class="block">
+        <div class="item-header">
+          <i class="fa fa-hand-paper-o"></i><span style="margin-left: 1em;">表决</span>
+        </div>
+        <div class="vote-item" v-for="(bj, bjIndex) in bjVotes" :key="'bj' + bjIndex">
+          <div class="vote-title">{{bj.title}}</div>
+          <el-radio-group v-model="bjVoteSelect[bjIndex]" size="mini">
+            <el-radio :label="optionIndex" border v-for="(option, optionIndex) in bj.options"
+                      :key="'bji' + optionIndex">{{option}}
+            </el-radio>
+          </el-radio-group>
+        </div>
+      </div>
+      <div v-if="tpVotes.length > 0" class="block">
+        <div class="item-header">
+          <i class="fa fa-hand-paper-o"></i><span style="margin-left: 1em;">投票</span>
+        </div>
+        <div class="vote-item" v-for="(tp, tpIndex) in tpVotes" :key="'tp' + tpIndex">
+          <div class="vote-title">{{tp.title}}</div>
+          <div v-for="(option, optionIndex) in tp.options" class="vote-item-notice" :key="'tpf' + optionIndex" v-if="option.files.length > 0">
+            选项{{(optionIndex + 1).ConvertToChinese()}} <span style="color: #409EFF;">{{option.choose_name}}</span>
+            <div>
+              <FileList :files="option.files" :show-remove="false" :show-download="true" :preview="true"></FileList>
             </div>
           </div>
+          <el-radio-group v-model="tpVoteSelect[tpIndex]" size="mini">
+            <el-radio :label="optionIndex" border v-for="(option, optionIndex) in tp.options"
+                      :key="'tpi' + optionIndex">{{option.choose_name}}
+            </el-radio>
+          </el-radio-group>
         </div>
+      </div>
+      <div class="submit" v-if="tpVotes.length > 0 || bjVotes.length > 0">
+        <el-button class="submit-btn" type="primary" plain @click="voteSubmit" :loading="submitLoading">提交投票</el-button>
       </div>
     </div>
   </div>
@@ -47,11 +55,17 @@
 
 <script>
   import FileList from '../../components/FileList'
+
   export default {
     name: "MeetingRecordIssue",
     data() {
       return {
-        issue: null
+        issue: null,
+        bjVotes: [],
+        bjVoteSelect: [],
+        tpVotes: [],
+        tpVoteSelect: [],
+        submitLoading: false
       }
     },
     components: {
@@ -71,113 +85,53 @@
         let _this = this
         _this.axios.get('/meetingRecord/detail/' + id).then(res => {
           _this.issue = res.data
-          _this.issue = {
-            id: 1,
-            title: '关于xxx议题',
-            political_name: "投票",
-            content: '议题内容议题内容议题内容议题内容议题内容议题内容议题内容议题内容议题内容议' +
-              '议题内容议题内容议题内容议题内容议题内容议题内容议题内容议题内容议题内容议题内容议' +
-              '题内容议题内容议题内容议题内容议题内容议题内容议题内容议题内容议题内容议题内容议题' +
-              '内容议题内容议题内容题内容议题内容',
-            images: [
-              {
-                file_name: 'xxxx.png',
-                file_url: 'https://img.it9g.com/other/FvO_Csuv2DyvYZxzc97xjxLWyoeO.jpeg'
-              },
-              {
-                file_name: 'xxxx.png',
-                file_url: 'https://img.it9g.com/other/FvO_Csuv2DyvYZxzc97xjxLWyoeO.jpeg'
-              },
-            ],
-            files: [
-              {
-                file_name: 'liphp3bw52hptAX1FABEYjQ1u6I_.pdf',
-                file_url: 'https://img.it9g.com/doc/liphp3bw52hptAX1FABEYjQ1u6I_.pdf'
-              },
-              {
-                file_name: 'doc/FsvAtDay7Ay6ZfKtPufnUjjI69Mn.doc',
-                file_url: 'https://img.it9g.com/doc/FsvAtDay7Ay6ZfKtPufnUjjI69Mn.doc'
+          if (_this.issue.issue_short_name == 'yz') {
+
+          }
+          if (_this.issue.issue_short_name == 'bj') {
+            let bjVotes = []
+            for (let option of _this.issue.option) {
+              let vote = {}
+              vote.title = option.options[0].title
+              vote.options = option.options[0].choose_name.split(',')
+              bjVotes.push(vote)
+              _this.bjVoteSelect.push(0)
+            }
+            _this.bjVotes = bjVotes
+          }
+          if (_this.issue.issue_short_name == 'tp') {
+            let tpVotes = []
+            for (let option of _this.issue.option) {
+              let vote = {}
+              let options = []
+              vote.title = option.options[0].title
+              for (let i in option.options) {
+                options.push({
+                  files: option.options[i].file,
+                  choose_name: option.options[i].choose_name
+                })
               }
-            ],
-            votes: [
-              {
-                values: [
-                  {
-                    value: "张三",
-                    files: [
-                      {
-                        file_name: '张三.png',
-                        file_url: 'https://img.it9g.com/other/FvO_Csuv2DyvYZxzc97xjxLWyoeO.jpeg'
-                      },
-                      {
-                        file_name: 'doc/FsvAtDay7Ay6ZfKtPufnUjjI69Mn.doc',
-                        file_url: 'https://img.it9g.com/doc/FsvAtDay7Ay6ZfKtPufnUjjI69Mn.doc'
-                      }
-                    ]
-                  },
-                  {
-                    value: "李四",
-                    files: [
-                      {
-                        file_name: '李四.png',
-                        file_url: 'https://img.it9g.com/other/FvO_Csuv2DyvYZxzc97xjxLWyoeO.jpeg'
-                      },
-                      {
-                        file_name: 'doc/FsvAtDay7Ay6ZfKtPufnUjjI69Mn.doc',
-                        file_url: 'https://img.it9g.com/doc/FsvAtDay7Ay6ZfKtPufnUjjI69Mn.doc'
-                      }
-                    ]
-                  }
-                ]
-              },
-              {
-                values: [
-                  {
-                    value: "十万",
-                    files: [
-                      {
-                        file_name: '十万.png',
-                        file_url: 'https://img.it9g.com/other/FvO_Csuv2DyvYZxzc97xjxLWyoeO.jpeg'
-                      },
-                      {
-                        file_name: '十万.doc',
-                        file_url: 'https://img.it9g.com/doc/FsvAtDay7Ay6ZfKtPufnUjjI69Mn.doc'
-                      },
-                    ]
-                  },
-                  {
-                    value: "百万",
-                    files: [
-                      {
-                        file_name: '百万.png',
-                        file_url: 'https://img.it9g.com/other/FvO_Csuv2DyvYZxzc97xjxLWyoeO.jpeg'
-                      },
-                      {
-                        file_name: '百万.doc',
-                        file_url: 'https://img.it9g.com/doc/FsvAtDay7Ay6ZfKtPufnUjjI69Mn.doc'
-                      },
-                    ]
-                  }
-                ]
-              },
-            ]
+              vote.options = options
+              tpVotes.push(vote)
+              _this.tpVoteSelect.push(0)
+            }
+            _this.tpVotes = tpVotes
           }
-          let voteSelects = {}
-          for (let voteIndex in this.issue.votes) {
-            voteSelects[voteIndex] = 0
-          }
-          this.voteSelects = voteSelects
         }).catch(err => {
         })
+      },
+      voteSubmit() {
+        console.log(this.issue.issue_short_name)
+        console.log(this.bjVoteSelect)
+        console.log(this.tpVoteSelect)
       }
     }
   }
 </script>
 
 <style scoped>
-
-  .issue-info{
-    padding: 15px;
+  .issue {
+    padding: 0 15px;
   }
 
   .issue-title {
@@ -236,7 +190,16 @@
     border-radius: 5px;
   }
 
+  .vote-title {
+    padding: .5em 0;
+    font-size: 14px;
+  }
+
   .vote-item:nth-child(n+1) {
     margin-top: 15px;
+  }
+
+  .submit {
+    padding: 10px 0;
   }
 </style>
