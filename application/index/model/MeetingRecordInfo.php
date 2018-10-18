@@ -30,7 +30,7 @@ class MeetingRecordInfo extends Base{
             ->leftJoin("meeting_political b","a.type = b.id")
             ->where(["a.id" => $issueId])
             ->find();
-        
+
         if($issueDetail){
             $result["content"] = $issueDetail["content"];
             $result["issue_name"] = $issueDetail["title"];
@@ -80,14 +80,16 @@ class MeetingRecordInfo extends Base{
                     if(in_array($item["vote_name"],$voteTitle)){
                         $result["option"][$subjectIndex]["options"][] = [
                             "title"       => $item["vote_name"],
+                            "choose_id"   => $item["id"],
                             "choose_name" => $item["vote_choose"],
-                            "file"        => $file["data"]
+                            "file"        => $file["data"],
                         ];
                     }else{
                         $voteLength = array_push($voteTitle,$item["vote_name"]);
                         $subjectIndex = $voteLength - 1;
                         $result["option"][$subjectIndex]["options"][] = [
                             "title"       => $item["vote_name"],
+                            "choose_id"   => $item["id"],
                             "choose_name" => $item["vote_choose"],
                             "file"        => $file["data"],
                         ];
