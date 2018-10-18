@@ -43,7 +43,7 @@ class Format{
                 $this->fileId[] = $this->createFile($value);
             }
         }
-//        $this->meetingInfo["content"] = isset($this->params["content"]) ? $this->params["content"] : "";
+
         $this->meetingInfo["file_id"] = implode(",",$this->fileId);
     }
 

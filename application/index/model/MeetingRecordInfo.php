@@ -26,13 +26,15 @@ class MeetingRecordInfo extends Base{
         // ÒéÌâÏêÇé
         $issueDetail = Db::name("meeting_record_info")
             ->alias("a")
-            ->field("b.name,b.short_name,a.title,a.file_id,a.content")
+            ->field("b.name,b.short_name,a.title,a.file_id,a.content,a.id")
             ->leftJoin("meeting_political b","a.type = b.id")
             ->where(["a.id" => $issueId])
             ->find();
+        
         if($issueDetail){
             $result["content"] = $issueDetail["content"];
             $result["issue_name"] = $issueDetail["title"];
+            $result["issue_id"] = $issueDetail["id"];
             $result["issue_short_name"] = $issueDetail["short_name"];
             $result["images"] = [];
             $result["files"]  = [];
