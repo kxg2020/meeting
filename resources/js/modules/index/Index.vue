@@ -22,12 +22,12 @@
       <van-panel class="notice-panel">
         <div slot="header" class="notice-header">
           <h2 style="display: inline-block">新闻公告</h2>
-          <span>更多 <i class="fa fa-angle-right"></i></span>
+          <span @click="toNoticeList">更多 <i class="fa fa-angle-right"></i></span>
         </div>
-        <div class="notice-body">
+        <div class="notice-body" @click="toNotice(1)">
           <img src="https://meeting.it9g.com/static/uploads/2018-10-13/zhangtao/071211270918e826d6019690.jpg" alt="">
           <div class="notice-info">
-            <div class="notice-info-title">公告标题呵呵呵呵</div>
+            <div class="notice-info-title" style="height: 60px;">公告标题呵呵呵呵</div>
             <div class="notice-info-time">2018-10-18</div>
           </div>
         </div>
@@ -75,12 +75,22 @@
       },
       onSearch () {
         this.$toast(this.searchValue)
+      },
+      toNoticeList() {
+        this.$router.push({path: '/notices'})
+      },
+      toNotice(id) {
+        this.$router.push({path: '/notice/' + id})
       }
     }
   }
 </script>
 
 <style scoped>
+  .main-container{
+    margin-bottom: 50px;
+  }
+
   .meeting-type-list {
     display: flex;
     flex-direction: row;
@@ -133,32 +143,5 @@
     color: #9a9a9a;
     font-size: 14px;
     line-height: 24px;
-  }
-
-  .notice-body{
-    display: flex;
-    flex-direction: row;
-    justify-content: space-between;
-  }
-
-  .notice-body img{
-    width: 100px;
-    height: 80px;
-    display: block;
-  }
-
-  .notice-info{
-    width: calc(100% - 120px);
-  }
-
-  .notice-info-title{
-    height: 60px;
-    overflow: hidden;
-    line-height: 30px;
-  }
-
-  .notice-info-time{
-    font-size: 14px;
-    color: rgba(69,90,100,.6);
   }
 </style>

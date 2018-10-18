@@ -24,7 +24,7 @@
           {
             name: '新闻公告',
             icon: 'chat',
-            path: '/notice'
+            path: '/notices'
           },
           {
             name: '个人中心',

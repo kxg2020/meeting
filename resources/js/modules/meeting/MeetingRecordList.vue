@@ -152,14 +152,4 @@
   .meeting-noti span:nth-child(2){
     width: 60%;
   }
-  .bottom-noti{
-    text-align: center;
-    line-height: 1.5em;
-    margin-bottom: .5em;
-    color: #666;
-    font-size: 14px;
-  }
-  .link{
-    color: #38f;
-  }
 </style>
