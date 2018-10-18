@@ -1,8 +1,6 @@
 <template>
-  <van-tabbar v-model="active">
-    <van-tabbar-item icon="wap-home">首页</van-tabbar-item>
-    <van-tabbar-item icon="chat">消息</van-tabbar-item>
-    <van-tabbar-item icon="contact">个人中心</van-tabbar-item>
+  <van-tabbar v-model="active" @change="change">
+    <van-tabbar-item v-for="(navigator, index) in navigators" :icon="navigator.icon" :key="index">{{navigator.name}}</van-tabbar-item>
   </van-tabbar>
 </template>
 
@@ -13,6 +11,32 @@
       active: {
         type: Number,
         default: 0
+      }
+    },
+    data () {
+      return {
+        navigators: [
+          {
+            name: '首页',
+            icon: 'wap-home',
+            path: '/index'
+          },
+          {
+            name: '新闻公告',
+            icon: 'chat',
+            path: '/notice'
+          },
+          {
+            name: '个人中心',
+            icon: 'contact',
+            path: '/member'
+          },
+        ]
+      }
+    },
+    methods: {
+      change(active) {
+        this.$router.push({path: this.navigators[active].path})
       }
     }
   }

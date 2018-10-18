@@ -2,6 +2,8 @@ import Vue from 'vue'
 import Router from 'vue-router'
 import Index from '../modules/index'
 import Meeting from '../modules/meeting'
+import Notice from '../modules/notice'
+import Member from '../modules/member'
 Vue.use(Router)
 
 // import store from '../store'
@@ -10,7 +12,9 @@ const router = new Router({
   // mode: 'history',
   routes: [
     ...Index,
-    ...Meeting
+    ...Meeting,
+    ...Notice,
+    ...Member,
   ]
 })
 // 路由监听
