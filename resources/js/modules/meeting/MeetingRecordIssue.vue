@@ -93,6 +93,7 @@
             for (let option of _this.issue.option) {
               let vote = {}
               vote.title = option.options[0].title
+              vote.choose_id = option.options[0].choose_id
               vote.options = option.options[0].choose_name.split(',')
               bjVotes.push(vote)
               _this.bjVoteSelect.push(0)
@@ -108,7 +109,8 @@
               for (let i in option.options) {
                 options.push({
                   files: option.options[i].file,
-                  choose_name: option.options[i].choose_name
+                  choose_name: option.options[i].choose_name,
+                  choose_id: option.options[i].choose_id
                 })
               }
               vote.options = options
@@ -121,9 +123,28 @@
         })
       },
       voteSubmit() {
-        console.log(this.issue.issue_short_name)
-        console.log(this.bjVoteSelect)
-        console.log(this.tpVoteSelect)
+        let _this = this
+        let postData = new URLSearchParams()
+        postData.append('issue_id', _this.issue.issue_id)
+        postData.append('issue_short_name', _this.issue.issue_short_name)
+        if (_this.issue.issue_short_name == 'bj') {
+          let votes = []
+          for (let i in _this.bjVotes) {
+            votes.push({
+              choose_id: _this.bjVotes[i].choose_id,
+              select_index: _this.bjVoteSelect[i]
+            })
+          }
+          postData.append('votes', JSON.stringify(votes))
+        }
+        if (_this.issue.issue_short_name == 'tp') {
+          let votes = []
+          for (let i in _this.tpVoteSelect) {
+            votes.push(_this.tpVotes[i].options[_this.tpVoteSelect[i]].choose_id)
+          }
+          postData.append('votes', JSON.stringify(votes))
+        }
+        console.log(postData.toString())
       }
     }
   }
