@@ -1,12 +1,7 @@
 import Index from './Index.vue'
-export default [
-  {
-    path: '/',
-    redirect: '/index'
-  },
-  {
-    name: 'Index',
-    path: '/index',
-    component: Index
-  },
-]
+export default []
+export let rootIndex = {
+  name: 'Index',
+  path: '/index',
+  component: Index
+}

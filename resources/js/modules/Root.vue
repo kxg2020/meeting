@@ -1,18 +1,15 @@
 <template>
-  <van-tabbar v-model="active" @change="change">
-    <van-tabbar-item v-for="(navigator, index) in navigators" :icon="navigator.icon" :key="index">{{navigator.name}}</van-tabbar-item>
-  </van-tabbar>
+  <div class="main">
+    <router-view />
+    <van-tabbar v-model="activeIndex" @change="change">
+      <van-tabbar-item v-for="(navigator, index) in navigators" :icon="navigator.icon" :key="index">{{navigator.name}}</van-tabbar-item>
+    </van-tabbar>
+  </div>
 </template>
 
 <script>
   export default {
-    name: "Tabbar",
-    props: {
-      active: {
-        type: Number,
-        default: 0
-      }
-    },
+    name: "Root",
     data () {
       return {
         navigators: [
@@ -31,11 +28,20 @@
             icon: 'contact',
             path: '/member'
           },
-        ]
+        ],
+        activeIndex: 0
+      }
+    },
+    created () {
+      for (let index in this.navigators) {
+        if (this.$route.path == this.navigators[index].path) {
+          this.activeIndex = parseInt(index)
+        }
       }
     },
     methods: {
       change(active) {
+        this.activeIndex = active
         this.$router.push({path: this.navigators[active].path})
       }
     }

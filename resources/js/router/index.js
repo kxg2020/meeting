@@ -1,9 +1,10 @@
 import Vue from 'vue'
 import Router from 'vue-router'
-import Index from '../modules/index'
+import Root from '../modules/Root.vue'
+import {rootIndex} from '../modules/index'
 import Meeting from '../modules/meeting'
-import Notice from '../modules/notice'
-import Member from '../modules/member'
+import {rootNotice} from '../modules/notice'
+import {rootMember} from '../modules/member'
 Vue.use(Router)
 
 // import store from '../store'
@@ -11,10 +12,17 @@ Vue.use(Router)
 const router = new Router({
   // mode: 'history',
   routes: [
-    ...Index,
+    {
+      path: '/',
+      redirect: '/index',
+      component: Root,
+      children: [
+        rootIndex,
+        rootNotice,
+        rootMember
+      ]
+    },
     ...Meeting,
-    ...Notice,
-    ...Member,
   ]
 })
 // 路由监听

@@ -1,6 +1,5 @@
 <template>
-  <div class="main">
-    <div class="main-container">
+  <div class="main-container">
       <van-search
         v-model="searchValue"
         placeholder="请输入搜索关键词"
@@ -33,13 +32,9 @@
         </div>
       </van-panel>
     </div>
-    <Tabbar :active="0"></Tabbar>
-  </div>
 </template>
 
 <script>
-  import Tabbar from '../../components/Tabbar'
-
   export default {
     name: "Index",
     data() {
@@ -48,9 +43,6 @@
         meetingTypeList: [],
         permission_ids: []
       }
-    },
-    components: {
-      Tabbar
     },
     created() {
       window.setTitle("首页")

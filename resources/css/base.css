@@ -41,7 +41,7 @@ html, body, #app, .main {
 .bottom-noti {
   text-align: center;
   line-height: 1.5em;
-  margin-bottom: .5em;
+  padding-bottom: 14px;
   color: #666;
   font-size: 14px;
 }
