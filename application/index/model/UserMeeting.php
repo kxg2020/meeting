@@ -41,7 +41,7 @@ class UserMeeting extends Base{
             ->alias("a")
             ->field("b.name,b.avatar,b.user_id")
             ->leftJoin("user b","a.user_id = b.user_id")
-            ->where(["a.meeting_record_id" => $meetingRecordId])
+            ->where(["a.meeting_record_id" => $meetingRecordId,"a.status" => 1])
             ->group("a.user_id")
             ->select();
         if($result){
