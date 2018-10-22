@@ -124,9 +124,9 @@
       },
       voteSubmit() {
         let _this = this
-        let postData = new URLSearchParams()
-        postData.append('issue_id', _this.issue.issue_id)
-        postData.append('issue_short_name', _this.issue.issue_short_name)
+        let postData = {}
+        postData.issue_id = _this.issue.issue_id
+        postData.issue_short_name = _this.issue.issue_short_name
         if (_this.issue.issue_short_name == 'bj') {
           let votes = []
           for (let i in _this.bjVotes) {
@@ -135,16 +135,16 @@
               select_index: _this.bjVoteSelect[i]
             })
           }
-          postData.append('votes', JSON.stringify(votes))
+          postData.votes = votes
         }
         if (_this.issue.issue_short_name == 'tp') {
           let votes = []
           for (let i in _this.tpVoteSelect) {
             votes.push(_this.tpVotes[i].options[_this.tpVoteSelect[i]].choose_id)
           }
-          postData.append('votes', JSON.stringify(votes))
+          postData.votes = votes
         }
-        console.log(postData.toString())
+        console.log(JSON.stringify(postData))
       }
     }
   }
