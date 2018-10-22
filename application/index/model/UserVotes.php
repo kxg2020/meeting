@@ -47,6 +47,7 @@ class UserVotes extends Base{
                 "create_time"       => time(),
                 "type"              => Enum::READ,
                 "issue_name"        => $this->meeting["title"],
+                "vote_id"           => -1,
             ];
             Db::name("user_votes")->insert($insert);
         }
