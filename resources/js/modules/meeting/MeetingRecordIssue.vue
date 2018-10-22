@@ -1,7 +1,7 @@
 <template>
   <div class="main">
-    <div class="issue">
-      <div class="block" v-if="issue">
+    <div class="issue" v-if="issue">
+      <div class="block">
         <h3 class="issue-title">{{issue.issue_name}}</h3>
         <div class="issue-content">
           {{issue.content}}
@@ -46,8 +46,12 @@
           </el-radio-group>
         </div>
       </div>
-      <div class="submit" v-if="tpVotes.length > 0 || bjVotes.length > 0">
-        <el-button class="submit-btn" type="primary" plain @click="voteSubmit" :loading="submitLoading">提交投票</el-button>
+      <div class="submit">
+        <el-button class="submit-btn" type="primary" plain @click="voteSubmit" :loading="submitLoading">
+          {{issue.issue_short_name == 'yz' ? '已阅' : ''}}
+          {{issue.issue_short_name == 'bj' ? '提交表决' : ''}}
+          {{issue.issue_short_name == 'tp' ? '提交投票' : ''}}
+        </el-button>
       </div>
     </div>
   </div>
@@ -144,6 +148,14 @@
           }
           postData.votes = votes
         }
+        _this.axios.post('/userVotes/create', postData).then(res => {
+          if (res.status) {
+            _this.$toast(res.msg)
+            // todo 更新
+          } else {
+            _this.$toast(res.msg)
+          }
+        }).catch(err => {})
         console.log(JSON.stringify(postData))
       }
     }
