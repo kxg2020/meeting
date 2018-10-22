@@ -48,6 +48,7 @@ class UserVotes extends Base{
                     "create_time"       => time(),
                     "type"              => Enum::BALLOT,
                     "choose"            => $value["select_index"],
+                    "vote_name"         => $this->meeting["vote_name"],
                 ];
             });
             Db::name("user_votes")->insertAll($insert);
@@ -65,6 +66,7 @@ class UserVotes extends Base{
                     "create_time"       => time(),
                     "type"              => Enum::VOTE,
                     "choose"            => $value,
+                    "vote_name"         => $this->meeting["vote_name"],
                 ];
             });
             Db::name("user_votes")->insertAll($insert);
@@ -73,7 +75,7 @@ class UserVotes extends Base{
 
     private function findAndCreate($params){
         $meeting = Db::name("meeting_votes")
-            ->field("a.id as votes_id,b.id as meeting_info_id,c.id as meeting_record_id")
+            ->field("a.id as votes_id,a.vote_name,b.id as meeting_info_id,c.id as meeting_record_id")
             ->alias("a")
             ->leftJoin("meeting_record_info b","a.meeting_info_id = b.id")
             ->leftJoin("meeting_record c","b.meeting_record_id = c.id")
