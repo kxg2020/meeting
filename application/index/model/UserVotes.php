@@ -85,10 +85,12 @@ class UserVotes extends Base{
     }
 
     private function createVote($params){
+
         if(isset($params["votes"]) && !empty($params["votes"])){
             $insert = [];
             array_walk($params["votes"],function ($value) use (&$insert,$params){
-                $exist = $this->whetherRecordExist($value);
+                $exist = $this->whetherRecordExist($value,$this->meeting["vote_name"]);
+                var_dump($exist);
                 if($exist){
                     $condition = [
                         "meeting_record_id" => $this->meeting["meeting_record_id"],
@@ -96,7 +98,8 @@ class UserVotes extends Base{
                         "user_id"           => Request::instance()->userId,
                         "meeting_info_id"   => $this->params["issue_id"],
                         "issue_name"        => $this->meeting["title"],
-                        "vote_id"           => $this->params["issue_id"]
+                        "vote_id"           => $this->params["issue_id"],
+                        "vote_name"         => $this->meeting["vote_name"],
                     ];
                     Db::name("user_votes")->where($condition)->update(["choose" => $value]);
                 }else{
@@ -108,6 +111,7 @@ class UserVotes extends Base{
                         "type"              => Enum::VOTE,
                         "choose"            => $value,
                         "issue_name"        => $this->meeting["title"],
+                        "vote_name"         => $this->meeting["vote_name"],
                         "vote_id"           => $this->params["issue_id"]
                     ];
                     Db::name("user_votes")->insert($insert);
@@ -133,7 +137,7 @@ class UserVotes extends Base{
       return  UserMeeting::getInstance()->updateUserMeetingStatus($params);
     }
 
-    private function whetherRecordExist($voteId){
+    private function whetherRecordExist($voteId,$voteName = ""){
         $condition = [
             "meeting_record_id" => $this->meeting["meeting_record_id"],
             "type"              => $this->params["issue_short_name"],
@@ -141,6 +145,9 @@ class UserVotes extends Base{
             "meeting_info_id"   => $this->params["issue_id"],
             "vote_id"           => $voteId
         ];
+        if($voteName){
+            $condition["vote_name"] = $voteName;
+        }
 
         $record = Db::name("user_votes")->where($condition)->count();
 
