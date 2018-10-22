@@ -88,7 +88,7 @@ class UserVotes extends Base{
         if(isset($params["votes"]) && !empty($params["votes"])){
             $insert = [];
             array_walk($params["votes"],function ($value) use (&$insert,$params){
-                $exist = $this->whetherRecordExist($value["choose_id"]);
+                $exist = $this->whetherRecordExist($value);
                 if($exist){
                     $condition = [
                         "meeting_record_id" => $this->meeting["meeting_record_id"],
@@ -96,7 +96,7 @@ class UserVotes extends Base{
                         "user_id"           => Request::instance()->userId,
                         "meeting_info_id"   => $this->params["issue_id"],
                         "issue_name"        => $this->meeting["title"],
-                        "vote_id"           => $value["choose_id"]
+                        "vote_id"           => $this->params["issue_id"]
                     ];
                     Db::name("user_votes")->where($condition)->update(["choose" => $value]);
                 }else{
@@ -108,7 +108,7 @@ class UserVotes extends Base{
                         "type"              => Enum::VOTE,
                         "choose"            => $value,
                         "issue_name"        => $this->meeting["title"],
-                        "vote_id"           => $value["choose_id"]
+                        "vote_id"           => $this->params["issue_id"]
                     ];
                     Db::name("user_votes")->insert($insert);
                 }
@@ -152,6 +152,7 @@ class UserVotes extends Base{
 
     public function findUserVote($params){
         $vote = Db::name("user_votes")->where($params)->find();
+
         if($vote){
             return true;
         }

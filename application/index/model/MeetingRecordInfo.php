@@ -103,6 +103,7 @@ class MeetingRecordInfo extends Base{
                         "user_id"   => Request::instance()->userId,
                         "type"      => $type
                     ];
+
                     $userVote = UserVotes::getInstance()->findUserVote($userVoteCondition);
                     if(in_array($item["vote_name"],$voteTitle)){
                         $result["option"][$subjectIndex]["options"][] = [
