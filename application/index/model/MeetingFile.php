@@ -13,6 +13,10 @@ class MeetingFile extends Base{
     public function issueFileList($fileId){
         $file = Db::name("meeting_file")->where("id","in",$fileId)->select();
         if($file){
+            array_walk($file,function (&$value){
+                $value["file_url"] = $value["url"];
+                unset($value["url"]);
+            });
             return $this->returnResponse($file);
         }
         return $this->returnResponse();

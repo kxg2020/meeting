@@ -50,4 +50,7 @@ Route::group("/api/",function(){
     #会议议题详情
     Route::get("meetingRecord/detail/:issueId","MeetingRecordInfo/meetingRecordIssueInfo");
 
+    #创建用户投票
+    Route::post("userVotes/create","UserVotes/createUserVotes");
+
 })->middleware(\app\index\service\Auth::class);
