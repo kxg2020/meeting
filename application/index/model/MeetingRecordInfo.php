@@ -98,7 +98,7 @@ class MeetingRecordInfo extends Base{
                 foreach ($votes["data"] as $index => $item){
                     $file = MeetingFile::getInstance()->votesFileList($item["file_id"]);
                     $userVoteCondition = [
-                        "vote_name" => $item["vote_name"],
+                        "vote_id"   => $item["id"],
                         "choose"    => $type == Enum::BALLOT ? 0 : $item["id"],
                         "user_id"   => Request::instance()->userId,
                         "type"      => $type
