@@ -3,6 +3,7 @@ namespace app\index\model;
 
 use app\index\service\Singleton;
 use think\Db;
+use think\facade\Request;
 
 class UserMeeting extends Base{
     use Singleton;
@@ -47,5 +48,20 @@ class UserMeeting extends Base{
             return $this->returnResponse($result);
         }
         return $this->returnResponse();
+    }
+
+    public function updateUserMeetingStatus($params){
+        $condition = [
+            "user_id" => Request::instance()->userId,
+            "meeting_record_id" => $params["meeting_record_id"]
+        ];
+
+        $result = Db::name("user_meeting")
+            ->where($condition)
+            ->update(["status" => 1]);
+        if($result === false){
+            return false;
+        }
+        return true;
     }
 }

@@ -8,6 +8,7 @@ use app\index\service\Tool;
 use app\index\service\WeChat;
 use think\Db;
 use think\facade\Cache;
+use think\facade\Request;
 
 
 class MeetingRecord extends Base{
@@ -74,7 +75,7 @@ class MeetingRecord extends Base{
             $insertUserMeetingMap = [
                 "meeting_record_id" => $resultRecord,
                 "create_time"       => time(),
-                "user_id"           => $createUser["data"]["id"],
+                "user_id"           => Request::instance()->userId,
                 "role"              => 1
             ];
             $userMeetingId = UserMeeting::getInstance()
