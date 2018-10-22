@@ -49,12 +49,12 @@ class MeetingRecordInfo extends Base{
                         if(in_array($ext,$this->imageExt)){
                             $result["images"][] = [
                                 "file_name" => $file["file_name"],
-                                "file_url"  => $file["url"],
+                                "file_url"  => $file["file_url"],
                             ];
                         }else{
                             $result["files"][] = [
                                 "file_name" => $file["file_name"],
-                                "file_url"  => $file["url"],
+                                "file_url"  => $file["file_url"],
                             ];
                         }
                     }
