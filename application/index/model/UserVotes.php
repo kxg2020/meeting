@@ -38,7 +38,7 @@ class UserVotes extends Base{
     }
 
     private function createRead($params){
-        $exist = $this->whetherRecordExist(-1);
+        $exist = $this->whetherRecordExist("");
         if(!$exist){
             $insert = [
                 'meeting_record_id' => $this->meeting["meeting_record_id"],
@@ -46,7 +46,7 @@ class UserVotes extends Base{
                 "user_id"           => Request::instance()->userId,
                 "create_time"       => time(),
                 "type"              => Enum::READ,
-                "choose"            => -1,
+                "vote_name"         => "",
                 "issue_name"        => $this->meeting["title"]
             ];
             Db::name("user_votes")->insert($insert);
@@ -64,7 +64,8 @@ class UserVotes extends Base{
                         "type"              => $this->params["issue_short_name"],
                         "user_id"           => Request::instance()->userId,
                         "meeting_info_id"   => $this->params["issue_id"],
-                        "issue_name"        => $this->meeting["title"]
+                        "issue_name"        => $this->meeting["title"],
+                        "vote_name"         => $this->meeting["vote_name"]
                     ];
                     Db::name("user_votes")->where($condition)->update(["choose" => $value["select_index"]]);
                 }else{
@@ -97,6 +98,7 @@ class UserVotes extends Base{
                         "user_id"           => Request::instance()->userId,
                         "meeting_info_id"   => $this->params["issue_id"],
                         "issue_name"        => $this->meeting["title"],
+                        "vote_name"         => $this->meeting["vote_name"]
                     ];
                     Db::name("user_votes")->where($condition)->update(["choose" => $value]);
                 }else{
@@ -133,13 +135,13 @@ class UserVotes extends Base{
       return  UserMeeting::getInstance()->updateUserMeetingStatus($params);
     }
 
-    private function whetherRecordExist($choose){
+    private function whetherRecordExist($voteName){
         $condition = [
             "meeting_record_id" => $this->meeting["meeting_record_id"],
             "type"              => $this->params["issue_short_name"],
             "user_id"           =>Request::instance()->userId,
             "meeting_info_id"   => $this->params["issue_id"],
-            "choose"            => $choose
+            "vote_name"         => $voteName
         ];
         $record = Db::name("user_votes")->where($condition)->count();
         if($record){
