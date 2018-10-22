@@ -45,8 +45,7 @@ class MeetingRecordInfo extends Base{
                 "user_id"           => Request::instance()->userId,
                 "type"              => $issueDetail["short_name"],
                 "issue_name"        => $issueDetail["title"],
-                "meeting_info_id"   => $issueId,
-                "meeting_record_id" => $issueDetail["record_id"]
+                "meeting_record_id" => $issueDetail["record_id"],
             ])->count();
         // Õ¼±È
         $alreadyFinishRate = ceil($joinedIssueNumber / $issueNumber);

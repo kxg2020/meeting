@@ -47,7 +47,7 @@ class UserVotes extends Base{
                 "create_time"       => time(),
                 "type"              => Enum::READ,
                 "vote_name"         => "",
-                "issue_name"        => $this->meeting["title"]
+                "issue_name"        => $this->meeting["title"],
             ];
             Db::name("user_votes")->insert($insert);
         }
@@ -57,7 +57,7 @@ class UserVotes extends Base{
         if(isset($params["votes"]) && !empty($params["votes"])){
             $insert = [];
             array_walk($params["votes"],function ($value) use (&$insert,$params){
-                $exist = $this->whetherRecordExist($value["select_index"]);
+                $exist = $this->whetherRecordExist($this->meeting["vote_name"]);
                 if($exist){
                     $condition = [
                         "meeting_record_id" => $this->meeting["meeting_record_id"],
@@ -65,7 +65,8 @@ class UserVotes extends Base{
                         "user_id"           => Request::instance()->userId,
                         "meeting_info_id"   => $this->params["issue_id"],
                         "issue_name"        => $this->meeting["title"],
-                        "vote_name"         => $this->meeting["vote_name"]
+                        "vote_name"         => $this->meeting["vote_name"],
+                        "vote_id"           => $value["choose_id"]
                     ];
                     Db::name("user_votes")->where($condition)->update(["choose" => $value["select_index"]]);
                 }else{
@@ -77,7 +78,8 @@ class UserVotes extends Base{
                         "type"              => Enum::BALLOT,
                         "choose"            => $value["select_index"],
                         "vote_name"         => $this->meeting["vote_name"],
-                        "issue_name"        => $this->meeting["title"]
+                        "issue_name"        => $this->meeting["title"],
+                        "vote_id"           => $value["choose_id"]
                     ];
                     Db::name("user_votes")->insert($insert);
                 }
@@ -90,7 +92,7 @@ class UserVotes extends Base{
         if(isset($params["votes"]) && !empty($params["votes"])){
             $insert = [];
             array_walk($params["votes"],function ($value) use (&$insert,$params){
-                $exist = $this->whetherRecordExist($value);
+                $exist = $this->whetherRecordExist($this->meeting["vote_name"]);
                 if($exist){
                     $condition = [
                         "meeting_record_id" => $this->meeting["meeting_record_id"],
@@ -98,7 +100,8 @@ class UserVotes extends Base{
                         "user_id"           => Request::instance()->userId,
                         "meeting_info_id"   => $this->params["issue_id"],
                         "issue_name"        => $this->meeting["title"],
-                        "vote_name"         => $this->meeting["vote_name"]
+                        "vote_name"         => $this->meeting["vote_name"],
+                        "vote_id"           => $value["choose_id"]
                     ];
                     Db::name("user_votes")->where($condition)->update(["choose" => $value]);
                 }else{
@@ -110,7 +113,8 @@ class UserVotes extends Base{
                         "type"              => Enum::VOTE,
                         "choose"            => $value,
                         "vote_name"         => $this->meeting["vote_name"],
-                        "issue_name"        => $this->meeting["title"]
+                        "issue_name"        => $this->meeting["title"],
+                        "vote_id"           => $value["choose_id"]
                     ];
                     Db::name("user_votes")->insert($insert);
                 }
