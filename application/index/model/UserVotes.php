@@ -38,7 +38,7 @@ class UserVotes extends Base{
     }
 
     private function createRead($params){
-        $exist = $this->whetherRecordExist("");
+        $exist = $this->whetherRecordExist(-1);
         if(!$exist){
             $insert = [
                 'meeting_record_id' => $this->meeting["meeting_record_id"],
@@ -136,7 +136,7 @@ class UserVotes extends Base{
         $condition = [
             "meeting_record_id" => $this->meeting["meeting_record_id"],
             "type"              => $this->params["issue_short_name"],
-            "user_id"           =>Request::instance()->userId,
+            "user_id"           => Request::instance()->userId,
             "meeting_info_id"   => $this->params["issue_id"],
             "vote_id"           => $voteId
         ];
