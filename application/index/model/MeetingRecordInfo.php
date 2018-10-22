@@ -6,6 +6,7 @@ use app\index\service\Singleton;
 use app\index\service\Tool;
 use think\Cache;
 use think\Db;
+use think\facade\Request;
 
 class MeetingRecordInfo extends Base{
     use Singleton;
@@ -23,16 +24,35 @@ class MeetingRecordInfo extends Base{
 
     private function singleIssueInfo($issueId){
         $result = [];
+        $filed = "b.name,b.short_name,a.title,a.file_id,a.content,a.id,a.meeting_record_id as record_id";
+
         // 议题详情
         $issueDetail = Db::name("meeting_record_info")
             ->alias("a")
-            ->field("b.name,b.short_name,a.title,a.file_id,a.content,a.id")
+            ->field($filed)
             ->leftJoin("meeting_political b","a.type = b.id")
             ->where(["a.id" => $issueId])
             ->find();
 
+        // 议题数量
+        $issueNumber = Db::name("meeting_record_info")
+            ->where(["meeting_record_id" => $issueDetail["record_id"]])
+            ->count();
+
+        // 用户参加的议题数量
+        $joinedIssueNumber = Db::name("user_votes")
+            ->where([
+                "user_id"           => Request::instance()->userId,
+                "type"              => $issueDetail["short_name"],
+                "issue_name"        => $issueDetail["title"],
+                "meeting_info_id"   => $issueId,
+                "meeting_record_id" => $issueDetail["record_id"]
+            ])->count();
+        // 占比
+        $alreadyFinishRate = ceil($joinedIssueNumber / $issueNumber);
         if($issueDetail){
             $result["content"] = $issueDetail["content"];
+            $result["rate"]    = $alreadyFinishRate;
             $result["issue_name"] = $issueDetail["title"];
             $result["issue_id"] = $issueDetail["id"];
             $result["issue_short_name"] = $issueDetail["short_name"];
@@ -69,16 +89,25 @@ class MeetingRecordInfo extends Base{
     }
 
     private function classify($issueId,$issueDetail,&$result){
-        // 投票选项
+
         $votes = \app\index\model\MeetingVotes::getInstance()->votesList($issueId);
-        $function = function ($result) use ($votes){
+        $function = function ($result,$type) use ($votes){
             $voteTitle    = [];
             $subjectIndex = 0;
+
             if(isset($votes["data"]) && !empty($votes["data"])){
                 foreach ($votes["data"] as $index => $item){
                     $file = MeetingFile::getInstance()->votesFileList($item["file_id"]);
+                    $userVoteCondition = [
+                        "vote_name" => $item["vote_name"],
+                        "choose"    => $type == Enum::BALLOT ? 0 : $item["id"],
+                        "user_id"   => Request::instance()->userId,
+                        "type"      => $type
+                    ];
+                    $userVote = UserVotes::getInstance()->findUserVote($userVoteCondition);
                     if(in_array($item["vote_name"],$voteTitle)){
                         $result["option"][$subjectIndex]["options"][] = [
+                            "selected"    => $userVote,
                             "title"       => $item["vote_name"],
                             "choose_id"   => $item["id"],
                             "choose_name" => $item["vote_choose"],
@@ -88,6 +117,7 @@ class MeetingRecordInfo extends Base{
                         $voteLength = array_push($voteTitle,$item["vote_name"]);
                         $subjectIndex = $voteLength - 1;
                         $result["option"][$subjectIndex]["options"][] = [
+                            "selected"    => $userVote,
                             "title"       => $item["vote_name"],
                             "choose_id"   => $item["id"],
                             "choose_name" => $item["vote_choose"],
@@ -107,10 +137,10 @@ class MeetingRecordInfo extends Base{
                     $result["option"] = [];
                     break;
                 case Enum::BALLOT:
-                   $result =  $function($result);
+                   $result =  $function($result,Enum::BALLOT);
                     break;
                 case Enum::VOTE:
-                    $result =  $function($result);
+                    $result =  $function($result,Enum::VOTE);
                     break;
             }
 
