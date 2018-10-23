@@ -88,13 +88,11 @@ class UserVotes extends Base{
     }
 
     private function meetingDetail($params){
-        $filed = "a.id as meeting_vote_id,b.id as meeting_info_id,b.meeting_record_id,b.title";
-        $meeting = Db::name("meeting_vote")
+        $filed = "b.id as meeting_info_id,b.meeting_record_id,b.title";
+        $meeting = Db::name("meeting_record_info")
             ->field($filed)
-            ->alias("a")
-            ->leftJoin("meeting_record_info b","a.meeting_info_id = b.id")
-            ->leftJoin("meeting_record c","b.meeting_record_id = c.id")
-            ->where(["a.meeting_info_id" => $params["issue_id"]])
+            ->alias("b")
+            ->where(["b.id" => $params["issue_id"]])
             ->find();
         $this->meeting = $meeting;
     }
