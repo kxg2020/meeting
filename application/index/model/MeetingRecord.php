@@ -84,6 +84,7 @@ class MeetingRecord extends Base{
                 Format::getInstance()->commit = false;
             }
             $params["department_real_id"] = $params["department_id"];
+
             if(isset($params["issue_list"]) && $params["issue_list"]){
                 foreach($params["issue_list"] as $key => $value){
                     $this->meetingInsert($value,$resultRecord,$params);
@@ -142,7 +143,6 @@ class MeetingRecord extends Base{
                     $result["end_time"]     = date("Y-m-d H:i:s",$value["end_time"]);
                     $result["create_user_name"]  = $value["name"];
                     $result["create_user_avatar"]= $value["avatar"];
-
                     $result["issue"][] = [
                         "issue_id" => $value["issue_id"],
                         "title" => $value["title"],

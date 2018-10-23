@@ -22,10 +22,4 @@ class MeetingFile extends Base{
         return $this->returnResponse();
     }
 
-    /*
-     * Í¶Æ±ÎÄ¼þ
-     */
-    public function votesFileList($fileId){
-        return $this->issueFileList($fileId);
-    }
 }

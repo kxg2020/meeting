@@ -1,5 +1,6 @@
 <?php
 namespace app\index\service;
+use app\index\model\MeetingVotes;
 use think\Db;
 use think\facade\Log;
 
@@ -59,20 +60,9 @@ class Format{
         $this->commonFiles();
         $infoId = Db::name("meeting_record_info")->insertGetId($this->meetingInfo);
         if(isset($this->issue["votes"]) && $this->issue["votes"]){
-            foreach($this->issue["votes"] as $key => $value){
-                $insertMeetingVote["vote_name"] = $value["title"];
-                $insertMeetingVote["meeting_info_id"] = $infoId;
-                $votes = [];
-                if($value["items"]){
-                    foreach($value["items"] as $item){
-                        $votes[] = $item["value"];
-                    }
-                }
-                $insertMeetingVote["vote_choose"] = implode(",",$votes);
-                $result = Db::name("meeting_votes")->insertGetId($insertMeetingVote);
-                if(!$result){
-                    $this->commit = false;
-                }
+            $result = MeetingVotes::getInstance()->createVote($this->issue,$infoId);
+            if(!$result){
+                Format::getInstance()->commit = false;
             }
         }
 
@@ -82,27 +72,10 @@ class Format{
         $this->commonFiles();
         $infoId = Db::name("meeting_record_info")->insertGetId($this->meetingInfo);
         if(isset($this->issue["votes"]) && $this->issue["votes"]){
-            foreach($this->issue["votes"] as $key => $value){
-                $insertMeetingVote["meeting_info_id"] = $infoId;
-                $insertMeetingVote["vote_name"]       = $value["title"];
-                if($value["items"]){
-                    foreach($value["items"] as $item){
-                        $fileId = [];
-                        if(isset($item["files"]) && !empty($item["files"])){
-                            foreach($item["files"] as $file){
-                              $fileId[] =  $this->createFile($file);
-                            }
-                        }
-                        $singleVoteId = implode(",",$fileId);
-                        $insertMeetingVote["vote_choose"] = $item["value"];
-                        $insertMeetingVote["file_id"]     = $singleVoteId;
-                        $result = Db::name("meeting_votes")->insertGetId($insertMeetingVote);
-                        if(!$result){
-                            $this->commit = false;
-                        }
-                    }
-                }
-            }
+           $result = MeetingVotes::getInstance()->createVote($this->issue,$infoId);
+           if(!$result){
+               Format::getInstance()->commit = false;
+           }
         }
 
     }
