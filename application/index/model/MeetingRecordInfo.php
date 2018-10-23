@@ -40,18 +40,30 @@ class MeetingRecordInfo extends Base{
         $issueNumber = Db::name("meeting_record_info")
             ->where(["meeting_record_id" => $issueDetail["record_id"]])
             ->count();
-
         // 已经完成
         $finishNumber= Db::name("user_votes")
             ->where(["meeting_record_id" => $issueDetail["record_id"]])
             ->count();
-
         // 占比
         $finishRate  = sprintf("%.1f",$finishNumber / $issueNumber);
-
         // 当前议题
         $currentIssueStatus = Db::name("user_votes")->where(["meeting_info_id"=>$issueId])->find();
-        $currentIssueStatus ? $result["edit"] = false :$result["edit"] = true;
+        // 会议记录
+        $meetingRecord = Db::name("meeting_record")
+            ->field("start_time,end_time")
+            ->where(["id"=>$issueDetail["record_id"]])
+            ->find();
+        $editable = true;
+        // 会议是否过期
+        if($meetingRecord["start_time"] > time() || $meetingRecord["end_time"] < time()){
+            $editable = false;
+        }
+        // 是否已经记录过
+        if($currentIssueStatus){
+            $editable = false;
+        }
+
+        $result["edit"] = $editable;
         if($issueDetail){
             $result["content"] = $issueDetail["content"];
             $result["rate"]    = $finishRate;
