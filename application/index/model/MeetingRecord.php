@@ -154,7 +154,7 @@ class MeetingRecord extends Base{
 
                 $meetingInfo = $this->returnResponse($result);
                 // 缓存会议
-                Cache::set("$meetingRecordId-info",\app\index\service\Tool::getInstance()->jsonEncode($meetingInfo));
+//                Cache::set("$meetingRecordId-info",\app\index\service\Tool::getInstance()->jsonEncode($meetingInfo));
                 return $meetingInfo;
             }
             return $this->returnResponse();
