@@ -26,14 +26,20 @@
               <FileList :files="item.files" :show-remove="false" :show-download="true" :preview="true"></FileList>
             </div>
           </div>
-          <el-radio-group v-model="voteSelects[voteIndex]" size="mini">
-            <el-radio :label="itemIndex" border v-for="(item, itemIndex) in vote.items"
-                      :key="'iv' + itemIndex">{{item.value}}
+          <el-radio-group v-model="voteSelects[voteIndex]" size="mini" v-if="issue.edit">
+            <el-radio :label="itemIndex" border
+              v-for="(item, itemIndex) in vote.items" :key="'iv' + itemIndex">
+              {{item.value}}
             </el-radio>
           </el-radio-group>
+          <div class="vote-radios" v-else>
+            <div v-for="(item, itemIndex) in vote.items" :key="itemIndex" class="vote-radio-item" :class="item.selected ? 'selected' : ''">
+              <span>{{item.value}}</span>
+            </div>
+          </div>
         </div>
       </div>
-      <div class="submit">
+      <div class="submit" v-if="issue.edit">
         <el-button class="submit-btn" type="primary" plain @click="voteSubmit" :loading="submitLoading">
           {{issue.issue_short_name == 'yz' ? '已阅' : ''}}
           {{issue.issue_short_name == 'bj' ? '提交表决' : ''}}
@@ -173,5 +179,24 @@
 
   .submit {
     padding: 10px 0;
+  }
+
+  .vote-radio-item {
+    display: inline-block;
+    border: 1px solid #dcdfe6;
+    box-sizing: border-box;
+    font-size: 12px;
+    padding: 6px 15px 0 15px;
+    border-radius: 3px;
+    height: 28px;
+  }
+
+  .selected{
+    border-color: #409eff;
+    color: #409eff;
+  }
+
+  .vote-radio-item+.vote-radio-item{
+    margin-left: 10px;
   }
 </style>
