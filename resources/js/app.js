@@ -50,6 +50,7 @@ Vue.axios.interceptors.response.use(
     return response.data
   },
   error => {
+    tryHideFullScreenLoading()
     if (error.response) {
       console.log(error.response)
     }
