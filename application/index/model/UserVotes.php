@@ -55,6 +55,7 @@ class UserVotes extends Base{
     private function createBallot($params){
         if(isset($params["votes"]) && !empty($params["votes"])){
             $exist = $this->whetherRecordExist();
+
             if(!$exist){
                 $insert = [
                     'meeting_record_id' => $this->meeting["meeting_record_id"],
@@ -93,7 +94,7 @@ class UserVotes extends Base{
             ->alias("a")
             ->leftJoin("meeting_record_info b","a.meeting_info_id = b.id")
             ->leftJoin("meeting_record c","b.meeting_record_id = c.id")
-            ->where(["a.id" => $params["issue_id"]])
+            ->where(["a.meeting_info_id" => $params["issue_id"]])
             ->find();
         $this->meeting = $meeting;
     }

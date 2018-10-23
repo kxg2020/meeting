@@ -11,7 +11,7 @@ abstract class AgentMessage{
     protected $template;
     protected $btnText = "查看详情";
     protected $title   = "新会议通知";
-    protected $redirect= "https://www.baidu.com";
+    protected $redirect;
 
     protected function commonTemplateInit(){
         $this->template = [
@@ -32,8 +32,9 @@ abstract class AgentMessage{
         $this->params["end_time"]   = $end;
     }
 
-    public function setParams(array $params){
-        $this->params = $params;
+    public function setParams(array $params,$url){
+        $this->redirect = $url;
+        $this->params   = $params;
         return $this;
     }
 

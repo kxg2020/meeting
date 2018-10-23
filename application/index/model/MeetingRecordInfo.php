@@ -25,7 +25,7 @@ class MeetingRecordInfo extends Base{
     private function singleIssueInfo($issueId){
         $result = [];
         $filed = "b.name,b.short_name,a.title,a.file_id,a.content,a.id,a.meeting_record_id as record_id,";
-        $filed.= "a.type,c.*";
+        $filed.= "a.type,c.meeting_info_id,c.options";
 
         // 议题详情
         $issueDetail = Db::name("meeting_record_info")
@@ -41,11 +41,12 @@ class MeetingRecordInfo extends Base{
             ->where(["meeting_record_id" => $issueDetail["record_id"]])
             ->count();
         // 已经完成
-        $finishNumber= Db::name("user_vote")
+        $finishNumber= Db::name("user_votes")
             ->where(["meeting_record_id" => $issueDetail["record_id"]])
             ->count();
+
         // 占比
-        $finishRate  = ceil($finishNumber / $issueNumber);
+        $finishRate  = sprintf("%.1f",$finishNumber / $issueNumber);
         // 当前议题
         $currentIssueStatus = Db::name("user_votes")->where(["meeting_info_id"=>$issueId])->find();
         $currentIssueStatus ? $result["edit"] = false :$result["edit"] = true;
@@ -53,7 +54,7 @@ class MeetingRecordInfo extends Base{
             $result["content"] = $issueDetail["content"];
             $result["rate"]    = $finishRate;
             $result["issue_name"] = $issueDetail["title"];
-            $result["issue_id"] = $issueDetail["id"];
+            $result["issue_id"] = $issueDetail["meeting_info_id"];
             $result["issue_short_name"] = $issueDetail["short_name"];
             $result["images"] = [];
             $result["files"]  = [];
@@ -95,23 +96,37 @@ class MeetingRecordInfo extends Base{
         ])->find();
         $votes = $issueDetail["options"];
         $userVote = Tool::getInstance()->jsonDecode($userVote["choose"]);
-        $function = function ($result) use ($votes,$userVote){
+
+        $function = function ($result,$type) use ($votes,$userVote){
             // 遍历筛选被投中选项
             if($votes){
-                if(isset($votes["items"]) && !empty($votes["items"])){
-                    foreach ($votes["items"] as $key => &$value){
-                        foreach ($value as $index => $item){
-                            if($index == $userVote[$key]){
+                if($type == Enum::BALLOT){
+                    if(isset($votes["items"]) && !empty($votes["items"])){
+                        foreach ($votes["items"] as $key => &$value){
+                            if($key == $userVote[$key]){
                                 $value["selected"] = true;
                             }else{
                                 $value["selected"] = false;
                             }
                         }
                     }
+                    unset($value);
+                    $result["option"] = $votes;
+                }else{
+                    if(isset($votes["items"]) && !empty($votes["items"])){
+                        foreach ($votes["items"] as $key => &$value){
+                            foreach ($value as $index => $item){
+                                if($index == $userVote[$key]){
+                                    $value["selected"] = true;
+                                }else{
+                                    $value["selected"] = false;
+                                }
+                            }
+                        }
+                    }
+                    unset($value);
+                    $result["option"] = $votes;
                 }
-                unset($value);
-                $result["option"] = $votes;
-
             }else{
                 $result["option"] = [];
             }

@@ -93,7 +93,8 @@ class MeetingRecord extends Base{
         }
         if(\app\index\service\Format::getInstance()->commit){
             // 消息模板
-            $template = AgentMessageFacade::TextCard()->setParams($params)->templateInit()->fillTemplateValue();
+            $template = AgentMessageFacade::TextCard()->setParams($params,Request::url(true))
+                ->templateInit()->fillTemplateValue();
             // 发送应用消息
             WeChat::getInstance()->setPost($template)->sendAgentMessage();
 
