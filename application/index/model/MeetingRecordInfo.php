@@ -65,7 +65,7 @@ class MeetingRecordInfo extends Base{
             $result["content"] = $issueDetail["content"];
             $result["rate"]    = $finishRate;
             $result["issue_name"] = $issueDetail["title"];
-            $result["issue_id"] = $issueDetail["meeting_info_id"];
+            $result["issue_id"] = $issueId;
             $result["issue_short_name"] = $issueDetail["short_name"];
             $result["images"] = [];
             $result["files"]  = [];
