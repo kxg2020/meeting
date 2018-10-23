@@ -25,9 +25,8 @@ class MeetingRecordInfo extends Base{
             ->leftJoin("meeting_vote c","c.meeting_info_id = a.id")
             ->where(["a.id" => $issueId])
             ->find();
-        $meetingInfo["rate"] = $this->finishRate($this->issueDetail);
-
         if(!$meetingInfo){
+            $meetingInfo["rate"] = $this->finishRate($this->issueDetail);
             $meetingInfo = $this->singleIssueInfo($issueId);
             return $this->returnResponse($meetingInfo["data"]);
         }else{
