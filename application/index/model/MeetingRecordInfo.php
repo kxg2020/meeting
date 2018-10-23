@@ -48,8 +48,8 @@ class MeetingRecordInfo extends Base{
 
         // 占比
         $finishRate  = sprintf("%.1f",$finishNumber / $issueNumber);
-        // 当前议题
 
+        // 当前议题
         $currentIssueStatus = Db::name("user_votes")->where(["meeting_info_id"=>$issueId])->find();
         $currentIssueStatus ? $result["edit"] = false :$result["edit"] = true;
         if($issueDetail){
@@ -98,20 +98,19 @@ class MeetingRecordInfo extends Base{
         ])->find();
         $votes = $issueDetail["options"];
         $userVote = Tool::getInstance()->jsonDecode($userVote["choose"]);
-
         $function = function ($result) use ($votes,$userVote){
             // 遍历筛选被投中选项
             if($votes){
-
-                foreach($votes as $key => $value){
+                foreach($votes as $key => &$value){
                     foreach ($value["items"] as $index => &$item){
-                        if($index == $userVote[$key]){
+                        if($index === $userVote[$key]){
                             $item["selected"] = true;
                         }else{
                             $item["selected"] = false;
                         }
                     }
                 }
+                unset($item);
                 unset($value);
                 $result["option"] = $votes;
             }else{
