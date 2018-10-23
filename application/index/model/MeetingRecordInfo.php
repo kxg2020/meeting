@@ -48,8 +48,8 @@ class MeetingRecordInfo extends Base{
 
         // 占比
         $finishRate  = sprintf("%.1f",$finishNumber / $issueNumber);
-        // 当前议题
 
+        // 当前议题
         $currentIssueStatus = Db::name("user_votes")->where(["meeting_info_id"=>$issueId])->find();
         $currentIssueStatus ? $result["edit"] = false :$result["edit"] = true;
         if($issueDetail){
@@ -98,37 +98,21 @@ class MeetingRecordInfo extends Base{
         ])->find();
         $votes = $issueDetail["options"];
         $userVote = Tool::getInstance()->jsonDecode($userVote["choose"]);
-
-        $function = function ($result,$type) use ($votes,$userVote){
+        $function = function ($result) use ($votes,$userVote){
             // 遍历筛选被投中选项
             if($votes){
-                if($type == Enum::BALLOT){
-                    if(isset($votes["items"]) && !empty($votes["items"])){
-                        foreach ($votes["items"] as $key => &$value){
-                            if($key == $userVote[$key]){
-                                $value["selected"] = true;
-                            }else{
-                                $value["selected"] = false;
-                            }
+                foreach($votes as $key => &$value){
+                    foreach ($value["items"] as $index => &$item){
+                        if($index === $userVote[$key]){
+                            $item["selected"] = true;
+                        }else{
+                            $item["selected"] = false;
                         }
                     }
-                    unset($value);
-                    $result["option"] = $votes;
-                }else{
-                    if(isset($votes["items"]) && !empty($votes["items"])){
-                        foreach ($votes["items"] as $key => &$value){
-                            foreach ($value as $index => $item){
-                                if($index == $userVote[$key]){
-                                    $value["selected"] = true;
-                                }else{
-                                    $value["selected"] = false;
-                                }
-                            }
-                        }
-                    }
-                    unset($value);
-                    $result["option"] = $votes;
                 }
+                unset($item);
+                unset($value);
+                $result["option"] = $votes;
             }else{
                 $result["option"] = [];
             }
@@ -139,10 +123,10 @@ class MeetingRecordInfo extends Base{
                 $result["option"] = [];
                 break;
             case Enum::BALLOT:
-                $result =  $function($result,Enum::BALLOT);
+                $result =  $function($result);
                 break;
             case Enum::VOTE:
-                $result =  $function($result,Enum::VOTE);
+                $result =  $function($result);
                 break;
         }
         return $result;
