@@ -88,7 +88,7 @@ class UserVotes extends Base{
     }
 
     private function meetingDetail($params){
-        $filed = "a.id as meeting_vote_id,b.id as meeting_info_id,c.id as meeting_record_id,b.title";
+        $filed = "a.id as meeting_vote_id,b.id as meeting_info_id,b.meeting_record_id,b.title";
         $meeting = Db::name("meeting_vote")
             ->field($filed)
             ->alias("a")
