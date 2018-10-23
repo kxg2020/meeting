@@ -26,10 +26,10 @@ class MeetingRecordInfo extends Base{
             ->where(["a.id" => $issueId])
             ->find();
         if(!$meetingInfo){
-            $meetingInfo["rate"] = $this->finishRate($this->issueDetail);
             $meetingInfo = $this->singleIssueInfo($issueId);
             return $this->returnResponse($meetingInfo["data"]);
         }else{
+            $meetingInfo["rate"] = $this->finishRate($this->issueDetail);
             return $this->returnResponse($meetingInfo);
         }
     }
@@ -94,7 +94,7 @@ class MeetingRecordInfo extends Base{
             $result = $this->classify($issueDetail,$result);
             // ��������
             $userId = Request::instance()->userId;
-            \think\facade\Cache::set("$issueId-$userId-issue-detail",Tool::getInstance()->jsonEncode($result));
+//            \think\facade\Cache::set("$issueId-$userId-issue-detail",Tool::getInstance()->jsonEncode($result));
             return $this->returnResponse($result);
         }
         return $this->returnResponse();
