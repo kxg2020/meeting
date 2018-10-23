@@ -26,6 +26,7 @@ class MeetingRecordInfo extends Base{
         $result = [];
         $filed = "b.name,b.short_name,a.title,a.file_id,a.content,a.id,a.meeting_record_id as record_id,";
         $filed.= "a.type,c.*";
+
         // 议题详情
         $issueDetail = Db::name("meeting_record_info")
             ->alias("a")
@@ -45,7 +46,9 @@ class MeetingRecordInfo extends Base{
             ->count();
         // 占比
         $finishRate  = ceil($finishNumber / $issueNumber);
-
+        // 当前议题
+        $currentIssueStatus = Db::name("user_votes")->where(["meeting_info_id"=>$issueId])->find();
+        $currentIssueStatus ? $result["edit"] = false :$result["edit"] = true;
         if($issueDetail){
             $result["content"] = $issueDetail["content"];
             $result["rate"]    = $finishRate;
