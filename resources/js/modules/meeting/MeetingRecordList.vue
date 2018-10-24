@@ -100,7 +100,7 @@
       getPermission() {
         this.axios.get('/permission/' + this.meeting_type_id).then(res => {
           this.sponsored = res.data.sponsored
-          this.deleted = res.data.deleted
+          this.deleted = res.data.delete
         }).catch(error => {})
       },
       back () {
