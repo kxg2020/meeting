@@ -204,4 +204,15 @@ class MeetingRecord extends Base{
             }
         }
     }
+
+    /*
+     * 删除会议
+     */
+    public function meetingDelete($meetingId):bool {
+        $result = Db::name("meeting_record")->where(["id"=> $meetingId])->update(["status"=>0]);
+        if($result === false){
+            return false;
+        }
+        return true;
+    }
 }
