@@ -69,4 +69,12 @@ class MeetingRecord extends Base {
         }
         return $this->printResponse();
     }
+
+    /*
+     * »áÒé¼ÇÂ¼
+     */
+    public function meetingRecordWord(){
+        $meetingId = Request::get("meetingId");
+        return view("meeting/word");
+    }
 }
