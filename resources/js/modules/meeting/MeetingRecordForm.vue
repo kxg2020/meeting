@@ -75,6 +75,14 @@
                   <i class="fa fa-minus-square"></i>
                 </div>
               </van-field>
+              <van-field
+                v-if="issue.political_short_name == 'tp'"
+                v-model="vote.select_count"
+                required
+                label="多选数量"
+                placeholder="请输入多选数量"
+              >
+              </van-field>
               <van-cell :title="issue.political_short_name == 'bj' ? '表决选项' : '投票选项'">
                 <template v-if="issue.political_short_name == 'tp'">
                   <div class="vote-item" v-for="(voteItem, voteItemIndex) in vote.items">
@@ -301,6 +309,7 @@
           title: '',
           inputVisible: false,
           inputValue: '',
+          select_count: 1,
           items: items
         })
       },
@@ -410,6 +419,13 @@
             if (vote.items.length < 1) {
               this.submitLoading = false
               this.$toast("投票选项不能为空")
+              return
+            }
+          }
+          for (let vote of issue.votes) {
+            if (vote.items.length <= vote.select_count) {
+              this.submitLoading = false
+              this.$toast("投票多选数量不能超过选项数量")
               return
             }
           }
