@@ -40,8 +40,12 @@ class MeetingRecord extends Base{
             $result["meetingType"]    = $recordType;
             $result["total"]          = $total;
             return $this->returnResponse($result);
+        }else{
+            $result["meetingRecords"] = [];
+            $result["meetingType"]    = [];
+            $result["total"]          = 0;
         }
-        return $this->returnResponse();
+        return $this->returnResponse($result);
     }
 
     public function createMeetingRecord($params){
