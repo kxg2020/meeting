@@ -56,7 +56,6 @@ class MeetingRecord extends Base{
         if(!substr_count($createUser["data"]["enable_sponsored_meeting_type_id"],$params["meeting_type_id"])){
             return $this->returnResponse([],4001);
         }
-
         // 插入会议记录表
         $insertMeetingRecord = [
             "title"           => $params["title"],
@@ -92,8 +91,9 @@ class MeetingRecord extends Base{
             }
         }
         if(\app\index\service\Format::getInstance()->commit){
+            $redirect = Request::domain()."/api/meetingRecord/info/".$resultRecord;
             // 消息模板
-            $template = AgentMessageFacade::TextCard()->setParams($params,Request::url(true))
+            $template = AgentMessageFacade::TextCard()->setParams($params,$redirect)
                 ->templateInit()->fillTemplateValue();
             // 发送应用消息
             WeChat::getInstance()->setPost($template)->sendAgentMessage();
