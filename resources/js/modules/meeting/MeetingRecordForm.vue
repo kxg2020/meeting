@@ -494,6 +494,7 @@
     margin-left: 15px;
     border-bottom: 1px solid #eee;
     padding-bottom: 15px;
+    padding-top: 15px;
   }
 
   .issue-file-list {

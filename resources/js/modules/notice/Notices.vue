@@ -23,6 +23,9 @@
     <div v-else>
       <Empty></Empty>
     </div>
+    <div class="create-btn" @click="toForm">
+      <i class="fa fa-edit"></i>
+    </div>
   </div>
 </template>
 
@@ -86,6 +89,9 @@
       },
       toInfo(id) {
         this.$router.push({path: '/notice/' + id})
+      },
+      toForm() {
+        this.$router.push({path: '/notice/create'})
       }
     }
   }
@@ -101,5 +107,19 @@
     border-radius: 5px;
     padding: 15px;
   }
-
+  .create-btn{
+    position: fixed;
+    right: 20px;
+    bottom: 70px;
+    font-size: 20px;
+    width: 40px;
+    height: 40px;
+    background-color: #000;
+    text-align: center;
+    line-height: 40px;
+    border-radius: 10px;
+    color: #ffffff;
+    transition: opacity 0.3s;
+    opacity: 0.3;
+  }
 </style>
