@@ -399,6 +399,11 @@
           this.$toast("会议主题不能为空")
           return
         }
+        if (this.model.start_time <= (new Date()).getTime() / 1000) {
+          this.submitLoading = false
+          this.$toast("开始时间不可小于当前时间")
+          return
+        }
         if (this.model.start_time >= this.model.end_time) {
           this.submitLoading = false
           this.$toast("请选择结束时间")

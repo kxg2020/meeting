@@ -16,7 +16,7 @@
     </van-popup>
     <!-- Time -->
     <van-popup v-model="showTime" position="bottom">
-      <van-picker :show-toolbar="true" :columns="dateLsit" @change="timeChange" @confirm="hideTimePopup" @cancel="hideTimePopup" />
+      <van-picker :show-toolbar="true" :columns="dateList" @change="timeChange" @confirm="hideTimePopup" @cancel="hideTimePopup" />
     </van-popup>
   </div>
 </template>
@@ -35,7 +35,7 @@
         time: "08:00",
         showDate: false,
         showTime: false,
-        dateLsit: [
+        dateList: [
           {
             values: ['00','01','02','03','04','05','06','07','08','09','10','11','12','13','14','15','16','17','18','19','20','21','22','23'],
             defaultIndex: 8
