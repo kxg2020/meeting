@@ -26,15 +26,32 @@
               <FileList :files="item.files" :show-remove="false" :show-download="true" :preview="true"></FileList>
             </div>
           </div>
+          <!--
           <el-radio-group v-model="voteSelects[voteIndex]" size="mini" v-if="issue.edit">
             <el-radio :label="itemIndex" border
               v-for="(item, itemIndex) in vote.items" :key="'iv' + itemIndex">
               {{item.value}}
             </el-radio>
           </el-radio-group>
-          <div class="vote-radios" v-else>
-            <div v-for="(item, itemIndex) in vote.items" :key="itemIndex" class="vote-radio-item" :class="item.selected ? 'selected' : ''">
-              <span>{{item.value}}</span>
+          -->
+          <div class="vote-select">
+            <div class="cell-group-title">
+              <span>最多可选{{vote.select_count}}个</span>
+            </div>
+            <el-checkbox-group
+              v-if="issue.edit"
+              size="mini"
+              v-model="voteSelects[voteIndex]"
+              :max="parseInt(vote.select_count)"
+              @change="value => {voteChange(voteIndex, value)}">
+              <el-checkbox v-for="(item, itemIndex) in vote.items" :key="'iv' + itemIndex" :label="itemIndex" border>
+                {{item.value}}
+              </el-checkbox>
+            </el-checkbox-group>
+            <div class="vote-radios" v-else>
+              <div v-for="(item, itemIndex) in vote.items" :key="itemIndex" class="vote-radio-item" :class="item.selected ? 'selected' : ''">
+                <span>{{item.value}}</span>
+              </div>
             </div>
           </div>
         </div>
@@ -81,7 +98,7 @@
           _this.issue = res.data
           let voteSelects = []
           for (let i in _this.issue.option) {
-            voteSelects.push(0)
+            voteSelects.push([])
           }
           _this.voteSelects = voteSelects
         }).catch(err => {
@@ -93,6 +110,12 @@
         postData.issue_id = _this.issue.issue_id
         postData.issue_short_name = _this.issue.issue_short_name
         postData.votes = _this.voteSelects
+        for (let i in _this.voteSelects) {
+          if (_this.voteSelects[i].length < 1) {
+            _this.$toast(_this.issue.issue_short_name == "bj" ? "请选择表决选项" : "请选择投票选项")
+            return
+          }
+        }
         _this.axios.post('/userVotes/create', postData).then(res => {
           if (res.status) {
             _this.$toast(res.msg)
@@ -102,6 +125,9 @@
           }
         }).catch(err => {})
         console.log(JSON.stringify(postData))
+      },
+      voteChange(voteIndex, value) {
+        console.log(voteIndex, value)
       }
     }
   }
@@ -198,5 +224,16 @@
 
   .vote-radio-item+.vote-radio-item{
     margin-left: 10px;
+  }
+
+  .cell-group-title {
+    display: flex;
+    flex-direction: row;
+    justify-content: space-between;
+    font-weight: 400;
+    font-size: 14px;
+    color: rgba(69, 90, 100, .6);
+    padding: 10px 0;
+    border-top: 1px solid #eee;
   }
 </style>
