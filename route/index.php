@@ -53,4 +53,7 @@ Route::group("/api/",function(){
     #创建用户投票
     Route::post("userVotes/create","UserVotes/createUserVotes");
 
+    #用户删除会议
+    Route::get("meetingRecord/delete/:meetingId","MeetingRecord/meetingDelete");
+
 })->middleware(\app\index\service\Auth::class);

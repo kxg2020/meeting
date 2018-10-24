@@ -15,7 +15,7 @@ class MeetingRecord extends Base{
     use Singleton;
 
     public function getMeetingRecords($type,$params){
-        $result = [];
+        $result  = [];
         $records = Db::name("meeting_record")
             ->alias("a")
             ->field("b.name as create_user_name,a.title,a.create_time,a.start_time,a.end_time,a.id")
@@ -203,5 +203,16 @@ class MeetingRecord extends Base{
                 }
             }
         }
+    }
+
+    /*
+     * 删除会议
+     */
+    public function meetingDelete($meetingId):bool {
+        $result = Db::name("meeting_record")->where(["id"=> $meetingId])->update(["status"=>0]);
+        if($result === false){
+            return false;
+        }
+        return true;
     }
 }
