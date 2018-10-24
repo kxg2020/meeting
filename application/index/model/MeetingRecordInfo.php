@@ -17,7 +17,7 @@ class MeetingRecordInfo extends Base{
         $userId = Request::instance()->userId;
         $meetingInfo = Tool::getInstance()->jsonDecode(\think\facade\Cache::get("$issueId-$userId-issue-detail"));
         $filed = "b.name,b.short_name,a.title,a.file_id,a.content,a.id,a.meeting_record_id as record_id,";
-        $filed.= "a.type,c.meeting_info_id,c.options";
+        $filed.= "a.type,c.meeting_info_id,c.options,c.vote_number_limit";
         $this->issueDetail = Db::name("meeting_record_info")
             ->alias("a")
             ->field($filed)
@@ -39,7 +39,6 @@ class MeetingRecordInfo extends Base{
         // 锟斤拷锟斤拷锟斤拷锟斤拷
         $issueDetail = $this->issueDetail;
         $issueDetail["options"] = Tool::getInstance()->jsonDecode($issueDetail["options"]);
-
         // 当前议题
         $currentIssueStatus = Db::name("user_votes")->where(["meeting_info_id"=>$issueId])->find();
         // 会议记录
@@ -48,21 +47,19 @@ class MeetingRecordInfo extends Base{
             ->where(["id"=>$issueDetail["record_id"]])
             ->find();
         $editable = true;
-
         // 会议是否过期
         if($meetingRecord["start_time"] > time() || $meetingRecord["end_time"] < time()){
-
             $editable = false;
         }
         // 是否已经记录过
         if($currentIssueStatus){
-
             $editable = false;
         }
         $finishRate = $this->finishRate($issueDetail);
         $result["edit"] = $editable;
         if($issueDetail){
             $result["content"] = $issueDetail["content"];
+            $result["vote_number_limit"] = $issueDetail["vote_number_limit"];
             $result["rate"]    = $finishRate;
             $result["issue_name"] = $issueDetail["title"];
             $result["issue_id"] = $issueId;
@@ -113,7 +110,7 @@ class MeetingRecordInfo extends Base{
             if($votes){
                 foreach($votes as $key => &$value){
                     foreach ($value["items"] as $index => &$item){
-                        if($index === $userVote[$key]){
+                        if(isset($userVote[$key]) && in_array($index,$userVote[$key])){
                             $item["selected"] = true;
                         }else{
                             $item["selected"] = false;
