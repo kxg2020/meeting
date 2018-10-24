@@ -15,7 +15,7 @@ class MeetingRecord extends Base{
     use Singleton;
 
     public function getMeetingRecords($type,$params){
-        $result = [];
+        $result  = [];
         $records = Db::name("meeting_record")
             ->alias("a")
             ->field("b.name as create_user_name,a.title,a.create_time,a.start_time,a.end_time,a.id")
