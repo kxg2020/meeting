@@ -15,6 +15,9 @@ Route::get("/","index/index");
 
 Route::get("/upload","static/uploads");
 
+#会议记录导出
+Route::get("meetingRecord/word","MeetingRecord/meetingRecordWord");
+
 Route::group("/api/",function(){
 
     #首页会议类型

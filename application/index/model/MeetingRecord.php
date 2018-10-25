@@ -2,6 +2,7 @@
 namespace app\index\model;
 use app\index\service\Enum;
 use app\index\service\Format;
+use app\index\service\Jwt;
 use app\index\service\Singleton;
 use app\index\service\template\AgentMessageFacade;
 use app\index\service\Tool;
@@ -95,10 +96,12 @@ class MeetingRecord extends Base{
             }
         }
         if(\app\index\service\Format::getInstance()->commit){
-            $redirect = Request::domain()."/api/meetingRecord/info/".$resultRecord;
+            $redirect = Request::domain();
             // 消息模板
-            $template = AgentMessageFacade::TextCard()->setParams($params,$redirect)
-                ->templateInit()->fillTemplateValue();
+            $template = AgentMessageFacade::TextCard()
+                ->setParams($params,$redirect)
+                ->templateInit()
+                ->fillTemplateValue();
             // 发送应用消息
             WeChat::getInstance()->setPost($template)->sendAgentMessage();
 
