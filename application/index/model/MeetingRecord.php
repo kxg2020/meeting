@@ -21,7 +21,7 @@ class MeetingRecord extends Base{
             ->alias("a")
             ->field("b.name as create_user_name,a.title,a.create_time,a.start_time,a.end_time,a.id")
             ->leftJoin("user b","a.create_user_id = b.id")
-            ->where(["a.meeting_type_id"=>$type])
+            ->where(["a.meeting_type_id"=>$type,"a.status"=>1])
             ->order("a.create_time desc")
             ->limit($this->formatLimit($params["pgNum"],$params["pgSize"]),$params["pgSize"])
             ->select();
