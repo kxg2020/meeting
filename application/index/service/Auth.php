@@ -8,7 +8,7 @@ use think\facade\Request;
 class Auth{
 
     public function handle($request, \Closure $next){
-        $token = Request::header("token");
+        $token = Request::header("token") ? Request::header("token"):Request::get("token");
         if($token){
             $result = Jwt::getInstance()->validateToken("user_id",$token);
             if($result["status"]){
