@@ -47,14 +47,19 @@ class MeetingRecordInfo extends Base{
             ->where(["id"=>$issueDetail["record_id"]])
             ->find();
         $editable = true;
+        // 会议是否开始
+        if($meetingRecord["start_time"] > time()){
+            $editable = false;
+        }
         // 会议是否过期
-        if($meetingRecord["start_time"] > time() || $meetingRecord["end_time"] < time()){
+        if($meetingRecord["end_time"] < time()){
             $editable = false;
         }
         // 是否已经记录过
         if($currentIssueStatus){
             $editable = false;
         }
+        
         $finishRate = $this->finishRate($issueDetail);
         $result["edit"] = $editable;
         if($issueDetail){
