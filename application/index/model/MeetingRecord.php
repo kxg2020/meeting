@@ -2,6 +2,7 @@
 namespace app\index\model;
 use app\index\service\Enum;
 use app\index\service\Format;
+use app\index\service\Jwt;
 use app\index\service\Singleton;
 use app\index\service\template\AgentMessageFacade;
 use app\index\service\Tool;
@@ -95,7 +96,8 @@ class MeetingRecord extends Base{
             }
         }
         if(\app\index\service\Format::getInstance()->commit){
-            $redirect = Request::domain()."/api/meetingRecord/info/".$resultRecord;
+            $token = Jwt::getInstance()->createToken("user_id",Request::instance()->userId);
+            $redirect = Request::domain()."/api/meetingRecord/info/".$resultRecord."?token=".$token;
             // 消息模板
             $template = AgentMessageFacade::TextCard()->setParams($params,$redirect)
                 ->templateInit()->fillTemplateValue();
