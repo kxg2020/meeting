@@ -121,7 +121,7 @@
           title: '提示',
           message: '是否删除此会议'
         }).then(() => {
-          this.axios.post('/meetingRecord/delete/' + id).then(res => {
+          this.axios.get('/meetingRecord/delete/' + id).then(res => {
             if (res.status) {
               this.$toast("删除成功")
               setTimeout(() => {
