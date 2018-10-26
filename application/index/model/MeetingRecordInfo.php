@@ -59,7 +59,7 @@ class MeetingRecordInfo extends Base{
         if($currentIssueStatus){
             $editable = false;
         }
-        
+
         $finishRate = $this->finishRate($issueDetail);
         $result["edit"] = $editable;
         if($issueDetail){

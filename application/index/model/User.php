@@ -40,7 +40,7 @@ class User extends Base{
         $this->userInfo = [
             "user_id" => $params["userid"],
             "name"    => $params["name"],
-            "avatar"  => $params["avatar"],
+            "avatar"  => str_replace("/0","/100",$params["avatar"]),
             "mobile"  => $params["mobile"],
             "enable"  => $params["enable"],
             "position"=> $params["position"],

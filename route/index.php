@@ -59,4 +59,13 @@ Route::group("/api/",function(){
     #用户删除会议
     Route::get("meetingRecord/delete/:meetingId","MeetingRecord/meetingDelete");
 
+    #创建新闻记录
+    Route::post("notice/create","Notice/createNotice");
+
+    #删除新闻记录
+    Route::get("notice/delete/:noticeId","Notice/deleteNotice");
+
+    #新闻详细信息
+    Route::get("notice/detail/:noticeId","Notice/detailNotice");
+
 })->middleware(\app\index\service\Auth::class);
