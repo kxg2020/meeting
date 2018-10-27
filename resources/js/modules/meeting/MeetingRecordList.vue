@@ -82,16 +82,20 @@
         let _this = this
         let type_id = this.meeting_type_id
         _this.axios.get('/meetingRecord/' + type_id + '/' + this.page + '/' + this.page_size).then(res => {
-          _this.meetingRecordList = _this.meetingRecordList.concat(res.data.meetingRecords)
-          _this.meetingType = res.data.meetingType
-          _this.total = res.data.total
-          if (Math.ceil(_this.total / _this.page_size) > _this.page){
-            _this.hasMore = true
+          if (res.status) {
+            _this.meetingRecordList = _this.meetingRecordList.concat(res.data.meetingRecords)
+            _this.meetingType = res.data.meetingType
+            _this.total = res.data.total
+            if (Math.ceil(_this.total / _this.page_size) > _this.page){
+              _this.hasMore = true
+            } else {
+              _this.hasMore = false
+            }
+            _this.page++
+            window.setTitle(_this.meetingType.title)
           } else {
-            _this.hasMore = false
+            _this.$toast(res.msg)
           }
-          _this.page++
-          window.setTitle(_this.meetingType.title)
         }).catch(err => {
 
         })

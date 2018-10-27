@@ -203,10 +203,12 @@
     justify-content: start;
   }
   .join-user{
-    padding: 10px;
+    padding: 10px 5px;
     display: flex;
     flex-direction: column;
     text-align: center;
+    width: 80px;
+    box-sizing: border-box;
   }
 
   .user-avatar{
