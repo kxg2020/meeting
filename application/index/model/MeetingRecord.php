@@ -2,6 +2,7 @@
 namespace app\index\model;
 use app\index\service\Enum;
 use app\index\service\Format;
+use app\index\service\Jwt;
 use app\index\service\Singleton;
 use app\index\service\template\AgentMessageFacade;
 use app\index\service\Tool;
@@ -15,12 +16,12 @@ class MeetingRecord extends Base{
     use Singleton;
 
     public function getMeetingRecords($type,$params){
-        $result = [];
+        $result  = [];
         $records = Db::name("meeting_record")
             ->alias("a")
             ->field("b.name as create_user_name,a.title,a.create_time,a.start_time,a.end_time,a.id")
             ->leftJoin("user b","a.create_user_id = b.id")
-            ->where(["a.meeting_type_id"=>$type])
+            ->where(["a.meeting_type_id"=>$type,"a.status"=>1])
             ->order("a.create_time desc")
             ->limit($this->formatLimit($params["pgNum"],$params["pgSize"]),$params["pgSize"])
             ->select();
@@ -40,8 +41,12 @@ class MeetingRecord extends Base{
             $result["meetingType"]    = $recordType;
             $result["total"]          = $total;
             return $this->returnResponse($result);
+        }else{
+            $result["meetingRecords"] = [];
+            $result["meetingType"]    = [];
+            $result["total"]          = 0;
         }
-        return $this->returnResponse();
+        return $this->returnResponse($result);
     }
 
     public function createMeetingRecord($params){
@@ -56,7 +61,6 @@ class MeetingRecord extends Base{
         if(!substr_count($createUser["data"]["enable_sponsored_meeting_type_id"],$params["meeting_type_id"])){
             return $this->returnResponse([],4001);
         }
-
         // 插入会议记录表
         $insertMeetingRecord = [
             "title"           => $params["title"],
@@ -92,9 +96,12 @@ class MeetingRecord extends Base{
             }
         }
         if(\app\index\service\Format::getInstance()->commit){
+            $redirect = Request::domain();
             // 消息模板
-            $template = AgentMessageFacade::TextCard()->setParams($params,Request::url(true))
-                ->templateInit()->fillTemplateValue();
+            $template = AgentMessageFacade::TextCard()
+                ->setParams($params,$redirect)
+                ->templateInit()
+                ->fillTemplateValue();
             // 发送应用消息
             WeChat::getInstance()->setPost($template)->sendAgentMessage();
 
@@ -154,7 +161,7 @@ class MeetingRecord extends Base{
 
                 $meetingInfo = $this->returnResponse($result);
                 // 缓存会议
-                Cache::set("$meetingRecordId-info",\app\index\service\Tool::getInstance()->jsonEncode($meetingInfo));
+//                Cache::set("$meetingRecordId-info",\app\index\service\Tool::getInstance()->jsonEncode($meetingInfo));
                 return $meetingInfo;
             }
             return $this->returnResponse();
@@ -199,5 +206,16 @@ class MeetingRecord extends Base{
                 }
             }
         }
+    }
+
+    /*
+     * 删除会议
+     */
+    public function meetingDelete($meetingId):bool {
+        $result = Db::name("meeting_record")->where(["id"=> $meetingId])->update(["status"=>0]);
+        if($result === false){
+            return false;
+        }
+        return true;
     }
 }

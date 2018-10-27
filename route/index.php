@@ -15,6 +15,9 @@ Route::get("/","index/index");
 
 Route::get("/upload","static/uploads");
 
+#会议记录导出
+Route::get("meetingRecord/word","MeetingRecord/meetingRecordWord");
+
 Route::group("/api/",function(){
 
     #首页会议类型
@@ -52,5 +55,17 @@ Route::group("/api/",function(){
 
     #创建用户投票
     Route::post("userVotes/create","UserVotes/createUserVotes");
+
+    #用户删除会议
+    Route::get("meetingRecord/delete/:meetingId","MeetingRecord/meetingDelete");
+
+    #创建新闻记录
+    Route::post("notice/create","Notice/createNotice");
+
+    #删除新闻记录
+    Route::get("notice/delete/:noticeId","Notice/deleteNotice");
+
+    #新闻详细信息
+    Route::get("notice/detail/:noticeId","Notice/detailNotice");
 
 })->middleware(\app\index\service\Auth::class);

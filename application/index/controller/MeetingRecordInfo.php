@@ -6,7 +6,7 @@ use think\facade\Request;
 class MeetingRecordInfo extends Base{
 
     /*
-     * 会议所有议题列表
+     * 会议议题详情
      */
     public function meetingRecordIssueInfo(){
         $meetingId = Request::param("issueId");

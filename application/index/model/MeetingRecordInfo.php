@@ -11,41 +11,34 @@ use think\facade\Request;
 class MeetingRecordInfo extends Base{
     use Singleton;
     private $imageExt = ["jpg,jpeg,png,gif"];
+    private $issueDetail;
 
     public function meetingIssueInfo($issueId){
-        $meetingInfo = Tool::getInstance()->jsonDecode(\think\facade\Cache::get("$issueId-issue-detail"));
-        if(!$meetingInfo){
-            $meetingInfo = $this->singleIssueInfo($issueId);
-            return $this->returnResponse($meetingInfo["data"]);
-        }else{
-            return $this->returnResponse($meetingInfo);
-        }
-    }
-
-    private function singleIssueInfo($issueId){
-        $result = [];
+        $userId = Request::instance()->userId;
+        $meetingInfo = Tool::getInstance()->jsonDecode(\think\facade\Cache::get("$issueId-$userId-issue-detail"));
         $filed = "b.name,b.short_name,a.title,a.file_id,a.content,a.id,a.meeting_record_id as record_id,";
-        $filed.= "a.type,c.meeting_info_id,c.options";
-
-        // ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½
-        $issueDetail = Db::name("meeting_record_info")
+        $filed.= "a.type,c.meeting_info_id,c.options,c.vote_number_limit";
+        $this->issueDetail = Db::name("meeting_record_info")
             ->alias("a")
             ->field($filed)
             ->leftJoin("meeting_political b","a.type = b.id")
             ->leftJoin("meeting_vote c","c.meeting_info_id = a.id")
             ->where(["a.id" => $issueId])
             ->find();
-        $issueDetail["options"] = Tool::getInstance()->jsonDecode($issueDetail["options"]);
+        if(!$meetingInfo){
+            $meetingInfo = $this->singleIssueInfo($issueId);
+            return $this->returnResponse($meetingInfo["data"]);
+        }else{
+            $meetingInfo["rate"] = $this->finishRate($this->issueDetail);
+            return $this->returnResponse($meetingInfo);
+        }
+    }
+
+    private function singleIssueInfo($issueId){
+        $result = [];
         // ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½
-        $issueNumber = Db::name("meeting_record_info")
-            ->where(["meeting_record_id" => $issueDetail["record_id"]])
-            ->count();
-        // ÒÑ¾­Íê³É
-        $finishNumber= Db::name("user_votes")
-            ->where(["meeting_record_id" => $issueDetail["record_id"]])
-            ->count();
-        // Õ¼±È
-        $finishRate  = sprintf("%.1f",$finishNumber / $issueNumber);
+        $issueDetail = $this->issueDetail;
+        $issueDetail["options"] = Tool::getInstance()->jsonDecode($issueDetail["options"]);
         // µ±Ç°ÒéÌâ
         $currentIssueStatus = Db::name("user_votes")->where(["meeting_info_id"=>$issueId])->find();
         // »áÒé¼ÇÂ¼
@@ -54,8 +47,12 @@ class MeetingRecordInfo extends Base{
             ->where(["id"=>$issueDetail["record_id"]])
             ->find();
         $editable = true;
+        // »áÒéÊÇ·ñ¿ªÊ¼
+        if($meetingRecord["start_time"] > time()){
+            $editable = false;
+        }
         // »áÒéÊÇ·ñ¹ýÆÚ
-        if($meetingRecord["start_time"] > time() || $meetingRecord["end_time"] < time()){
+        if($meetingRecord["end_time"] < time()){
             $editable = false;
         }
         // ÊÇ·ñÒÑ¾­¼ÇÂ¼¹ý
@@ -63,12 +60,14 @@ class MeetingRecordInfo extends Base{
             $editable = false;
         }
 
+        $finishRate = $this->finishRate($issueDetail);
         $result["edit"] = $editable;
         if($issueDetail){
             $result["content"] = $issueDetail["content"];
+            $result["vote_number_limit"] = $issueDetail["vote_number_limit"];
             $result["rate"]    = $finishRate;
             $result["issue_name"] = $issueDetail["title"];
-            $result["issue_id"] = $issueDetail["meeting_info_id"];
+            $result["issue_id"] = $issueId;
             $result["issue_short_name"] = $issueDetail["short_name"];
             $result["images"] = [];
             $result["files"]  = [];
@@ -96,7 +95,8 @@ class MeetingRecordInfo extends Base{
             }
             $result = $this->classify($issueDetail,$result);
             // ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½
-            \think\facade\Cache::set("$issueId-issue-detail",Tool::getInstance()->jsonEncode($result));
+            $userId = Request::instance()->userId;
+//            \think\facade\Cache::set("$issueId-$userId-issue-detail",Tool::getInstance()->jsonEncode($result));
             return $this->returnResponse($result);
         }
         return $this->returnResponse();
@@ -115,7 +115,7 @@ class MeetingRecordInfo extends Base{
             if($votes){
                 foreach($votes as $key => &$value){
                     foreach ($value["items"] as $index => &$item){
-                        if($index === $userVote[$key]){
+                        if(isset($userVote[$key]) && in_array($index,$userVote[$key])){
                             $item["selected"] = true;
                         }else{
                             $item["selected"] = false;
@@ -142,5 +142,19 @@ class MeetingRecordInfo extends Base{
                 break;
         }
         return $result;
+    }
+
+    private function finishRate($issueDetail){
+        // ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½
+        $issueNumber = Db::name("meeting_record_info")
+            ->where(["meeting_record_id" => $issueDetail["record_id"]])
+            ->count();
+        // ÒÑ¾­Íê³É
+        $finishNumber= Db::name("user_votes")
+            ->where(["meeting_record_id" => $issueDetail["record_id"]])
+            ->count();
+        // Õ¼±È
+        $finishRate  = sprintf("%.1f",$finishNumber / $issueNumber);
+        return $finishRate;
     }
 }

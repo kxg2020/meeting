@@ -1,6 +1,7 @@
 <?php
 namespace app\index\model;
 use app\index\service\Singleton;
+use app\index\service\Tool;
 use think\Db;
 
 class User extends Base{
@@ -39,7 +40,7 @@ class User extends Base{
         $this->userInfo = [
             "user_id" => $params["userid"],
             "name"    => $params["name"],
-            "avatar"  => $params["avatar"],
+            "avatar"  => str_replace("/0","/100",$params["avatar"]),
             "mobile"  => $params["mobile"],
             "enable"  => $params["enable"],
             "position"=> $params["position"],
@@ -72,9 +73,13 @@ class User extends Base{
      */
     public function invitationDepartment($meetingTypeId){
         $departmentName= [];
+        // 用户邀请的部门
         $result = MeetingType::getInstance()
             ->getSingleMeetingTypeDepartmentName($meetingTypeId);
         if($result["data"]){
+            // 部门成员(用于投票)
+            $member = $this->departmentUserInDb($result["data"]["department_id"]);
+            $departmentName["member"]  = $member;
             $departmentName["meeting"] = $result["data"];
         }
         return $this->returnResponse($departmentName);
@@ -89,5 +94,22 @@ class User extends Base{
             return $this->returnResponse($result);
         }
         return $this->returnResponse();
+    }
+
+    /*
+     * 部门成员
+     */
+    private function departmentUserInDb($departmentId){
+        $userAll = $this->allUserInDatabase("id,name,department");
+        $userDepartment = [];
+        if($userAll["data"]){
+            foreach ($userAll["data"] as $key => $value){
+                $department = Tool::getInstance()->jsonDecode($value["department"]);
+                if(in_array($departmentId,$department)){
+                    $userDepartment[] = $value;
+                }
+            }
+        }
+        return $userDepartment;
     }
 }
