@@ -11,4 +11,6 @@ class Enum{
     const READ   = "yz";
     const BALLOT = "bj";
     const VOTE   = "tp";
+
+    const ADMIN  = "超级管理员";
 }

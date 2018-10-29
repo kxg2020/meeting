@@ -3,6 +3,7 @@ namespace app\index\controller;
 
 use app\index\model\MeetingType;
 use app\index\model\UserMeeting;
+use app\index\service\Enum;
 use app\index\service\Tool;
 use think\facade\Request;
 use think\facade\Url;
@@ -26,8 +27,7 @@ class MeetingRecord extends Base {
         $meetingId = Request::param("meetingId");
         $userRole = \app\index\model\User::getInstance()->getUserByUserId(Request::instance()->userId);
         if(!empty($userRole["data"]["department"])){
-            $department = Tool::getInstance()->jsonDecode($userRole["data"]["department"]);
-            if(in_array(1,$department)){
+            if($userRole["position"] == Enum::ADMIN){
                 $result = \app\index\model\MeetingRecord::getInstance()->meetingDelete($meetingId);
                 if($result){
                     return $this->printResponse(9004);
