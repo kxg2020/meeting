@@ -82,7 +82,7 @@
       getMeetingList () {
         let _this = this
         let type_id = this.meeting_type_id
-        _this.axios.get('/meetingRecord/' + type_id + '/' + this.page + '/' + this.page_size).then(res => {
+        _this.axios.get('/meetingRecord/list/' + type_id, {params: {page: _this.page, page_size: _this.page_size}}).then(res => {
           if (res.status) {
             _this.meetingRecordList = _this.meetingRecordList.concat(res.data.meetingRecords)
             _this.meetingType = res.data.meetingType

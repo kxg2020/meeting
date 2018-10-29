@@ -3,6 +3,7 @@ namespace app\index\controller;
 use app\index\service\WeChat;
 use think\Controller;
 
+use think\facade\Request;
 use think\facade\Url;
 
 class Base extends Controller{
@@ -29,12 +30,16 @@ class Base extends Controller{
         9006 => "新闻删除成功",
     ];
     private $response = [];
+    protected $page = 1;
+    protected $pageSize = 10;
 
 
     protected  function initialize(){
         $this->agentId   = WeChat::AGENT_ID;
         $this->companyId = WeChat::COMPANY_ID;
         $this->redirect  = Url::build("index/index");
+        $this->page = Request::get('page', 1);
+        $this->pageSize = Request::get('page_size', 10);
     }
 
     protected function printResponse($code = 200,$data = [],$msg = ""){
@@ -45,19 +50,5 @@ class Base extends Controller{
             $this->response["msg"]    = $msg ? $msg : $this->message[$code];
         }
         return json($this->response);
-    }
-
-    /*
-     * 分页格式
-     */
-    protected function formatPage($params){
-        $result = ["pgNum" => 1,"pgSize" => 3];
-        if(isset($params["pgNum"]) && !empty($params["pgNum"]) && $params["pgNum"] < 1000){
-            $result["pgNum"] = $params["pgNum"];
-        }
-        if(isset($params["pgSize"]) && !empty($params["pgSize"]) && $params["pgSize"] <= 5){
-            $result["pgSize"] = $params["pgSize"];
-        }
-        return $result;
     }
 }

@@ -31,4 +31,9 @@ class Notice extends Base {
         }
         return $this->printResponse();
     }
+
+    public function noticeList(){
+        $result = \app\index\model\Notice::getInstance()->getNoticeList($this->page, $this->pageSize);
+        return $this->printResponse(200, $result);
+    }
 }

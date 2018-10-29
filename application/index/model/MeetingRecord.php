@@ -15,7 +15,7 @@ use think\facade\Request;
 class MeetingRecord extends Base{
     use Singleton;
 
-    public function getMeetingRecords($type,$params){
+    public function getMeetingRecords($type, $page, $page_size){
         $result  = [];
         $records = Db::name("meeting_record")
             ->alias("a")
@@ -23,7 +23,7 @@ class MeetingRecord extends Base{
             ->leftJoin("user b","a.create_user_id = b.id")
             ->where(["a.meeting_type_id"=>$type,"a.status"=>1])
             ->order("a.create_time desc")
-            ->limit($this->formatLimit($params["pgNum"],$params["pgSize"]),$params["pgSize"])
+            ->limit($this->formatLimit($page, $page_size),$page_size)
             ->select();
         $total   = Db::name("meeting_record")
             ->where(["meeting_type_id"=>$type])->count();

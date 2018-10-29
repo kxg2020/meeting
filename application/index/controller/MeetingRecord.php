@@ -11,7 +11,7 @@ use think\facade\Url;
 class MeetingRecord extends Base {
 
     /*
-     * ²¿ÃÅÁÐ±í´´½¨»áÒé
+     * ï¿½ï¿½ï¿½ï¿½ï¿½Ð±ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½
      */
     public function meetingCreate(){
         $params = Tool::getInstance()->jsonDecode(file_get_contents("php://input"));
@@ -21,7 +21,7 @@ class MeetingRecord extends Base {
     }
 
     /*
-     * É¾³ý»áÒé
+     * É¾ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½
      */
     public function meetingDelete(){
         $meetingId = Request::param("meetingId");
@@ -40,12 +40,11 @@ class MeetingRecord extends Base {
     }
 
     /*
-     *Ä³ÖÖ»áÒéµÄ»áÒéÁÐ±í
+     *Ä³ï¿½Ö»ï¿½ï¿½ï¿½Ä»ï¿½ï¿½ï¿½ï¿½Ð±ï¿½
      */
     public function meetingRecordList(){
         $typeId = Request::param("typeId");
-        $params = $this->formatPage(Request::param());
-        $records = \app\index\model\MeetingRecord::getInstance()->getMeetingRecords($typeId,$params);
+        $records = \app\index\model\MeetingRecord::getInstance()->getMeetingRecords($typeId, $this->page, $this->pageSize);
         if($records["status"]){
             return $this->printResponse(200, $records["data"]);
         }
@@ -53,7 +52,7 @@ class MeetingRecord extends Base {
     }
 
     /*
-     * »áÒéµÄËùÓÐÒéÌâÁÐ±í
+     * ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Ð±ï¿½
      */
     public function singleMeetingInfo(){
         $userId    = request()->userId;
@@ -71,7 +70,7 @@ class MeetingRecord extends Base {
     }
 
     /*
-     * »áÒé¼ÇÂ¼
+     * ï¿½ï¿½ï¿½ï¿½ï¿½Â¼
      */
     public function meetingRecordWord(){
         $meetingId = Request::get("meetingId");

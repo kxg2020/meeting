@@ -36,7 +36,10 @@
     data() {
       return {
         notice_list: [],
-        hasMore: true,
+        page_size: 5,
+        page: 1,
+        total: 0,
+        hasMore: false
       }
     },
     components: {
@@ -48,44 +51,21 @@
     },
     methods: {
       loadMore() {
-        this.notice_list = this.notice_list.concat([
-          {
-            id: 1,
-            title: '公告标题哈哈哈',
-            thumb: 'https://meeting.it9g.com/static/uploads/2018-10-13/zhangtao/071211270918e826d6019690.jpg',
-            intro: '公告简略公告简略公告简略公告简略公告简略公告简略公告简略公告简略公告简略公告简略公告简略公告简略公告简略公告简略',
-            create_time: '2018-10-18'
-          },
-          {
-            id: 1,
-            title: '公告标题哈哈哈',
-            thumb: 'https://meeting.it9g.com/static/uploads/2018-10-13/zhangtao/071211270918e826d6019690.jpg',
-            intro: '公告简略公告简略公告简略公告简略公告简略公告简略公告简略公告简略公告简略公告简略公告简略公告简略公告简略公告简略',
-            create_time: '2018-10-18'
-          },
-          {
-            id: 1,
-            title: '公告标题哈哈哈',
-            thumb: 'https://meeting.it9g.com/static/uploads/2018-10-13/zhangtao/071211270918e826d6019690.jpg',
-            intro: '公告简略公告简略公告简略公告简略公告简略公告简略公告简略公告简略公告简略公告简略公告简略公告简略公告简略公告简略',
-            create_time: '2018-10-18'
-          },
-          {
-            id: 1,
-            title: '公告标题哈哈哈',
-            thumb: 'https://meeting.it9g.com/static/uploads/2018-10-13/zhangtao/071211270918e826d6019690.jpg',
-            intro: '公告简略公告简略公告简略公告简略公告简略公告简略公告简略公告简略公告简略公告简略公告简略公告简略公告简略公告简略',
-            create_time: '2018-10-18'
-          },
-          {
-            id: 1,
-            title: '公告标题哈哈哈',
-            thumb: 'https://meeting.it9g.com/static/uploads/2018-10-13/zhangtao/071211270918e826d6019690.jpg',
-            intro: '公告简略公告简略公告简略公告简略公告简略公告简略公告简略公告简略公告简略公告简略公告简略公告简略公告简略公告简略',
-            create_time: '2018-10-18'
-          },
-        ])
-        if (Math.random() > 0.7) this.hasMore = false
+        let _this = this
+        _this.axios.get('/notice/list', {params: {page: _this.page, page_size: _this.page_size}}).then(res => {
+          if (res.status) {
+            _this.notice_list = _this.notice_list.concat(res.data.notice_list)
+            _this.total = res.data.total
+            if (Math.ceil(_this.total / _this.page_size) > _this.page){
+              _this.hasMore = true
+            } else {
+              _this.hasMore = false
+            }
+            _this.page++
+          } else {
+            _this.$toast(res.msg)
+          }
+        }).catch(err => {})
       },
       toInfo(id) {
         this.$router.push({path: '/notice/' + id})

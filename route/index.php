@@ -15,57 +15,59 @@ Route::get("/","index/index");
 
 Route::get("/upload","static/uploads");
 
-#»áÒé¼ÇÂ¼µ¼³ö
+#ï¿½ï¿½ï¿½ï¿½ï¿½Â¼ï¿½ï¿½ï¿½ï¿½
 Route::get("meetingRecord/word","MeetingRecord/meetingRecordWord");
 
 Route::group("/api/",function(){
 
-    #Ê×Ò³»áÒéÀàÐÍ
+    #ï¿½ï¿½Ò³ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½
     Route::get("meetingTypes","MeetingType/meetingTypes");
 
-    #ÓÃ»§»áÒéÁÐ±í
-    Route::get("meetingRecord/:typeId/:pgNum/:pgSize","MeetingRecord/meetingRecordList");
+    #ï¿½Ã»ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Ð±ï¿½
+    Route::get("meetingRecord/list/:typeId","MeetingRecord/meetingRecordList");
 
-    #ÓÃ»§´´½¨»áÒé
+    #ï¿½Ã»ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½
     Route::post("meetingRecord/create","MeetingRecord/meetingCreate");
 
-    #ÖØÖÃ²¿ÃÅÁÐ±í
+    #ï¿½ï¿½ï¿½Ã²ï¿½ï¿½ï¿½ï¿½Ð±ï¿½
     Route::get("department","Department/departmentList");
 
-    #ÉÏ´«ÎÄ¼þÍ¼Æ¬
+    #ï¿½Ï´ï¿½ï¿½Ä¼ï¿½Í¼Æ¬
     Route::post("upload","File/upload");
 
-    #»áÒéÒéÌâÀàÐÍ
+    #ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½
     Route::get("political","MeetingPolitical/politicalList");
 
-    #²¿ÃÅ³ÉÔ±ÁÐ±í
+    #ï¿½ï¿½ï¿½Å³ï¿½Ô±ï¿½Ð±ï¿½
     Route::get("member/:id","Department/departmentMember");
 
-    #Ê×Ò³»áÒéÈ¨ÏÞ
+    #ï¿½ï¿½Ò³ï¿½ï¿½ï¿½ï¿½È¨ï¿½ï¿½
     Route::get("permission/:typeId","Permission/meetingPermission");
 
-    #ÓÃ»§ÑûÇë²¿ÃÅ
+    #ï¿½Ã»ï¿½ï¿½ï¿½ï¿½ë²¿ï¿½ï¿½
     Route::get("user/invitation/:id","User/userInvitationDepartment");
 
-    #µ¥¸ö»áÒéÒéÌâ
+    #ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½
     Route::get("meetingRecord/info/:meetingId","MeetingRecord/singleMeetingInfo");
 
-    #»áÒéÒéÌâÏêÇé
+    #ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½
     Route::get("meetingRecord/detail/:issueId","MeetingRecordInfo/meetingRecordIssueInfo");
 
-    #´´½¨ÓÃ»§Í¶Æ±
+    #ï¿½ï¿½ï¿½ï¿½ï¿½Ã»ï¿½Í¶Æ±
     Route::post("userVotes/create","UserVotes/createUserVotes");
 
-    #ÓÃ»§É¾³ý»áÒé
+    #ï¿½Ã»ï¿½É¾ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½
     Route::get("meetingRecord/delete/:meetingId","MeetingRecord/meetingDelete");
 
-    #´´½¨ÐÂÎÅ¼ÇÂ¼
+    #ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Å¼ï¿½Â¼
     Route::post("notice/create","Notice/createNotice");
 
-    #É¾³ýÐÂÎÅ¼ÇÂ¼
+    #É¾ï¿½ï¿½ï¿½ï¿½ï¿½Å¼ï¿½Â¼
     Route::get("notice/delete/:noticeId","Notice/deleteNotice");
 
-    #ÐÂÎÅÏêÏ¸ÐÅÏ¢
+    #ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Ï¸ï¿½ï¿½Ï¢
     Route::get("notice/detail/:noticeId","Notice/detailNotice");
+
+    Route::get("notice/list","Notice/noticeList");
 
 })->middleware(\app\index\service\Auth::class);
