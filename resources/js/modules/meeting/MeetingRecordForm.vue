@@ -101,6 +101,7 @@
                               @success="data => uploadVoteFileSuccess(issueIndex, voteIndex, voteItemIndex, data)"></Upload>
                     </div>
                   </div>
+                  <!--
                   <el-input
                     class="vote-item-tag input-vote-item-tag"
                     v-if="vote.inputVisible"
@@ -113,6 +114,10 @@
                   </el-input>
                   <el-button v-else class="vote-item-tag btn-vote-item-tag" size="small"
                              @click="showInputVoteItem(issueIndex, voteIndex)">+ 投票选项
+                  </el-button>
+                  -->
+                  <el-button  class="vote-item-tag btn-vote-item-tag" size="small"
+                             @click="showMemberDialog(issueIndex, voteIndex)">+ 投票选项
                   </el-button>
                 </template>
                 <template v-if="issue.political_short_name == 'bj'">
@@ -144,6 +149,11 @@
         <el-button class="submit-btn" type="primary" plain @click="submit" :loading="submitLoading">创建</el-button>
       </div>
     </div>
+    <!-- 投票选项 -->
+    <van-popup v-model="showMember" position="bottom">
+      <van-picker :show-toolbar="true" :columns="memberList" value-key="name" @confirm="confirmMemberDialog"
+                  @cancel="hideMemberDialog"/>
+    </van-popup>
     <!-- 第N次 -->
     <van-popup v-model="showCount" position="bottom">
       <van-picker :show-toolbar="true" :columns="countList" @change="countChange" @confirm="hideCountDialog"
@@ -203,7 +213,11 @@
         checkList: [],
         submitLoading: false,
         showCount: false,
-        countList: []
+        countList: [],
+        showMember: false,
+        memberList: [],
+        memberIssueIndex: 0,
+        memberVoteIndex: 0
       }
     },
     components: {
@@ -239,6 +253,7 @@
           _this.model.meeting_name = res.data.meeting.name
           _this.model.meeting_image_url = res.data.meeting.img_url
           _this.model.department_id = res.data.meeting.department_id
+          _this.memberList = res.data.member
           _this.model.title = "第" + _this.model.count +  "次" + _this.model.meeting_name
           _this.model.user_invitation_id = _this.model.meeting_type_id
           _this.model.user_invitation_name = _this.model.meeting_name
@@ -391,6 +406,34 @@
       },
       hideCountDialog() {
         this.showCount = false
+      },
+      showMemberDialog(issueIndex, voteIndex) {
+        this.memberIssueIndex = issueIndex
+        this.memberVoteIndex = voteIndex
+        this.showMember = true
+      },
+      confirmMemberDialog(value) {
+        let inputValue = value.name
+        let issueIndex = this.memberIssueIndex
+        let voteIndex = this.memberVoteIndex
+        if (inputValue) {
+          let exist = false
+          for (let item of this.model.issue_list[issueIndex].votes[voteIndex].items) {
+            if (item.value == inputValue) {
+              exist = true
+            }
+          }
+          if (!exist) this.model.issue_list[issueIndex].votes[voteIndex].items.push({
+            value: inputValue,
+            files: []
+          })
+        }
+        this.model.issue_list[issueIndex].votes[voteIndex].inputVisible = false
+        this.model.issue_list[issueIndex].votes[voteIndex].inputValue = ''
+        this.hideMemberDialog()
+      },
+      hideMemberDialog() {
+        this.showMember = false
       },
       submit() {
         this.submitLoading = true
