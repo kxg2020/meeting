@@ -20,7 +20,9 @@ class UserVotes extends Base{
         // 会议详情
         $this->meetingDetail($params);
         // 会议是否开始
-        $this->validate();
+        if(!$this->validate()){
+            return false;
+        }
         switch ($params["issue_short_name"]){
             case Enum::READ:
                 $this->createRead($params);
