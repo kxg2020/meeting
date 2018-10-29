@@ -43,7 +43,7 @@ class MeetingRecord extends Base{
             return $this->returnResponse($result);
         }else{
             $result["meetingRecords"] = [];
-            $result["meetingType"]    = [];
+            $result["meetingType"]    = $recordType;
             $result["total"]          = 0;
         }
         return $this->returnResponse($result);
