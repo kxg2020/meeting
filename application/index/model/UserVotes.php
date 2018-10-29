@@ -19,10 +19,6 @@ class UserVotes extends Base{
         $this->params = $params;
         // 会议详情
         $this->meetingDetail($params);
-        // 会议是否开始
-        if(!$this->validate()){
-            return false;
-        }
         switch ($params["issue_short_name"]){
             case Enum::READ:
                 $this->createRead($params);
@@ -39,15 +35,6 @@ class UserVotes extends Base{
             return $this->returnResponse([],9003);
         }
         return $this->returnResponse([],4007);
-    }
-
-    private function validate(){
-        if(isset($this->meeting["start_time"]) && $this->meeting["start_time"] > time()){
-            return false;
-        }
-        if(isset($this->meeting["end_time"]) && $this->meeting["end_time"] < time()){
-            return false;
-        }
     }
 
     private function createRead($params){
