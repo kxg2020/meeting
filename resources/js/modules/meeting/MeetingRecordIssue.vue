@@ -215,15 +215,13 @@
     padding: 6px 15px 0 15px;
     border-radius: 3px;
     height: 28px;
+    margin-right: 10px;
+    margin-bottom: 10px;
   }
 
   .selected{
     border-color: #409eff;
     color: #409eff;
-  }
-
-  .vote-radio-item+.vote-radio-item{
-    margin-left: 10px;
   }
 
   .cell-group-title {
