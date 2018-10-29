@@ -1,9 +1,9 @@
 <?php
-namespace app\index\Controller;
+namespace app\index\controller;
 
 use think\facade\Request;
 
-class Notice extends Base{
+class Notice extends Base {
 
     public function createNotice(){
         $params = Request::post();
