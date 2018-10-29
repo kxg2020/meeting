@@ -11,7 +11,7 @@ class Notice extends Base{
         $insert = [
             "title"   => $params["title"],
             "content" => $params["content"],
-            "file_id" => Tool::getInstance()->jsonEncode(isset($params["file"]) ? $params["file"] : []),
+            "images" => Tool::getInstance()->jsonEncode(isset($params["images"]) ? $params["images"] : []),
             "create_time" => time()
         ];
         return Db::name("notice")->insertGetId($insert);
@@ -28,9 +28,8 @@ class Notice extends Base{
     public function detailNotice($noticeId):?array {
         $result = Db::name("notice")->where(["id"=>$noticeId])->find();
         if($result){
-            $result["file"] = Db::name("meeting_file")
-                ->where("id","in",$result["file_id"])
-                ->select();
+            $result["images"] = Tool::getInstance()->jsonDecode($result['images']);
+            $result["create_time"] = date("Y-m-d H:i:s", $result["create_time"]);
             return $result;
         }
         return null;

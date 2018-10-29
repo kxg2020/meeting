@@ -1,6 +1,6 @@
 <template>
   <div class="main-container">
-    <div class="notice">
+    <div class="notice" v-if="notice">
       <h3 class="notice-title">{{notice.title}}</h3>
       <div class="create-time">
         {{notice.create_time}}
@@ -35,32 +35,14 @@
     },
     methods: {
       getNoticeInfo(id) {
-        this.notice = {
-          id: 1,
-          title: '公告标题哈哈哈',
-          thumb: 'https://meeting.it9g.com/static/uploads/2018-10-13/zhangtao/071211270918e826d6019690.jpg',
-          content: '公告内容内容内容公告内容内容内容公告内容内容内容公告内容内容内容公告内容内容内容公告内容内容内容公告' +
-            '内容内容内容公告内容内容内容公告内容内容内容公告内容内容内容公告内容内容内容公告内容内容内容公告内容内容内容' +
-            '公告内容内容内容公告内容内容内容公告内容内容内容公告内容内容内容公告内容内容内容公告内容内容内容公告内容内容' +
-            '内容公告内容内容内容公告内容内容内容公告内容内容内容公告内容内容内容公告内容内容内容公告内容内容内容公告内容' +
-            '内容内容公告内容内容内容公告内容内容内容公告内容内容内容公告内容内容内容公告内容内容内容公告内容内容内容公告' +
-            '内容内容内容公告内容内容内容公告内容内容内容公告内容内容内容公告内容内容内容公告内容内容内容',
-          create_time: '2018-10-18',
-          images: [
-            {
-              file_url: "https://meeting.it9g.com/static/uploads/2018-10-13/zhangtao/071211270918e826d6019690.jpg",
-              file_name: "071211270918e826d6019690.jpg"
-            },
-            {
-              file_url: "https://meeting.it9g.com/static/uploads/2018-10-13/zhangtao/071211270918e826d6019690.jpg",
-              file_name: "071211270918e826d6019690.jpg"
-            },
-            {
-              file_url: "https://meeting.it9g.com/static/uploads/2018-10-13/zhangtao/071211270918e826d6019690.jpg",
-              file_name: "071211270918e826d6019690.jpg"
-            },
-          ]
-        }
+        let _this = this
+        _this.axios.get('/notice/detail/' + id).then(res => {
+          if (res.status) {
+            _this.notice = res.data
+          } else {
+            _this.$toast(res.msg)
+          }
+        }).catch(err => {})
       }
     }
   }
