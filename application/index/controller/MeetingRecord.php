@@ -57,7 +57,7 @@ class MeetingRecord extends Base {
     public function singleMeetingInfo(){
         $userId    = request()->userId;
         $meetingId = Request::param("meetingId");
-        $result = UserMeeting::getInstance()->userMeetingRecord($meetingId);
+        $result = UserMeeting::getInstance()->userMeetingRecord($meetingId,$userId);
         if(!$result["data"]){
             UserMeeting::getInstance()->createUserMeetingMap($userId,$meetingId);
         }

@@ -1,6 +1,6 @@
 <?php
 namespace app\index\controller;
-
+use app\index\service\Enum;
 use think\facade\Request;
 
 class Notice extends Base {
@@ -35,5 +35,17 @@ class Notice extends Base {
     public function noticeList(){
         $result = \app\index\model\Notice::getInstance()->getNoticeList($this->page, $this->pageSize);
         return $this->printResponse(200, $result);
+    }
+
+    public function noticeCreatePermission(){
+        $userId = Request::instance()->userId;
+        $user = \app\index\model\User::getInstance()->getUserByUserId($userId);
+        if(!empty($user["data"])){
+            if($user["data"]["position"] == Enum::ADMIN){
+                return $this->printResponse(200,["create"=>true]);
+            }
+            return $this->printResponse(200,["create"=>false]);
+        }
+        return $this->printResponse(200,["create"=>false]);
     }
 }

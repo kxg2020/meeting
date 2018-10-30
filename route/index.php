@@ -15,59 +15,62 @@ Route::get("/","index/index");
 
 Route::get("/upload","static/uploads");
 
-#�����¼����
+#??????????
 Route::get("meetingRecord/word","MeetingRecord/meetingRecordWord");
 
 Route::group("/api/",function(){
 
-    #��ҳ��������
+    #???????????
     Route::get("meetingTypes","MeetingType/meetingTypes");
 
-    #�û������б�
+    #????????б?
     Route::get("meetingRecord/list/:typeId","MeetingRecord/meetingRecordList");
 
-    #�û���������
+    #???????????
     Route::post("meetingRecord/create","MeetingRecord/meetingCreate");
 
-    #���ò����б�
+    #???ò????б?
     Route::get("department","Department/departmentList");
 
-    #�ϴ��ļ�ͼƬ
+    #????????
     Route::post("upload","File/upload");
 
-    #������������
+    #????????????
     Route::get("political","MeetingPolitical/politicalList");
 
-    #���ų�Ա�б�
+    #???????б?
     Route::get("member/:id","Department/departmentMember");
 
-    #��ҳ����Ȩ��
+    #??????????
     Route::get("permission/:typeId","Permission/meetingPermission");
 
-    #�û����벿��
+    #?????????
     Route::get("user/invitation/:id","User/userInvitationDepartment");
 
-    #������������
+    #????????????
     Route::get("meetingRecord/info/:meetingId","MeetingRecord/singleMeetingInfo");
 
-    #������������
+    #????????????
     Route::get("meetingRecord/detail/:issueId","MeetingRecordInfo/meetingRecordIssueInfo");
 
-    #�����û�ͶƱ
+    #?????????
     Route::post("userVotes/create","UserVotes/createUserVotes");
 
-    #�û�ɾ������
+    #??????????
     Route::get("meetingRecord/delete/:meetingId","MeetingRecord/meetingDelete");
 
-    #�������ż�¼
+    #??????????
     Route::post("notice/create","Notice/createNotice");
 
-    #ɾ�����ż�¼
+    #?????????
     Route::get("notice/delete/:noticeId","Notice/deleteNotice");
 
-    #������ϸ��Ϣ
+    #??????????
     Route::get("notice/detail/:noticeId","Notice/detailNotice");
 
     Route::get("notice/list","Notice/noticeList");
+
+    #新闻创建权限
+    Route::get("notice/permission","Notice/noticeCreatePermission");
 
 })->middleware(\app\index\service\Auth::class);

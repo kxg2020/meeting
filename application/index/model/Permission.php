@@ -23,7 +23,7 @@ class Permission extends Base{
                 if(in_array($this->superAdmin,$department)){
                     $permission["delete"] = true;
                 }else{
-                 $permission["delete"] = false;
+                    $permission["delete"] = false;
                 }
             }
             return $this->returnResponse($permission);

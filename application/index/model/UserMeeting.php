@@ -25,10 +25,10 @@ class UserMeeting extends Base{
         return $this->returnResponse();
     }
 
-    public function userMeetingRecord($meetingRecordId){
+    public function userMeetingRecord($meetingRecordId,$userId){
         $result = Db::name("user_meeting")
             ->field("id")
-            ->where(["meeting_record_id"=>$meetingRecordId])
+            ->where(["meeting_record_id"=>$meetingRecordId,"user_id"=>$userId])
             ->count();
         if($result){
             return $this->returnResponse(true);
