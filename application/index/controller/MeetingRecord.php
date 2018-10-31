@@ -106,15 +106,18 @@ class MeetingRecord extends Base {
             ->leftJoin("user b","a.user_id = b.user_id")
             ->where(["a.meeting_record_id"=> $meetingId,"status"=>1])
             ->select();
-        if(!empty($realJoinUser["data"])){
+        if(!empty($realJoinUser)){
             foreach ($realJoinUser as $key => $value){
                 $result["realJoinUser"][] = $value["name"];
             }
+
         }else{
             $result["realJoinUser"] = [];
         }
+
         $result["shouldJoinUser"] = implode(",",$result["shouldJoinUser"]);
         $result["realJoinUser"]   = implode(",",$result["realJoinUser"]);
+        
         if($meetingInfo){
             foreach ($meetingInfo as $key => $value){
                 $result["meetingName"]     = $value["meetingName"];
