@@ -33,11 +33,13 @@ class MeetingRecordInfo extends Base{
         $issueDetail = $this->issueDetail;
         $issueDetail["options"] = Tool::getInstance()->jsonDecode($issueDetail["options"]);
         // 当前议题
-        $currentIssueStatus = Db::name("user_votes")->where(["meeting_info_id"=>$issueId])->find();
+        $currentIssueStatus = Db::name("user_votes")
+            ->where(["meeting_info_id"=>$issueId,"user_id"=>Request::instance()->userId])
+            ->find();
         // 会议记录
         $meetingRecord = Db::name("meeting_record")
             ->field("start_time,end_time")
-            ->where(["id"=>$issueDetail["record_id"],"user_id"=>Request::instance()->userId])
+            ->where(["id"=>$issueDetail["record_id"]])
             ->find();
         $editable = true;
         // 会议是否开始
