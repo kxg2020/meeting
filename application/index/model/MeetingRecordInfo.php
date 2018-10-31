@@ -14,8 +14,6 @@ class MeetingRecordInfo extends Base{
     private $issueDetail;
 
     public function meetingIssueInfo($issueId){
-        $userId = Request::instance()->userId;
-        $meetingInfo = Tool::getInstance()->jsonDecode(\think\facade\Cache::get("$issueId-$userId-issue-detail"));
         $filed = "b.name,b.short_name,a.title,a.file_id,a.content,a.id,a.meeting_record_id as record_id,";
         $filed.= "a.type,c.meeting_info_id,c.options,c.vote_number_limit";
         $this->issueDetail = Db::name("meeting_record_info")
@@ -25,13 +23,8 @@ class MeetingRecordInfo extends Base{
             ->leftJoin("meeting_vote c","c.meeting_info_id = a.id")
             ->where(["a.id" => $issueId])
             ->find();
-        if(!$meetingInfo){
-            $meetingInfo = $this->singleIssueInfo($issueId);
-            return $this->returnResponse($meetingInfo["data"]);
-        }else{
-            $meetingInfo["rate"] = $this->finishRate($this->issueDetail);
-            return $this->returnResponse($meetingInfo);
-        }
+        $meetingInfo = $this->singleIssueInfo($issueId);
+        return $this->returnResponse($meetingInfo["data"]);
     }
 
     private function singleIssueInfo($issueId){
@@ -94,9 +87,6 @@ class MeetingRecordInfo extends Base{
                 }
             }
             $result = $this->classify($issueDetail,$result);
-            // ��������
-            $userId = Request::instance()->userId;
-//            \think\facade\Cache::set("$issueId-$userId-issue-detail",Tool::getInstance()->jsonEncode($result));
             return $this->returnResponse($result);
         }
         return $this->returnResponse();
@@ -107,6 +97,7 @@ class MeetingRecordInfo extends Base{
         $userVote = Db::name("user_votes")->field("choose")->where([
             "meeting_record_id" => $issueDetail["record_id"],
             "meeting_info_id"   => $issueDetail["id"],
+            "user_id"           => Request::instance()->userId
         ])->find();
         $votes = $issueDetail["options"];
         $userVote = Tool::getInstance()->jsonDecode($userVote["choose"]);
