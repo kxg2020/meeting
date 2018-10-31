@@ -224,6 +224,8 @@ class MeetingRecord extends Base {
                                 "result" => $ballotResult ,
                             ];
                         }
+                    }else{
+                        $issueOption = [];
                     }
                     $meetingIssueList = [
                         "title"     => $ballotInfo["title"],
@@ -253,7 +255,7 @@ class MeetingRecord extends Base {
                     $userVote = Db::name("user_votes")
                         ->where(["meeting_info_id"=> $vote["meeting_info_id"],"type"=>Enum::VOTE])
                         ->select();
-                    $itemVote = [];
+
                     if($vote["options"]){
                         foreach ($vote["options"] as $i => $j){
                             foreach ($j["items"] as $k => $v){
@@ -271,6 +273,8 @@ class MeetingRecord extends Base {
                                 ];
                             }
                         }
+                    }else{
+                        $itemVote = [];
                     }
                     if($itemVote){
                         $volume = [];

@@ -56,7 +56,6 @@
       </tr>
       {/if}
   </table>
-
   {if !empty($meeting["meeting_info"])}
     {volist name="$meeting['meeting_info']" id="info" key="key"}
     <h2><span style="color: #ff0000">第{$key}项议题:</span>{$info["title"]}</h2>
