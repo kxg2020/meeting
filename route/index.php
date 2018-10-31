@@ -15,9 +15,6 @@ Route::get("/","index/index");
 
 Route::get("/upload","static/uploads");
 
-#??????????
-Route::get("meetingRecord/word","MeetingRecord/meetingRecordWord");
-
 Route::group("/api/",function(){
 
     #???????????
@@ -73,6 +70,7 @@ Route::group("/api/",function(){
     #新闻创建权限
     Route::get("notice/permission","Notice/noticeCreatePermission");
 
-
+    #??????????
+    Route::get("meetingRecord/word","MeetingRecord/meetingRecordWord");
 
 })->middleware(\app\index\service\Auth::class);

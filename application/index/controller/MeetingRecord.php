@@ -296,7 +296,6 @@ class MeetingRecord extends Base {
                     break;
             }
         }
-
         $this->assign(["meeting" => $result]);
         $html = $this->fetch("meeting/word");
         $fileName = "会议记录-".date("Y-m-d H:i:s");
