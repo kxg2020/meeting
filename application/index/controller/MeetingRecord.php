@@ -99,7 +99,22 @@ class MeetingRecord extends Base {
         }else{
             $result["shouldJoinUser"] = [];
         }
+        // 实际参会人员
+        $realJoinUser = Db::name("user_meeting")
+            ->alias("a")
+            ->field("b.name")
+            ->leftJoin("user b","a.user_id = b.user_id")
+            ->where(["a.meeting_record_id"=> $meetingId,"status"=>1])
+            ->select();
+        if(!empty($realJoinUser["data"])){
+            foreach ($realJoinUser as $key => $value){
+                $result["realJoinUser"][] = $value["name"];
+            }
+        }else{
+            $result["realJoinUser"] = [];
+        }
         $result["shouldJoinUser"] = implode(",",$result["shouldJoinUser"]);
+        $result["realJoinUser"]   = implode(",",$result["realJoinUser"]);
         if($meetingInfo){
             foreach ($meetingInfo as $key => $value){
                 $result["meetingName"]     = $value["meetingName"];
@@ -154,7 +169,7 @@ class MeetingRecord extends Base {
                         "type"    => Enum::READ,
                         "content" => $issueInfo["content"],
                         "file"    => $file,
-                        "read_user" => $readUserName
+                        "read_user" => $readUserName,
                     ];
                     $result["meeting_info"][] = $meetingIssueList;
 
