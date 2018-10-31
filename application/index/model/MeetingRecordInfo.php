@@ -37,7 +37,7 @@ class MeetingRecordInfo extends Base{
         // 会议记录
         $meetingRecord = Db::name("meeting_record")
             ->field("start_time,end_time")
-            ->where(["id"=>$issueDetail["record_id"]])
+            ->where(["id"=>$issueDetail["record_id"],"user_id"=>Request::instance()->userId])
             ->find();
         $editable = true;
         // 会议是否开始
