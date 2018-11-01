@@ -110,7 +110,7 @@ class MeetingRecord extends Base {
         if(!isset($meetingInfo[0]["meetingCreateTime"]) || $meetingInfo[0]["meetingCreateTime"] > time()){
             return $this->printResponse(4012);
         }
-        
+
         // 参会人员
         $joinedUser = \app\index\model\Department::getInstance()
             ->departmentMember($meetingInfo[0]["invitation_department_id"]);
@@ -323,7 +323,7 @@ class MeetingRecord extends Base {
         }
         $this->assign(["meeting" => $result]);
         $html = $this->fetch("meeting/word");
-        $fileName = "会议记录-".date("Y-m-d H:i:s");
+        $fileName = "中共白朝乡月坝村会议记录";
         header("Content-Type: application/msword");
         header("Content-Disposition: attachment; filename={$fileName}.doc");
         header("Pragma: no-cache");
