@@ -4,11 +4,13 @@ use app\index\service\Singleton;
 use app\index\service\Tool;
 use think\Db;
 use think\facade\Cache;
+use think\facade\Request;
 
 class MeetingType extends Base{
     use Singleton;
 
     public function meetingTypes(){
+
         $result = Tool::getInstance()->jsonDecode(Cache::get("meetingTypes"));
         if(!$result){
             $field  = "id,title,img_url";

@@ -75,10 +75,9 @@ class MeetingRecord extends Base {
      */
     public function meetingRecordWord(){
         $meetingId = Request::get("meetingId");
-        $userId    = Request::instance()->userId;
         $filed = "a.title as meetingName,b.title as meetingIssueName,a.create_time as meetingCreateTime";
         $filed.= ",c.name as createUser,d.name as issueType,d.short_name,a.invitation_department_id,";
-        $filed.= "b.id as issue_id,a.id as record_id";
+        $filed.= "b.id as issue_id,a.id as record_id,a.end_time as meetingEndTime";
         $result = [];
         // 会议详情
         $meetingInfo = Db::name("meeting_record")
@@ -89,6 +88,10 @@ class MeetingRecord extends Base {
             ->leftJoin("meeting_political d","b.type = d.id")
             ->where(["a.id" => $meetingId])
             ->select();
+        // 会议是否能导出
+        if(!isset($meetingInfo["meetingEndTime"]) && !($meetingInfo["meetingEndTime"] < time())){
+            return $this->printResponse(4011);
+        }
         // 参会人员
         $joinedUser = \app\index\model\Department::getInstance()
             ->departmentMember($meetingInfo[0]["invitation_department_id"]);
@@ -117,7 +120,7 @@ class MeetingRecord extends Base {
 
         $result["shouldJoinUser"] = implode(",",$result["shouldJoinUser"]);
         $result["realJoinUser"]   = implode(",",$result["realJoinUser"]);
-        
+
         if($meetingInfo){
             foreach ($meetingInfo as $key => $value){
                 $result["meetingName"]     = $value["meetingName"];
