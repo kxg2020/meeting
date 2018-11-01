@@ -31,6 +31,7 @@ class Index extends Base{
 
         $code = Request::get("code");
         $ifRedirect = Request::get("redirect") ? Request::get("redirect") : "";
+        $this->redirect = urlencode($this->redirect.'?redirect='.$ifRedirect);
         if($code){
             $userBasic = WeChat::getInstance()->setCode($code)->getUserBasic();
             $userInfo  = WeChat::getInstance()->getUserInfo($userBasic["UserId"]);
@@ -54,12 +55,10 @@ class Index extends Base{
                     "route_path" => $ifRedirect
                 ]);
             }else{
-                $this->redirect = urlencode(Request::url(true));
                 $redirect = sprintf($this->authApi,$this->companyId,$this->redirect,$this->agentId);
                 return \redirect($redirect);
             }
         }else{
-            $this->redirect = urlencode(Request::url(true)."&redirect=".$ifRedirect);
             $redirect = sprintf($this->authApi,$this->companyId,$this->redirect,$this->agentId);
             return \redirect($redirect);
         }
