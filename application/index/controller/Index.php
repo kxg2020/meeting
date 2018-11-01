@@ -48,7 +48,6 @@ class Index extends Base{
                 }else{
                     User::getInstance()->setUserInfo($userInfo)->updateUser($userBasic["UserId"])->updatePermission($userInfo);
                 }
-               var_dump($ifRedirect);die;
                 return view('index', [
                     'token'    => Jwt::getInstance()->createToken("user_id",$userBasic["UserId"]),
                     "permission_ids"  => $viewPermissionId,
