@@ -13,7 +13,7 @@ class AddressBook extends Base{
      * 通讯录变更
      */
     public function addressBookModifiedNotify(){
-        Log::error(func_get_args());
+
         $this->validateToken(Request::get());
         if($this->validate === false){
 
@@ -28,6 +28,8 @@ class AddressBook extends Base{
         $array = [$nonce,$timestamp,$this->token,$echostr];
         sort($array,SORT_STRING);
         $str = sha1(implode($array));
+        Log::error($str);
+        Log::error($msgSignature);
         if($str == $msgSignature){
             echo  $echostr;
             exit;
