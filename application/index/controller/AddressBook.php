@@ -21,10 +21,10 @@ class AddressBook extends Base{
     }
 
     private function validateToken($params){
-        $msgSignature  = urldecode($params["msg_signature"]);
-        $timestamp     = urldecode($params["timestamp"]);
-        $nonce         = urldecode($params["nonce"]);
-        $echoStr       = rawurldecode($params["echostr"]);
+        $msgSignature  = $params["msg_signature"];
+        $timestamp     = $params["timestamp"];
+        $nonce         = $params["nonce"];
+        $echoStr       = $params["echostr"];
         $array = [$nonce,$timestamp,$this->token,$echoStr];
         sort($array,SORT_STRING);
         $str = sha1(implode($array));
