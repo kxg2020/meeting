@@ -10,6 +10,7 @@ use Mpdf\Mpdf;
 use Mpdf\MpdfException;
 use think\Db;
 use think\Exception;
+use think\facade\Cache;
 use think\facade\Request;
 use think\facade\Url;
 
@@ -66,12 +67,17 @@ class MeetingRecord extends Base {
         if(!$result["data"]){
             UserMeeting::getInstance()->createUserMeetingMap($userId,$meetingId);
         }
-       $result = \app\index\model\MeetingRecord::getInstance()
-            ->singleMeetingInfo($meetingId);
-        if($result["data"]){
-            return $this->printResponse(200,$result["data"]);
+       $result = Tool::getInstance()->jsonDecode(Cache::get("single-meeting-info-".$meetingId));
+        if(!$result){
+            $result = \app\index\model\MeetingRecord::getInstance()
+                ->singleMeetingInfo($meetingId);
+            if($result["data"]){
+                Cache::set("single-meeting-info-".$meetingId,Tool::getInstance()->jsonEncode($result));
+                return $this->printResponse(200,$result["data"]);
+            }
+            return $this->printResponse();
         }
-        return $this->printResponse();
+        return $this->printResponse(200,$result["data"]);
     }
 
     /*
