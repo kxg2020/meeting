@@ -22,6 +22,9 @@
             </div>
             <div class="meeting-edit">
               <el-button type="danger" size="mini" plain v-if="deleted" @click="deleteMeeting(meetingItem.id)">删除</el-button>
+              <el-button type="primary" size="mini" plain v-if="exported">
+                <a style="color: unset;" :href="'meetingRecord/word?meetingId=' + meetingItem.id + '&token=' + token" target="_blank">导出</a>
+              </el-button>
               <el-button type="primary" size="mini" plain @click="toInfo(meetingItem.id)">查看</el-button>
             </div>
           </div>
@@ -64,6 +67,8 @@
         meetingRecordList: [],
         sponsored: false,
         deleted: false,
+        exported: false,
+        token: window.token
       }
     },
     components: {
@@ -105,6 +110,7 @@
         this.axios.get('/permission/' + this.meeting_type_id).then(res => {
           this.sponsored = res.data.sponsored
           this.deleted = res.data.delete
+          this.exported = res.data.export
         }).catch(error => {})
       },
       back () {
