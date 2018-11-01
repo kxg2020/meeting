@@ -57,6 +57,7 @@ class Notice extends Base
         $total = Db::name("notice")->count();
         if ($notice_list) {
             array_walk($notice_list, function (&$value) use (&$result) {
+                $value["images"] = Tool::getInstance()->jsonDecode($value['images']);
                 $value["create_time"] = date("Y-m-d H:i:s", $value["create_time"]);
             });
         } else {
