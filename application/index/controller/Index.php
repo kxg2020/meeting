@@ -29,7 +29,7 @@ class Index extends Base{
         }
 
         $code = Request::get("code");
-        $ifRedirect = Request::get("redirect");
+        $ifRedirect = Request::get("redirect") ? Request::get("redirect") : "";
         if($code){
             $userBasic = WeChat::getInstance()->setCode($code)->getUserBasic();
             $userInfo  = WeChat::getInstance()->getUserInfo($userBasic["UserId"]);
