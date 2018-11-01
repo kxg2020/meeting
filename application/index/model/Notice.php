@@ -2,15 +2,17 @@
 
 namespace app\index\model;
 
+use app\index\service\Enum;
 use app\index\service\Singleton;
 use app\index\service\Tool;
 use think\Db;
+use think\facade\Request;
 
 class Notice extends Base
 {
     use Singleton;
 
-    public function createNotice(array $params)
+    public function createNotice(array $params):int
     {
         $insert = [
             "title" => $params["title"],
@@ -21,11 +23,16 @@ class Notice extends Base
         return Db::name("notice")->insertGetId($insert);
     }
 
-    public function deleteNotice($noticeId)
-    {
-        $result = Db::name("notice")->where(["id" => $noticeId])->delete();
-        if ($result) {
-            return true;
+    public function deleteNotice($noticeId):bool {
+
+        $user   = User::getInstance()->getUserByUserId(Request::instance()->userId);
+        if(!empty($user["data"])){
+            if($user["data"]["position"] == Enum::ADMIN){
+                Db::name("notice")->where(["id" => $noticeId])->delete();
+                return true;
+            }else{
+                return false;
+            }
         }
         return false;
     }
@@ -41,7 +48,7 @@ class Notice extends Base
         return null;
     }
 
-    public function getNoticeList($page, $page_size)
+    public function getNoticeList($page, $page_size):array
     {
         $notice_list = Db::name("notice")
             ->limit($this->formatLimit($page, $page_size), $page_size)

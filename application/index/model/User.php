@@ -3,6 +3,7 @@ namespace app\index\model;
 use app\index\service\Singleton;
 use app\index\service\Tool;
 use think\Db;
+use think\facade\Cache;
 
 class User extends Base{
     use Singleton;
@@ -12,7 +13,11 @@ class User extends Base{
      * 查询用户
      */
     public function getUserByUserId($userId){
-        $user = Db::name("user")->where(["user_id"=>$userId])->find();
+        $user = Tool::getInstance()->jsonDecode(Cache::get($userId));
+        if(!$user){
+            $user = Db::name("user")->where(["user_id"=>$userId])->find();
+            Cache::set($userId,Tool::getInstance()->jsonEncode($user));
+        }
         return $this->returnResponse($user);
     }
 
@@ -89,8 +94,10 @@ class User extends Base{
      * 所有用户
      */
     public function allUserInDatabase($field){
-        $result = Db::name("user")->field($field)->select();
-        if($result){
+        $result = Tool::getInstance()->jsonDecode(Cache::get("all-user"));
+        if(!$result){
+            $result = Db::name("user")->field($field)->select();
+            Cache::set("all-user",Tool::getInstance()->jsonEncode($result));
             return $this->returnResponse($result);
         }
         return $this->returnResponse();
@@ -100,15 +107,19 @@ class User extends Base{
      * 部门成员
      */
     private function departmentUserInDb($departmentId){
-        $userAll = $this->allUserInDatabase("id,name,department");
-        $userDepartment = [];
-        if($userAll["data"]){
-            foreach ($userAll["data"] as $key => $value){
-                $department = Tool::getInstance()->jsonDecode($value["department"]);
-                if(in_array($departmentId,$department)){
-                    $userDepartment[] = $value;
+        $userDepartment = Tool::getInstance()->jsonEncode(Cache::get("department-user"));
+        if(!$userDepartment){
+            $userAll = $this->allUserInDatabase("id,name,department");
+            $userDepartment = [];
+            if($userAll["data"]){
+                foreach ($userAll["data"] as $key => $value){
+                    $department = Tool::getInstance()->jsonDecode($value["department"]);
+                    if(in_array($departmentId,$department)){
+                        $userDepartment[] = $value;
+                    }
                 }
             }
+            Cache::set("department-user",Tool::getInstance()->jsonEncode($userDepartment));
         }
         return $userDepartment;
     }
