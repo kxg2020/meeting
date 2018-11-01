@@ -30,7 +30,7 @@
 <body>
 <div style="width: 100%;">
   <h1>中共白朝乡月坝村党支部党员大会会议记录</h1>
-  <table border="1" style="width: 100%;">
+  <table border="1" style="width: 100%;" cellpadding="0" cellspacing="0">
     <tr>
       <td colspan="2">会标（时间）：{$meeting["meetingName"]}({$meeting["meetingCreateTime"]})</td>
     </tr>
@@ -66,7 +66,7 @@
         </div>
         {volist name = "$info['file']" id="in"}
         <div>
-            <img style="width: 60%; height: auto;margin: 10px auto; display: block;" src="{$in['url']}" alt="">
+            <img style="width: 100%; height:400px;margin: 10px auto; display: block;" src="{$in['url']}" alt="" >
         </div>
         {/volist}
         <div><span class="text-label">阅读人员：</span><span>{$info['read_user']}</span></div>
@@ -79,7 +79,7 @@
         </div>
         {volist name = "$info['file']" id="in"}
         <div>
-            <img style="width: 60%; height: auto;margin: 10px auto; display: block;" src="{$in['url']}" alt="">
+            <img style="width: 100%; height:400px;margin: 10px auto; display: block;" src="{$in['url']}" alt="">
         </div>
         {/volist}
         {if isset($info['options'])}
@@ -107,7 +107,7 @@
         </div>
         {volist name = "$info['file']" id="in"}
         <div>
-            <img style="width: 60%; height: auto;margin: 10px auto; display: block;" src="{$in['url']}" alt="">
+            <img style="width: 100%; height:400px;margin: 10px auto; display: block;" src="{$in['url']}" alt="">
         </div>
         {/volist}
         {if $info['options']}
@@ -120,7 +120,7 @@
                 </div>
                 {volist name="$op['file']" id="fi"}
                 <div>
-                    <img style="width: 60%; height: auto;margin: 10px auto; display: block;" src="{$fi['file_url']}" alt="">
+                    <img style="width: 100%; height:400px;margin: 10px auto; display: block;" src="{$fi['file_url']}" alt="">
                 </div>
                 {/volist}
             </div>

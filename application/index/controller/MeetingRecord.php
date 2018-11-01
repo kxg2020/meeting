@@ -4,8 +4,12 @@ namespace app\index\controller;
 use app\index\model\MeetingType;
 use app\index\model\UserMeeting;
 use app\index\service\Enum;
+use app\index\service\Jwt;
 use app\index\service\Tool;
+use Mpdf\Mpdf;
+use Mpdf\MpdfException;
 use think\Db;
+use think\Exception;
 use think\facade\Request;
 use think\facade\Url;
 
@@ -88,10 +92,28 @@ class MeetingRecord extends Base {
             ->leftJoin("meeting_political d","b.type = d.id")
             ->where(["a.id" => $meetingId])
             ->select();
-        // 会议是否能导出
-        if(!isset($meetingInfo["meetingEndTime"]) && !($meetingInfo["meetingEndTime"] < time())){
-            return $this->printResponse(4011);
+        $token  =  Request::get("token");
+        $result = Jwt::getInstance()->validateToken("user_id",$token);
+        if($result["status"]){
+            Request::instance()->userId = $result["claim"];
+        }else{
+            Request::instance()->userId = "";
         }
+        // 是否是管理员
+        $user = Db::name("user")->where(["user_id"=>Request::instance()->userId])->find();
+        if(!$user && !$user["position"] == Enum::ADMIN){
+            return;
+        }
+
+        // 会议是否能导出
+        if(!isset($meetingInfo[0]["meetingEndTime"]) || $meetingInfo[0]["meetingEndTime"] > time()){
+            return;
+        }
+        // 会议是否能导出
+        if(!isset($meetingInfo[0]["meetingCreateTime"]) || $meetingInfo[0]["meetingCreateTime"] > time()){
+            return;
+        }
+
         // 参会人员
         $joinedUser = \app\index\model\Department::getInstance()
             ->departmentMember($meetingInfo[0]["invitation_department_id"]);
@@ -304,11 +326,17 @@ class MeetingRecord extends Base {
         }
         $this->assign(["meeting" => $result]);
         $html = $this->fetch("meeting/word");
-        $fileName = "会议记录-".date("Y-m-d H:i:s");
-        header("Content-Type: application/msword");
-        header("Content-Disposition: attachment; filename={$fileName}.doc");
-        header("Pragma: no-cache");
-        header("Expires: 0");
         echo $html;
+        $fileName = "中共白朝乡月坝村党支部党员大会会议记录";
+        try{
+            $pdf = new Mpdf(['default_font' => 'GB','format' => 'A4-L']);
+            $pdf->setFooter('{PAGENO}');
+            $pdf->use_kwt = true;
+            $pdf->autoScriptToLang = true;
+            $pdf->WriteHTML($html);
+            $pdf->Output("$fileName.pdf","D");
+        }catch (MpdfException $exception){
+            echo $exception->getMessage();
+        }
     }
 }
