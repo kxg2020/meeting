@@ -58,6 +58,7 @@ class Index extends Base{
                 return \redirect($redirect);
             }
         }else{
+            $this->redirect = Request::url(true)."&redirect=".$ifRedirect;
             $redirect = sprintf($this->authApi,$this->companyId,$this->redirect,$this->agentId);
             return \redirect($redirect);
         }
