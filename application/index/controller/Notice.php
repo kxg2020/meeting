@@ -11,6 +11,7 @@ class Notice extends Base {
         $params = Request::post();
         $result = \app\index\model\Notice::getInstance()->createNotice($params);
         if($result){
+            Cache::rm("notice-list");
             return $this->printResponse(9005);
         }
         return $this->printResponse(4009);

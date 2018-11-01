@@ -34,9 +34,10 @@ class MeetingRecord extends Base {
         $userRole = \app\index\model\User::getInstance()->getUserByUserId(Request::instance()->userId);
         if(!empty($userRole["data"])){
             if($userRole["data"]["position"] == Enum::ADMIN){
+                $info   = \app\index\model\MeetingRecord::getInstance()->singleMeetingRecordInfo($meetingId);
                 $result = \app\index\model\MeetingRecord::getInstance()->meetingDelete($meetingId);
-                if($result){
-                    Cache::rm("meeting-record-list");
+                if($result && $info){
+                    Cache::rm("meeting-record-list-".$info["meeting_type_id"]);
                     return $this->printResponse(9004);
                 }
                 return $this->printResponse(4007);
@@ -47,15 +48,15 @@ class MeetingRecord extends Base {
     }
 
     /*
-     *ĳ�ֻ���Ļ����б�
+     *ĳ�ֻ���Ļ����б�?
      */
     public function meetingRecordList(){
         $typeId  = Request::param("typeId");
-        $records = Tool::getInstance()->jsonDecode(Cache::get("meeting-record-list"));
+        $records = Tool::getInstance()->jsonDecode(Cache::get("meeting-record-list-".$typeId));
         if(!$records){
             $records = \app\index\model\MeetingRecord::getInstance()->getMeetingRecords($typeId, $this->page, $this->pageSize);
             if($records["status"]){
-                Cache::set("meeting-record-list",Tool::getInstance()->jsonEncode($records));
+                Cache::set("meeting-record-list-".$typeId,Tool::getInstance()->jsonEncode($records));
                 return $this->printResponse(200, $records["data"]);
             }
             return $this->printResponse();
@@ -64,7 +65,7 @@ class MeetingRecord extends Base {
     }
 
     /*
-     * ��������������б�
+     * ��������������б�?
      */
     public function singleMeetingInfo(){
         $userId    = request()->userId;
@@ -93,11 +94,11 @@ class MeetingRecord extends Base {
             return false;
         }
 
-        // 会议是否能导出
+        // 会议是否能导�?
         if(!isset($meetingInfo[0]["meetingEndTime"]) || $meetingInfo[0]["meetingEndTime"] > time()){
             return false;
         }
-        // 会议是否能导出
+        // 会议是否能导�?
         if(!isset($meetingInfo[0]["meetingCreateTime"]) || $meetingInfo[0]["meetingCreateTime"] > time()){
             return false;
         }
@@ -105,7 +106,7 @@ class MeetingRecord extends Base {
     }
 
     /*
-     * �����¼
+     * ������?
      */
     public function meetingRecordWord(){
         $meetingId = Request::get("meetingId");
@@ -156,7 +157,7 @@ class MeetingRecord extends Base {
         $result = $this->exportData($result);
         $this->assign(["meeting" => $result]);
         $html = $this->fetch("meeting/word");
-        $fileName = "中共白朝乡月坝村党支部党员大会会议记录";
+        $fileName = "中共白朝乡月坝村党支部党员大会会议记�?";
         try{
             $pdf = new Mpdf(['default_font' => 'GB','format' => 'A4-L']);
             $pdf->use_kwt = true;

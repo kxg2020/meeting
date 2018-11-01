@@ -71,7 +71,7 @@ class MeetingRecord extends Base{
             "end_time"        => $params["end_time"],
             "invitation_department_id" => $params["department_id"],
         ];
-
+        Cache::rm("meeting-record-list-".$meetingType["data"]["id"]);
         Db::startTrans();
         $resultRecord = Db::name("meeting_record")->insertGetId($insertMeetingRecord);
         if($resultRecord){
@@ -210,5 +210,15 @@ class MeetingRecord extends Base{
             return false;
         }
         return true;
+    }
+
+    /*
+     * 单个会议
+     */
+    public function singleMeetingRecordInfo($meetingId){
+        $meetingInfo = Db::name("meeting_record")
+            ->field("meeting_type_id")
+            ->where(["id"=>$meetingId])->find();
+        return $meetingInfo;
     }
 }
