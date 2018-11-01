@@ -12,6 +12,7 @@ class AddressBook extends Base{
      * 通讯录变更
      */
     public function addressBookModifiedNotify(){
+        Log::error(func_get_args());
         $this->validateToken(Request::get());
     }
 
