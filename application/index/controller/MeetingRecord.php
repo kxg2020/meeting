@@ -80,6 +80,23 @@ class MeetingRecord extends Base {
         return $this->printResponse(200,$result["data"]);
     }
 
+    private function exportCondition(){
+        // 是否是管理员
+        $user = Db::name("user")->where(["user_id"=>Request::instance()->userId])->find();
+        if(!$user && !$user["position"] == Enum::ADMIN){
+            return false;
+        }
+
+        // 会议是否能导出
+        if(!isset($meetingInfo[0]["meetingEndTime"]) || $meetingInfo[0]["meetingEndTime"] > time()){
+            return false;
+        }
+        // 会议是否能导出
+        if(!isset($meetingInfo[0]["meetingCreateTime"]) || $meetingInfo[0]["meetingCreateTime"] > time()){
+            return false;
+        }
+    }
+
     /*
      * �����¼
      */
@@ -88,7 +105,6 @@ class MeetingRecord extends Base {
         $filed = "a.title as meetingName,b.title as meetingIssueName,a.create_time as meetingCreateTime";
         $filed.= ",c.name as createUser,d.name as issueType,d.short_name,a.invitation_department_id,";
         $filed.= "b.id as issue_id,a.id as record_id,a.end_time as meetingEndTime";
-        $result = [];
         // 会议详情
         $meetingInfo = Db::name("meeting_record")
             ->alias("a")
@@ -105,21 +121,46 @@ class MeetingRecord extends Base {
         }else{
             Request::instance()->userId = "";
         }
-        // 是否是管理员
-        $user = Db::name("user")->where(["user_id"=>Request::instance()->userId])->find();
-        if(!$user && !$user["position"] == Enum::ADMIN){
-            return;
+        if(!$this->exportCondition()){
+            return false;
         }
+        $result = $this->meetingJoinUser($result,$meetingInfo,$meetingId);
+        if($meetingInfo){
+            foreach ($meetingInfo as $key => $value){
+                $result["meetingName"]     = $value["meetingName"];
+                $result["meetingCreateTime"]     = date("Y-m-d",$value["meetingCreateTime"]);
+                $result["create_user"]     = $value["createUser"];
+                $result["meeting_issue"][] = [
+                    "meetingIssueName" => $value['meetingIssueName'],
+                    "issueType"        => $value["issueType"],
+                    "short_name"       => $value["short_name"],
+                    "issue_id"         => $value["issue_id"],
+                    "record_id"        => $value["record_id"],
+                ];
+            }
+        }else{
+            $result["meetingIssue"] = [];
+        }
+        $result["meeting_info"] = [];
+        // 议题详情
+        $result = $this->exportData($result);
+        $this->assign(["meeting" => $result]);
+        $html = $this->fetch("meeting/word");
+        echo $html;
+        $fileName = "中共白朝乡月坝村党支部党员大会会议记录";
+        try{
+            $pdf = new Mpdf(['default_font' => 'GB','format' => 'A4-L']);
+            $pdf->setFooter('{PAGENO}');
+            $pdf->use_kwt = true;
+            $pdf->autoScriptToLang = true;
+            $pdf->WriteHTML($html);
+            $pdf->Output("$fileName.pdf","D");
+        }catch (MpdfException $exception){
+            echo $exception->getMessage();
+        }
+    }
 
-        // 会议是否能导出
-        if(!isset($meetingInfo[0]["meetingEndTime"]) || $meetingInfo[0]["meetingEndTime"] > time()){
-            return;
-        }
-        // 会议是否能导出
-        if(!isset($meetingInfo[0]["meetingCreateTime"]) || $meetingInfo[0]["meetingCreateTime"] > time()){
-            return;
-        }
-
+    private function meetingJoinUser($result,$meetingInfo,$meetingId){
         // 参会人员
         $joinedUser = \app\index\model\Department::getInstance()
             ->departmentMember($meetingInfo[0]["invitation_department_id"]);
@@ -148,27 +189,11 @@ class MeetingRecord extends Base {
 
         $result["shouldJoinUser"] = implode(",",$result["shouldJoinUser"]);
         $result["realJoinUser"]   = implode(",",$result["realJoinUser"]);
+        return $result;
+    }
 
-        if($meetingInfo){
-            foreach ($meetingInfo as $key => $value){
-                $result["meetingName"]     = $value["meetingName"];
-                $result["meetingCreateTime"]     = date("Y-m-d",$value["meetingCreateTime"]);
-                $result["create_user"]     = $value["createUser"];
-                $result["meeting_issue"][] = [
-                    "meetingIssueName" => $value['meetingIssueName'],
-                    "issueType"        => $value["issueType"],
-                    "short_name"       => $value["short_name"],
-                    "issue_id"         => $value["issue_id"],
-                    "record_id"        => $value["record_id"],
-                ];
-            }
-        }else{
-            $result["meetingIssue"] = [];
-        }
-        $result["meeting_info"] = [];
-        // 议题详情
+    private function exportData($result){
         foreach ($result["meeting_issue"] as $key => $value){
-            $meetingIssueList = [];
             switch ($value["short_name"]){
                 case Enum::READ:
                     $issueInfo = Db::name("meeting_record_info")
@@ -206,7 +231,6 @@ class MeetingRecord extends Base {
                         "read_user" => $readUserName,
                     ];
                     $result["meeting_info"][] = $meetingIssueList;
-
                     break;
                 case Enum::BALLOT:
                     $ballotInfo = Db::name("meeting_record_info")
@@ -330,19 +354,6 @@ class MeetingRecord extends Base {
                     break;
             }
         }
-        $this->assign(["meeting" => $result]);
-        $html = $this->fetch("meeting/word");
-        echo $html;
-        $fileName = "中共白朝乡月坝村党支部党员大会会议记录";
-        try{
-            $pdf = new Mpdf(['default_font' => 'GB','format' => 'A4-L']);
-            $pdf->setFooter('{PAGENO}');
-            $pdf->use_kwt = true;
-            $pdf->autoScriptToLang = true;
-            $pdf->WriteHTML($html);
-            $pdf->Output("$fileName.pdf","D");
-        }catch (MpdfException $exception){
-            echo $exception->getMessage();
-        }
+        return $result;
     }
 }
