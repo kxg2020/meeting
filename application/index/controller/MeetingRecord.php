@@ -328,15 +328,15 @@ class MeetingRecord extends Base {
         $html = $this->fetch("meeting/word");
         echo $html;
         $fileName = "中共白朝乡月坝村党支部党员大会会议记录";
-//        try{
-//            $pdf = new Mpdf(['default_font' => 'GB','format' => 'A4-L']);
-//            $pdf->setFooter('{PAGENO}');
-//            $pdf->use_kwt = true;
-//            $pdf->autoScriptToLang = true;
-//            $pdf->WriteHTML($html);
-//            $pdf->Output("$fileName.pdf","D");
-//        }catch (MpdfException $exception){
-//            echo $exception->getMessage();
-//        }
+        try{
+            $pdf = new Mpdf(['default_font' => 'GB','format' => 'A4-L']);
+            $pdf->setFooter('{PAGENO}');
+            $pdf->use_kwt = true;
+            $pdf->autoScriptToLang = true;
+            $pdf->WriteHTML($html);
+            $pdf->Output("$fileName.pdf","D");
+        }catch (MpdfException $exception){
+            echo $exception->getMessage();
+        }
     }
 }
