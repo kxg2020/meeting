@@ -15,6 +15,8 @@ Route::get("/","index/index");
 
 Route::get("/upload","static/uploads");
 
+Route::post("/address/book","AddressBook/addressBookModifiedNotify");
+
 #??????????
 Route::get("meetingRecord/word","MeetingRecord/meetingRecordWord");
 
