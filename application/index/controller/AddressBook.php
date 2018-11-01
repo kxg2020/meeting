@@ -7,13 +7,17 @@ use think\facade\Request;
 class AddressBook extends Base{
     private $encodeKey = "wqm1uwsSBxBLXE0lo5EUaru7lTUFSSWm0nD1bY3Kbmc";
     private $token     = "AddressBook";
+    private $validate  = null;
 
     /*
      * 通讯录变更
      */
     public function addressBookModifiedNotify(){
         Log::error(func_get_args());
-        $result = $this->validateToken(Request::get());
+        $this->validateToken(Request::get());
+        if($this->validate === false){
+
+        }
     }
 
     private function validateToken($params){
@@ -26,9 +30,10 @@ class AddressBook extends Base{
         $str = sha1(implode($array));
         if($str == $msgSignature){
             echo  $echostr;
-            return true;
+            $this->validate = true;
+           exit;
         }else{
-            return false;
+            $this->validate = false;
         }
     }
 }
