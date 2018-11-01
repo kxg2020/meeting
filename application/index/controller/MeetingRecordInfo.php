@@ -12,7 +12,7 @@ class MeetingRecordInfo extends Base{
      */
     public function meetingRecordIssueInfo(){
         $meetingId = Request::param("issueId");
-        $result    = Tool::getInstance()->jsonEncode(Cache::get("meeting-issue-".$meetingId));
+        $result    = Tool::getInstance()->jsonDecode(Cache::get("meeting-issue-".$meetingId));
         if(!$result){
             $result = \app\index\model\MeetingRecordInfo::getInstance()->meetingIssueInfo($meetingId);
             if($result["status"]){
