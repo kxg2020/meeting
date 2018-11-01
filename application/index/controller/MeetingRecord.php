@@ -80,7 +80,7 @@ class MeetingRecord extends Base {
         return $this->printResponse(200,$result["data"]);
     }
 
-    private function exportCondition(){
+    private function exportCondition($meetingInfo){
         // 是否是管理员
         $user = Db::name("user")->where(["user_id"=>Request::instance()->userId])->find();
         if(!$user && !$user["position"] == Enum::ADMIN){
@@ -121,7 +121,7 @@ class MeetingRecord extends Base {
         }else{
             Request::instance()->userId = "";
         }
-        if(!$this->exportCondition()){
+        if(!$this->exportCondition($meetingInfo)){
             return false;
         }
         $result = $this->meetingJoinUser($result,$meetingInfo,$meetingId);
