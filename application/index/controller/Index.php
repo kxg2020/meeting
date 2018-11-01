@@ -29,6 +29,7 @@ class Index extends Base{
         }
 
         $code = Request::get("code");
+        $ifRedirect = Request::get("redirect");
         if($code){
             $userBasic = WeChat::getInstance()->setCode($code)->getUserBasic();
             $userInfo  = WeChat::getInstance()->getUserInfo($userBasic["UserId"]);
@@ -47,8 +48,9 @@ class Index extends Base{
                     User::getInstance()->setUserInfo($userInfo)->updateUser($userBasic["UserId"])->updatePermission($userInfo);
                 }
                 return view('index', [
-                    'token' => Jwt::getInstance()->createToken("user_id",$userBasic["UserId"]),
+                    'token'    => Jwt::getInstance()->createToken("user_id",$userBasic["UserId"]),
                     "permission_ids"  => $viewPermissionId,
+                    "redirect" => $ifRedirect
                 ]);
             }else{
                 $this->redirect = Request::url(true);

@@ -96,7 +96,8 @@ class MeetingRecord extends Base{
             }
         }
         if(\app\index\service\Format::getInstance()->commit){
-            $redirect = Request::domain();
+            // 是否跳转,如果跳转,跳转到前端的路由
+            $redirect = Request::domain()."?redirect=/redirect/meeting_record/info/".$resultRecord;
             // 消息模板
             $template = AgentMessageFacade::TextCard()
                 ->setParams($params,$redirect)
@@ -160,8 +161,6 @@ class MeetingRecord extends Base{
                 }
 
                 $meetingInfo = $this->returnResponse($result);
-                // 缓存会议
-//                Cache::set("$meetingRecordId-info",\app\index\service\Tool::getInstance()->jsonEncode($meetingInfo));
                 return $meetingInfo;
             }
             return $this->returnResponse();
