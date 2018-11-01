@@ -97,7 +97,7 @@ class MeetingRecord extends Base{
         }
         if(\app\index\service\Format::getInstance()->commit){
             // 是否跳转,如果跳转,跳转到前端的路由
-            $redirect = Request::domain()."?redirect=/redirect/meeting_record/info/".$resultRecord;
+            $redirect = Request::domain()."?redirect=/meeting_record/info/".$resultRecord;
             // 消息模板
             $template = AgentMessageFacade::TextCard()
                 ->setParams($params,$redirect)
