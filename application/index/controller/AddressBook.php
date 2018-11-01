@@ -30,8 +30,7 @@ class AddressBook extends Base{
         $str = sha1(implode($array));
         if($str == $msgSignature){
             Log::error($str == $msgSignature);
-            print($echoStr);
-            exit;
+            echo $echoStr;
         }else{
             $this->validate = false;
         }
