@@ -88,8 +88,9 @@ class MeetingRecord extends Base {
             ->leftJoin("meeting_political d","b.type = d.id")
             ->where(["a.id" => $meetingId])
             ->select();
+
         // 会议是否能导出
-        if(!isset($meetingInfo["meetingEndTime"]) && !($meetingInfo["meetingEndTime"] < time())){
+        if(!isset($meetingInfo[0]["meetingEndTime"]) && !($meetingInfo[0]["meetingEndTime"] < time())){
             return $this->printResponse(4011);
         }
         // 参会人员
