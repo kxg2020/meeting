@@ -21,9 +21,9 @@ class AddressBook extends Base{
         $timestamp     = $params["timestamp"];
         $nonce         = $params["nonce"];
         $echostr       = $params["echostr"];
-        $array = array($nonce, $timestamp, $this->token);
+        $array = [$nonce,$timestamp,$this->token,$msgSignature];
         sort($array);
-        $str = sha1( implode($array));
+        $str = sha1(implode($array));
         if($str == $msgSignature && $echostr ){
             echo  $echostr;
             exit;
