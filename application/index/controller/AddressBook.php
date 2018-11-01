@@ -7,7 +7,7 @@ use think\facade\Request;
 class AddressBook extends Base{
     private $encodeKey = "wqm1uwsSBxBLXE0lo5EUaru7lTUFSSWm0nD1bY3Kbmc";
     private $token     = "AddressBook";
-    private $validate  = null;
+    private $validate  = true;
 
     /*
      * 通讯录变更
@@ -30,8 +30,7 @@ class AddressBook extends Base{
         $str = sha1(implode($array));
         if($str == $msgSignature){
             echo  $echostr;
-            $this->validate = true;
-           exit;
+            exit;
         }else{
             $this->validate = false;
         }
