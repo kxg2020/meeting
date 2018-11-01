@@ -1,5 +1,6 @@
 <?php
 namespace app\index\model;
+use app\index\service\Enum;
 use app\index\service\Singleton;
 use app\index\service\Tool;
 use think\Db;
@@ -18,14 +19,14 @@ class Permission extends Base{
             }else{
                 $permission["sponsored"] = false;
             }
-            if(!empty($user["department"])){
-                $department = Tool::getInstance()->jsonDecode($user["department"]);
-                if(in_array($this->superAdmin,$department)){
-                    $permission["delete"] = true;
-                }else{
-                    $permission["delete"] = false;
-                }
+            if($user["position"] == Enum::ADMIN){
+                $permission["delete"] = true;
+                $permission["export"] = true;
+            }else{
+                $permission["delete"] = false;
+                $permission["export"] = false;
             }
+
             return $this->returnResponse($permission);
         }
         return $this->returnResponse(["sponsored" => false,"delete"=>false],4003);
