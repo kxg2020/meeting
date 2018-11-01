@@ -54,12 +54,12 @@ class Index extends Base{
                     "route_path" => $ifRedirect
                 ]);
             }else{
-                $this->redirect = Request::url(true);
+                $this->redirect = urlencode(Request::url(true));
                 $redirect = sprintf($this->authApi,$this->companyId,$this->redirect,$this->agentId);
                 return \redirect($redirect);
             }
         }else{
-            $this->redirect = Request::url(true)."&redirect=".$ifRedirect;
+            $this->redirect = urlencode(Request::url(true)."&redirect=".$ifRedirect);
             $redirect = sprintf($this->authApi,$this->companyId,$this->redirect,$this->agentId);
             return \redirect($redirect);
         }
