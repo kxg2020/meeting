@@ -23,7 +23,7 @@
     <div v-else>
       <Empty></Empty>
     </div>
-    <div class="create-btn" @click="toForm">
+    <div class="create-btn" @click="toForm" v-if="permission">
       <i class="fa fa-edit"></i>
     </div>
   </div>
@@ -39,7 +39,8 @@
         page_size: 5,
         page: 1,
         total: 0,
-        hasMore: false
+        hasMore: false,
+        permission: false
       }
     },
     components: {
@@ -48,8 +49,17 @@
     created() {
       window.setTitle("新闻公告")
       this.loadMore()
+      this.getNoticePermission()
     },
     methods: {
+      getNoticePermission() {
+        let _this = this
+        _this.axios.get('/notice/permission').then(res => {
+          if (res.status) {
+            this.permission = res.data.create
+          }
+        })
+      },
       loadMore() {
         let _this = this
         _this.axios.get('/notice/list', {params: {page: _this.page, page_size: _this.page_size}}).then(res => {

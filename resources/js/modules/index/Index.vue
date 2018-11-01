@@ -1,13 +1,16 @@
 <template>
   <div class="main-container">
+    <!--
       <van-search
         v-model="searchValue"
         placeholder="请输入搜索关键词"
         show-action
         @search="onSearch"
       >
+
         <div slot="action" @click="onSearch">搜索</div>
       </van-search>
+      -->
       <div class="block meeting-type-list">
         <div class="meeting-type-item" v-for="(meetingTypeItem, mgIndex) in meetingTypeList" :key="mgIndex" @click="toMeetingList(meetingTypeItem.id)">
           <div class="meeting-type-img">
