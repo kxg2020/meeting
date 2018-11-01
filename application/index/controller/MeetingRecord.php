@@ -95,6 +95,7 @@ class MeetingRecord extends Base {
         if(!isset($meetingInfo[0]["meetingCreateTime"]) || $meetingInfo[0]["meetingCreateTime"] > time()){
             return false;
         }
+        return true;
     }
 
     /*
@@ -102,6 +103,7 @@ class MeetingRecord extends Base {
      */
     public function meetingRecordWord(){
         $meetingId = Request::get("meetingId");
+        $result = [];
         $filed = "a.title as meetingName,b.title as meetingIssueName,a.create_time as meetingCreateTime";
         $filed.= ",c.name as createUser,d.name as issueType,d.short_name,a.invitation_department_id,";
         $filed.= "b.id as issue_id,a.id as record_id,a.end_time as meetingEndTime";
@@ -115,16 +117,17 @@ class MeetingRecord extends Base {
             ->where(["a.id" => $meetingId])
             ->select();
         $token  =  Request::get("token");
-        $result = Jwt::getInstance()->validateToken("user_id",$token);
-        if($result["status"]){
-            Request::instance()->userId = $result["claim"];
+        $token = Jwt::getInstance()->validateToken("user_id",$token);
+        if($token["status"]){
+            Request::instance()->userId = $token["claim"];
         }else{
             Request::instance()->userId = "";
         }
         if(!$this->exportCondition($meetingInfo)){
-            return false;
+            return;
         }
         $result = $this->meetingJoinUser($result,$meetingInfo,$meetingId);
+
         if($meetingInfo){
             foreach ($meetingInfo as $key => $value){
                 $result["meetingName"]     = $value["meetingName"];
@@ -146,17 +149,18 @@ class MeetingRecord extends Base {
         $result = $this->exportData($result);
         $this->assign(["meeting" => $result]);
         $html = $this->fetch("meeting/word");
-        $fileName = "中共白朝乡月坝村党支部党员大会会议记录";
-        try{
-            $pdf = new Mpdf(['default_font' => 'GB','format' => 'A4-L']);
-            $pdf->setFooter('{PAGENO}');
-            $pdf->use_kwt = true;
-            $pdf->autoScriptToLang = true;
-            $pdf->WriteHTML($html);
-            $pdf->Output("$fileName.pdf","D");
-        }catch (MpdfException $exception){
-            echo $exception->getMessage();
-        }
+        echo $html;
+//        $fileName = "中共白朝乡月坝村党支部党员大会会议记录";
+//        try{
+//            $pdf = new Mpdf(['default_font' => 'GB','format' => 'A4-L']);
+//            $pdf->setFooter('{PAGENO}');
+//            $pdf->use_kwt = true;
+//            $pdf->autoScriptToLang = true;
+//            $pdf->WriteHTML($html);
+//            $pdf->Output("$fileName.pdf","D");
+//        }catch (MpdfException $exception){
+//            echo $exception->getMessage();
+//        }
     }
 
     private function meetingJoinUser($result,$meetingInfo,$meetingId){
