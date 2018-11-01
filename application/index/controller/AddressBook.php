@@ -11,6 +11,6 @@ class AddressBook extends Base{
      * 通讯录变更
      */
     public function addressBookModifiedNotify(){
-        Log::write(func_get_args());
+        Log::error(func_get_args());
     }
 }
