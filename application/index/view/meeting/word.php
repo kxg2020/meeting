@@ -30,7 +30,7 @@
 <body>
 <div style="width: 100%;">
   <h1>中共白朝乡月坝村党支部党员大会会议记录</h1>
-  <table border="1" style="width: 100%;">
+  <table border="1" style="width: 100%;" cellpadding="0" cellspacing="0">
     <tr>
       <td colspan="2">会标（时间）：{$meeting["meetingName"]}({$meeting["meetingCreateTime"]})</td>
     </tr>
