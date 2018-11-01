@@ -28,9 +28,8 @@ class AddressBook extends Base{
         $array = [$nonce,$timestamp,$this->token,$echoStr];
         sort($array,SORT_STRING);
         $str = sha1(implode($array));
-        Log::error($str == $msgSignature);
         if($str == $msgSignature){
-            echo  $echoStr;
+            echo  0;
             exit;
         }else{
             $this->validate = false;
