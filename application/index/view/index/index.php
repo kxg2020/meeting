@@ -25,8 +25,9 @@ if (! function_exists('mix')) {
 <div id="app"></div>
 </body>
 <script>
-  window.token = '{$token}'
-  window.permission_ids = <?php echo json_encode($permission_ids)?>
+  window.token = '{$token}';
+  window.permission_ids = <?php echo json_encode($permission_ids)?>;
+  window.route_path = '{$route_path}';
 </script>
 <script type="text/javascript" src="<?php echo mix("/static/js/app.js"); ?>"></script>
 </html>

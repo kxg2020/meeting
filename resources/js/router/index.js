@@ -25,6 +25,10 @@ const router = new Router({
     },
     ...Meeting,
     ...Notice,
+    {
+      path: '*',
+      redirect: '/'
+    }
   ]
 })
 // 路由监听
