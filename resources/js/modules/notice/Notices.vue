@@ -8,7 +8,17 @@
             <div class="notice-info">
               <div class="notice-info-title">{{notice.title}}</div>
               <div class="notice-info-intro">{{notice.intro}}</div>
-              <div class="notice-info-time">{{notice.create_time}}</div>
+              <div class="notice-info-time" style="display: flex;flex-direction: row;justify-content: space-between">
+                <span>{{notice.create_time}}</span>
+                <el-button style="display: inline-block"
+                           type="danger"
+                           size="mini"
+                           plain
+                           v-if="permission"
+                           @click.stop="deleteNotice(notice.id)">
+                  删除
+                </el-button>
+              </div>
             </div>
           </div>
         </div>
@@ -82,6 +92,24 @@
       },
       toForm() {
         this.$router.push({path: '/notice/create'})
+      },
+      deleteNotice(id) {
+        if (!this.permission) {
+          this.$toast('没有权限')
+          return
+        }
+        this.axios.get('notice/delete/' + id).then(res => {
+          if (res.status) {
+            this.$toast('删除成功')
+            setTimeout(() => {
+              this.page = 1
+              this.notice_list = []
+              this.loadMore()
+            }, 2000)
+          } else {
+            this.$toast(res.msg)
+          }
+        })
       }
     }
   }

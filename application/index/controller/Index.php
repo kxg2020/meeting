@@ -25,7 +25,7 @@ class Index extends Base{
             return view('index', [
                 'token' => Jwt::getInstance()->createToken("user_id", "whngqdcmhdxxf"),
                 'permission_ids' => [87, 88],
-                "route_path" => '/meeting_record/info/19'
+                "route_path" => ''
             ]);
         }
 

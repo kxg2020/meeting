@@ -44,7 +44,11 @@
               v-model="voteSelects[voteIndex]"
               :max="parseInt(vote.select_count)"
               @change="value => {voteChange(voteIndex, value)}">
-              <el-checkbox v-for="(item, itemIndex) in vote.items" :key="'iv' + itemIndex" :label="itemIndex" border>
+              <el-checkbox v-for="(item, itemIndex) in vote.items"
+                           :key="'iv' + itemIndex"
+                           :label="itemIndex"
+                           border
+                           style="margin-right: 10px; margin-bottom: 10px; margin-left: 0;">
                 {{item.value}}
               </el-checkbox>
             </el-checkbox-group>
