@@ -146,7 +146,6 @@ class MeetingRecord extends Base {
         $result = $this->exportData($result);
         $this->assign(["meeting" => $result]);
         $html = $this->fetch("meeting/word");
-        echo $html;
         $fileName = "中共白朝乡月坝村党支部党员大会会议记录";
         try{
             $pdf = new Mpdf(['default_font' => 'GB','format' => 'A4-L']);
