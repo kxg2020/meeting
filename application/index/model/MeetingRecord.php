@@ -182,7 +182,6 @@ class MeetingRecord extends Base{
         }
         $notJoinedYetUser = Department::getInstance()
             ->departmentMember($meetingIssue[0]["invitation_department_id"]);
-
         if($notJoinedYetUser["data"]){
             foreach($notJoinedYetUser["data"] as $value){
                 if(in_array($value["name"],$alreadyJoinedUserName)){

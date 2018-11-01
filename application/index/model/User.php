@@ -100,7 +100,7 @@ class User extends Base{
             Cache::set("all-user",Tool::getInstance()->jsonEncode($result));
             return $this->returnResponse($result);
         }
-        return $this->returnResponse();
+        return $this->returnResponse($result);
     }
 
     /*
