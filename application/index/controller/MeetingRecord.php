@@ -88,10 +88,18 @@ class MeetingRecord extends Base {
             ->leftJoin("meeting_political d","b.type = d.id")
             ->where(["a.id" => $meetingId])
             ->select();
-
+        // 是否是管理员
+        $user = Db::name("user")->where(["user_id"=>Request::instance()->userId])->find();
+        if(!$user && !$user["position"] == Enum::ADMIN){
+            return $this->printResponse(4013);
+        }
         // 会议是否能导出
         if(!isset($meetingInfo[0]["meetingEndTime"]) && !($meetingInfo[0]["meetingEndTime"] < time())){
             return $this->printResponse(4011);
+        }
+        // 会议是否能导出
+        if(!isset($meetingInfo[0]["meetingCreateTime"]) && !($meetingInfo[0]["meetingCreateTime"] > time())){
+            return $this->printResponse(4012);
         }
         // 参会人员
         $joinedUser = \app\index\model\Department::getInstance()
