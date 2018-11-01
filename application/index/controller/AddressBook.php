@@ -13,7 +13,7 @@ class AddressBook extends Base{
      */
     public function addressBookModifiedNotify(){
         Log::error(func_get_args());
-        $this->validateToken(Request::get());
+        $result = $this->validateToken(Request::get());
     }
 
     private function validateToken($params){
@@ -21,12 +21,14 @@ class AddressBook extends Base{
         $timestamp     = $params["timestamp"];
         $nonce         = $params["nonce"];
         $echostr       = $params["echostr"];
-        $array = [$nonce,$timestamp,$this->token,$msgSignature];
-        sort($array);
+        $array = [$nonce,$timestamp,$this->token,$echostr];
+        sort($array,SORT_STRING);
         $str = sha1(implode($array));
-        if($str == $msgSignature && $echostr ){
+        if($str == $msgSignature){
             echo  $echostr;
-            exit;
+            return true;
+        }else{
+            return false;
         }
     }
 }
