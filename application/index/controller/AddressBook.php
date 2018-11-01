@@ -24,14 +24,13 @@ class AddressBook extends Base{
         $msgSignature  = urldecode($params["msg_signature"]);
         $timestamp     = urldecode($params["timestamp"]);
         $nonce         = urldecode($params["nonce"]);
-        $echostr       = rawurldecode($params["echostr"]);
-        $array = [$nonce,$timestamp,$this->token,$echostr];
+        $echoStr       = rawurldecode($params["echostr"]);
+        $array = [$nonce,$timestamp,$this->token,$echoStr];
         sort($array,SORT_STRING);
         $str = sha1(implode($array));
-        Log::error($str);
-        Log::error($msgSignature);
+        Log::error($str == $msgSignature);
         if($str == $msgSignature){
-            echo  $echostr;
+            echo  $echoStr;
             exit;
         }else{
             $this->validate = false;
