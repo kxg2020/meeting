@@ -36,6 +36,7 @@ class MeetingRecord extends Base {
             if($userRole["data"]["position"] == Enum::ADMIN){
                 $result = \app\index\model\MeetingRecord::getInstance()->meetingDelete($meetingId);
                 if($result){
+                    Cache::rm("meeting-record-list");
                     return $this->printResponse(9004);
                 }
                 return $this->printResponse(4007);
@@ -49,12 +50,17 @@ class MeetingRecord extends Base {
      *ĳ�ֻ���Ļ����б�
      */
     public function meetingRecordList(){
-        $typeId = Request::param("typeId");
-        $records = \app\index\model\MeetingRecord::getInstance()->getMeetingRecords($typeId, $this->page, $this->pageSize);
-        if($records["status"]){
-            return $this->printResponse(200, $records["data"]);
+        $typeId  = Request::param("typeId");
+        $records = Tool::getInstance()->jsonDecode(Cache::get("meeting-record-list"));
+        if(!$records){
+            $records = \app\index\model\MeetingRecord::getInstance()->getMeetingRecords($typeId, $this->page, $this->pageSize);
+            if($records["status"]){
+                Cache::set("meeting-record-list",Tool::getInstance()->jsonEncode($records));
+                return $this->printResponse(200, $records["data"]);
+            }
+            return $this->printResponse();
         }
-        return $this->printResponse();
+        return $this->printResponse(200, $records["data"]);
     }
 
     /*
