@@ -31,8 +31,7 @@ class AddressBook extends Base{
         if($str == $msgSignature){
             Log::error($str == $msgSignature);
             Log::error($echoStr);
-            header("Content-Type:text/html; charset=utf-8");
-            echo trim($echoStr);exit;
+            echo "";exit;
         }else{
             $this->validate = false;
         }
