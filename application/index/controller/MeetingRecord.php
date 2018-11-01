@@ -31,8 +31,8 @@ class MeetingRecord extends Base {
     public function meetingDelete(){
         $meetingId = Request::param("meetingId");
         $userRole = \app\index\model\User::getInstance()->getUserByUserId(Request::instance()->userId);
-        if(!empty($userRole["data"]["department"])){
-            if($userRole["position"] == Enum::ADMIN){
+        if(!empty($userRole["data"])){
+            if($userRole["data"]["position"] == Enum::ADMIN){
                 $result = \app\index\model\MeetingRecord::getInstance()->meetingDelete($meetingId);
                 if($result){
                     return $this->printResponse(9004);
