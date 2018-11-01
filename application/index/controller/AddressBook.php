@@ -13,7 +13,6 @@ class AddressBook extends Base{
      * 通讯录变更
      */
     public function addressBookModifiedNotify(){
-
         $this->validateToken(Request::get());
         if($this->validate === false){
 
@@ -31,7 +30,7 @@ class AddressBook extends Base{
         if($str == $msgSignature){
             Log::error($str == $msgSignature);
             Log::error($echoStr);
-            echo "";exit;
+            echo $echoStr;exit;
         }else{
             $this->validate = false;
         }
