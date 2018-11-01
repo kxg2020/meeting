@@ -4,6 +4,7 @@ namespace app\index\controller;
 use app\index\model\MeetingType;
 use app\index\model\UserMeeting;
 use app\index\service\Enum;
+use app\index\service\Jwt;
 use app\index\service\Tool;
 use think\Db;
 use think\facade\Request;
@@ -88,6 +89,13 @@ class MeetingRecord extends Base {
             ->leftJoin("meeting_political d","b.type = d.id")
             ->where(["a.id" => $meetingId])
             ->select();
+        $token =  Request::get("token");
+        $result = Jwt::getInstance()->validateToken("user_id",$token);
+        if($result["status"]){
+            Request::instance()->userId = $result["claim"];
+        }else{
+            Request::instance()->userId = "";
+        }
         // 是否是管理员
         $user = Db::name("user")->where(["user_id"=>Request::instance()->userId])->find();
         if(!$user && !$user["position"] == Enum::ADMIN){
