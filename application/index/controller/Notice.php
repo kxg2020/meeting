@@ -1,6 +1,8 @@
 <?php
 namespace app\index\controller;
 use app\index\service\Enum;
+use app\index\service\Tool;
+use think\facade\Cache;
 use think\facade\Request;
 
 class Notice extends Base {
@@ -25,11 +27,16 @@ class Notice extends Base {
 
     public function detailNotice(){
         $noticeId = Request::param("noticeId");
-        $result = \app\index\model\Notice::getInstance()->detailNotice($noticeId);
-        if($result){
-            return $this->printResponse(200,$result);
+        $result   = Tool::getInstance()->jsonDecode(Cache::get("notice-".$noticeId));
+        if(!$result){
+            $result = \app\index\model\Notice::getInstance()->detailNotice($noticeId);
+            if($result){
+                Cache::set("notice-".$noticeId,Tool::getInstance()->jsonEncode($result));
+                return $this->printResponse(200,$result);
+            }
+            return $this->printResponse();
         }
-        return $this->printResponse();
+        return $this->printResponse(200,$result);
     }
 
     public function noticeList(){
