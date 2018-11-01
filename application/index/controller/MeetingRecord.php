@@ -89,7 +89,7 @@ class MeetingRecord extends Base {
             ->leftJoin("meeting_political d","b.type = d.id")
             ->where(["a.id" => $meetingId])
             ->select();
-        $token =  Request::get("token");
+        $token  =  Request::get("token");
         $result = Jwt::getInstance()->validateToken("user_id",$token);
         if($result["status"]){
             Request::instance()->userId = $result["claim"];
@@ -101,14 +101,16 @@ class MeetingRecord extends Base {
         if(!$user && !$user["position"] == Enum::ADMIN){
             return $this->printResponse(4013);
         }
+
         // 会议是否能导出
-        if(!isset($meetingInfo[0]["meetingEndTime"]) && !($meetingInfo[0]["meetingEndTime"] < time())){
+        if(!isset($meetingInfo[0]["meetingEndTime"]) || $meetingInfo[0]["meetingEndTime"] > time()){
             return $this->printResponse(4011);
         }
         // 会议是否能导出
-        if(!isset($meetingInfo[0]["meetingCreateTime"]) && !($meetingInfo[0]["meetingCreateTime"] > time())){
+        if(!isset($meetingInfo[0]["meetingCreateTime"]) || $meetingInfo[0]["meetingCreateTime"] > time()){
             return $this->printResponse(4012);
         }
+        
         // 参会人员
         $joinedUser = \app\index\model\Department::getInstance()
             ->departmentMember($meetingInfo[0]["invitation_department_id"]);
