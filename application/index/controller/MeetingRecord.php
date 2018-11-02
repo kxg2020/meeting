@@ -115,7 +115,7 @@ class MeetingRecord extends Base {
             Request::instance()->userId = "";
         }
         if(!$this->exportCondition($meetingInfo)){
-            echo "<h3>鏆傛椂鏃犳硶瀵煎嚭</h3>";
+            echo "<h2>当前会议记录无法导出</h2>";
             return;
         }
         $result = $this->meetingJoinUser($result,$meetingInfo,$meetingId);
@@ -137,11 +137,11 @@ class MeetingRecord extends Base {
             $result["meetingIssue"] = [];
         }
         $result["meeting_info"] = [];
-        // 璁璇︽儏
+
         $result = $this->exportData($result);
         $this->assign(["meeting" => $result]);
         $html = $this->fetch("meeting/word");
-        $fileName = "涓叡鐧芥湞涔℃湀鍧濇潙鍏氭敮閮ㄥ厷鍛樺ぇ浼氫細璁褰?";
+        $fileName = "中共白朝乡月坝村党支部党员大会会议记录";
         try{
             $pdf = new Mpdf(['default_font' => 'GB','format' => 'A4-L']);
             $pdf->use_kwt = true;
@@ -155,7 +155,7 @@ class MeetingRecord extends Base {
     }
 
     private function meetingJoinUser($result,$meetingInfo,$meetingId){
-        // 鍙備細浜哄憳
+
         $joinedUser = \app\index\model\Department::getInstance()
             ->departmentMember($meetingInfo[0]["invitation_department_id"]);
         if(!empty($joinedUser["data"])){
@@ -165,7 +165,7 @@ class MeetingRecord extends Base {
         }else{
             $result["shouldJoinUser"] = [];
         }
-        // 瀹為檯鍙備細浜哄憳
+
         $realJoinUser = Db::name("user_meeting")
             ->alias("a")
             ->field("b.name")
@@ -198,7 +198,7 @@ class MeetingRecord extends Base {
                     $file = Db::name("meeting_file")
                         ->where("id","in",$issueInfo["file_id"])
                         ->select();
-                    // 闃呰浜哄憳
+
                     $readUser = Db::name("user_votes")
                         ->alias("a")
                         ->field("b.name")
@@ -235,12 +235,12 @@ class MeetingRecord extends Base {
                     $file = Db::name("meeting_file")
                         ->where("id","in",$ballotInfo["file_id"])
                         ->select();
-                    // 琛ㄥ喅閫夐」
+
                     $vote = Db::name("meeting_vote")
                         ->where(["meeting_info_id"=>$value["issue_id"]])
                         ->find();
                     $vote["options"] = Tool::getInstance()->jsonDecode($vote["options"]);
-                    // 鐢ㄦ埛琛ㄥ喅
+
                     $userBallot = Db::name("user_votes")
                         ->where(["meeting_info_id"=> $vote["meeting_info_id"],"type"=>Enum::BALLOT])
                         ->select();
@@ -262,11 +262,11 @@ class MeetingRecord extends Base {
                             }
                             $ballotResult = "";
                             if($agree > $oppose){
-                                $ballotResult = "鍚屾剰";
+                                $ballotResult = "同意";
                             }else if($agree == $oppose){
-                                $ballotResult = "绁ㄦ暟鐩稿悓";
+                                $ballotResult = "票数相同";
                             }else if ($agree < $oppose){
-                                $ballotResult = "鍙嶅";
+                                $ballotResult = "反对";
                             }
                             $issueOption[$i] = [
                                 "title"  => $j["title"],
@@ -287,7 +287,6 @@ class MeetingRecord extends Base {
                         "options"   => $issueOption
                     ];
                     $result["meeting_info"][] = $meetingIssueList;
-                    // 琛ㄥ喅缁撴灉
                     break;
                 case Enum::VOTE:
                     $voteInfo = Db::name("meeting_record_info")
@@ -298,12 +297,12 @@ class MeetingRecord extends Base {
                     $file = Db::name("meeting_file")
                         ->where("id","in",$voteInfo["file_id"])
                         ->select();
-                    // 鎶曠エ閫夐」
+
                     $vote = Db::name("meeting_vote")
                         ->where(["meeting_info_id"=>$value["issue_id"]])
                         ->find();
                     $vote["options"] = Tool::getInstance()->jsonDecode($vote["options"]);
-                    // 鐢ㄦ埛鎶曠エ
+
                     $userVote = Db::name("user_votes")
                         ->where(["meeting_info_id"=> $vote["meeting_info_id"],"type"=>Enum::VOTE])
                         ->select();
@@ -335,7 +334,7 @@ class MeetingRecord extends Base {
                         }
                         array_multisort($volume, SORT_DESC, $itemVote);
                     }
-                    $voteResult = isset($itemVote[0]["option"]) ? $itemVote[0]["option"] : "閿欒";
+                    $voteResult = isset($itemVote[0]["option"]) ? $itemVote[0]["option"] : "错误";
                     $meetingIssueList = [
                         "title"     => $voteInfo["title"],
                         "type"      => Enum::VOTE,
