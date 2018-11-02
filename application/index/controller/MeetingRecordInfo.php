@@ -13,16 +13,17 @@ class MeetingRecordInfo extends Base{
     public function meetingRecordIssueInfo(){
         $meetingId = Request::param("issueId");
         $result    = Tool::getInstance()->jsonDecode(Cache::get("meeting-issue-".$meetingId));
-        $result["data"]["edit"] = $this->editable($meetingId);
+
         if(!$result){
             $result = \app\index\model\MeetingRecordInfo::getInstance()->meetingIssueInfo($meetingId);
             if($result["status"]){
                 Cache::set("meeting-issue-".$meetingId,Tool::getInstance()->jsonEncode($result));
-
+                $result["data"]["edit"] = $this->editable($meetingId);
                 return $this->printResponse(200,$result["data"]);
             }
             return $this->printResponse($result["code"]);
         }
+        $result["data"]["edit"] = $this->editable($meetingId);
         return $this->printResponse(200,$result["data"]);
     }
 
