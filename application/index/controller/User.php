@@ -1,6 +1,7 @@
 <?php
 namespace app\index\controller;
 
+use think\facade\Cache;
 use think\facade\Request;
 
 class User extends Base{
@@ -19,4 +20,10 @@ class User extends Base{
     }
 
 
+    /*
+     * Çå¿Õ»º´æ
+     */
+    public function clearCache(){
+        Cache::clear();
+    }
 }

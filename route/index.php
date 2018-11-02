@@ -75,5 +75,7 @@ Route::group("/api/",function(){
     #新闻创建权限
     Route::get("notice/permission","Notice/noticeCreatePermission");
 
+    Route::get("clear/cache","User/clearCache");
+
 
 })->middleware(\app\index\service\Auth::class);
