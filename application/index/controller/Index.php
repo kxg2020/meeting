@@ -33,7 +33,6 @@ class Index extends Base{
                 ]
             ]);
         }
-
         $code = Request::get("code");
         $ifRedirect = Request::get("redirect") ? Request::get("redirect") : "";
         $this->redirect = urlencode($this->redirect.'?redirect='.$ifRedirect);

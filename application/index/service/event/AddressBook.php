@@ -22,7 +22,7 @@ class AddressBook implements InterfaceEvent{
     }
 
     /*
-     * 更新用户
+     * update user 
      */
     private function update_user(){
         $update = [];
@@ -45,17 +45,17 @@ class AddressBook implements InterfaceEvent{
             $upp = User::getInstance()->updatePermission($this->data);
         }
         if($upt !== false && $upp !== false){
-            Log::write("[success]:更新用户{$this->data["UserID"]}的个人信息成功,时间:{$this->updateTime},更新数据:".print_r($update,1),"notice");
+            Log::write("[success]:update user {$this->data["UserID"]} information success!,time:{$this->updateTime},updated data:".print_r($update,1),"notice");
             Cache::clear();
             Db::commit();
         }else{
-            Log::write("[failed]:更新用户{$this->data["UserID"]}的个人信息失败,时间:{$this->updateTime},更新数据:".print_r($update,1),"notice");
+            Log::write("[failed]:update user {$this->data["UserID"]} information failed!,time:{$this->updateTime},updated data:".print_r($update,1),"notice");
             Db::rollback();
         }
     }
 
     /*
-     * 创建用户
+     * create user 
      */
     private function create_user(){
         $insert = [];
@@ -84,26 +84,26 @@ class AddressBook implements InterfaceEvent{
             $upt = User::getInstance()->updatePermission($this->data);
         }
         if($ins && $upt !== false){
-            Log::write("[success]:创建用户{$this->data["UserID"]}的个人信息成功,时间:{$this->updateTime},插入数据:".print_r($insert,1),"notice");
+            Log::write("[success]:create user {$this->data["UserID"]} information success!,time:{$this->updateTime},插入数据:".print_r($insert,1),"notice");
             Cache::clear();
             Db::commit();
         }else{
-            Log::write("[success]:创建用户{$this->data["UserID"]}的个人信息失败,时间:{$this->updateTime},插入数据:".print_r($insert,1),"notice");
+            Log::write("[success]:create user {$this->data["UserID"]} information failed!,time:{$this->updateTime},插入数据:".print_r($insert,1),"notice");
             Db::rollback();
         }
     }
 
     /*
-     * 删除用户
+     * delete user 
      */
     private function delete_user(){
         $update = ["enable"=>0];
        $result = Db::name("user")->where(["user_id"=>$this->data["UserID"]])->update($update);
        if($result){
            Cache::clear();
-           Log::write("[success]:删除用户{$this->data["UserID"]}的个人信息成功,时间:{$this->updateTime}","notice");
+           Log::write("[success]:delete user {$this->data["UserID"]} information success!,time:{$this->updateTime}","notice");
        }else{
-           Log::write("[success]:删除用户{$this->data["UserID"]}的个人信息失败,时间:{$this->updateTime},更新数据:".print_r($update,1),"notice");
+           Log::write("[success]:delete user {$this->data["UserID"]} information failed!,time:{$this->updateTime},updated data:".print_r($update,1),"notice");
        }
     }
 }
