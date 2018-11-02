@@ -31,7 +31,10 @@ class AddressBook extends Base{
             if(isset($result["Encrypt"]) && !empty($result["Encrypt"])){
                 $xml = $this->decrypt($result["Encrypt"],WeChat::COMPANY_ID);
                 $this->data = Tool::getInstance()->xmlToArray($xml);
-                Event::getInstance()->addEvent(new \app\index\service\event\AddressBook($this->data))->notify();
+                Event::getInstance()
+                    ->addEvent(new \app\index\service\event\AddressBook($this->data))
+                    ->addEvent(new \app\index\service\event\Department($this->data))
+                    ->notify();
             }
         }
 
