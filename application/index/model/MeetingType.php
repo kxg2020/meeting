@@ -15,6 +15,7 @@ class MeetingType extends Base{
             $field  = "id,title,img_url";
             $result = Db::name("meeting_type")->field($field)->select();
             Cache::set("meetingTypes",Tool::getInstance()->jsonEncode($result));
+            return $this->returnResponse($result);
         }
         return $this->returnResponse($result);
     }

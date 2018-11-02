@@ -1,9 +1,6 @@
 <?php
 namespace app\index\service;
-
 use app\index\model\User;
-use think\Exception;
-use think\facade\Config;
 use think\facade\Request;
 
 class Auth{

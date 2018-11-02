@@ -17,6 +17,7 @@ class User extends Base{
         if(!$user){
             $user = Db::name("user")->where(["user_id"=>$userId])->find();
             Cache::set($userId,Tool::getInstance()->jsonEncode($user));
+            return $user;
         }
         return $this->returnResponse($user);
     }
@@ -104,6 +105,7 @@ class User extends Base{
                 }
             }
             Cache::set("department-user",Tool::getInstance()->jsonEncode($userDepartment));
+            return $userDepartment;
         }
         return $userDepartment;
     }
