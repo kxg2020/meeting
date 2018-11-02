@@ -51,13 +51,13 @@ class Index extends Base{
             }
             if($userBasic){
                 return view('index', [
-                    'token'      => Jwt::getInstance()->createToken("user_id",$userBasic["UserId"]),
+                    'token'           => Jwt::getInstance()->createToken("user_id",$userBasic["UserId"]),
                     "permission_ids"  => $viewPermissionId,
                     "route_path" => $ifRedirect,
-                    "user_info" => [
-                        "name" => $userInfo['name'],
-                        "position" => $userInfo["position"],
-                        "avatar" => $userInfo['avatar']
+                    "user_info"  => [
+                        "name"   => $userInfo["data"]['name'],
+                        "position" => $userInfo["data"]["position"],
+                        "avatar"   => $userInfo["data"]['avatar']
                     ]
                 ]);
             }else{
