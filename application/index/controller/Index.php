@@ -7,7 +7,6 @@ use app\index\service\Jwt;
 use app\index\service\WeChat;
 use think\Exception;
 use think\facade\Config;
-use think\facade\Log;
 use think\facade\Request;
 use think\facade\Response;
 use think\facade\Url;
@@ -52,11 +51,11 @@ class Index extends Base{
                     'token'      => Jwt::getInstance()->createToken("user_id",$userBasic["UserId"]),
                     "permission_ids"  => $viewPermissionId,
                     "route_path" => $ifRedirect,
-                    "user_info" => json_encode([
+                    "user_info" => [
                         "name" => $userInfo['name'],
                         "position" => $userInfo["position"],
                         "avatar" => $userInfo['avatar']
-                    ])
+                    ]
                 ]);
             }else{
                 $redirect = sprintf($this->authApi,$this->companyId,$this->redirect,$this->agentId);
