@@ -2,6 +2,7 @@
 namespace app\index\service\event;
 
 use think\Db;
+use think\facade\Cache;
 use think\facade\Log;
 
 class Department implements InterfaceEvent {
@@ -37,6 +38,7 @@ class Department implements InterfaceEvent {
             "create_time"   => time()
         ]);
         if($result){
+            Cache::clear();
             Log::write("[success]:create department {$this->data["Name"]} information success!,time:{$this->updateTime},create department :".print_r($insert,1),"notice");
         }else{
             Log::write("[failed]:create department {$this->data["Name"]} information failed!,time:{$this->updateTime},create department :".print_r($insert,1),"notice");
@@ -57,6 +59,7 @@ class Department implements InterfaceEvent {
         }
         $result = Db::name("department")->where(["department_id"=>$this->data["Id"]])->update($update);
         if($result !== false){
+            Cache::clear();
             Log::write("[success]:update department {$this->data["Name"]} information success!,time:{$this->updateTime},update department :".print_r($update,1),"notice");
         }else{
             Log::write("[failed]:update department {$this->data["Name"]} information failed!,time:{$this->updateTime},update department :".print_r($update,1),"notice");
@@ -67,6 +70,7 @@ class Department implements InterfaceEvent {
         $result = Db::name("department")->where(["department_id"=>$this->data["Id"]])->delete();
                   Db::name("meeting_type")->where(["department_id"=>$this->data["Id"]])->delete();
         if($result){
+            Cache::clear();
             Log::write("[success]:delete department {$this->data["Id"]} information success!,time:{$this->updateTime},delete department :".print_r($result,1),"notice");
         }else{
             Log::write("[failed]:delete department {$this->data["Id"]} information failed!,time:{$this->updateTime},delete department :".print_r($result,1),"notice");
