@@ -93,7 +93,7 @@ class User extends Base{
      * 部门成员
      */
     private function departmentUserInDb($departmentId){
-        $userDepartment = Tool::getInstance()->jsonEncode(Cache::get("department-user"));
+        $userDepartment = Tool::getInstance()->jsonDecode(Cache::get("department-user"));
         if(!$userDepartment){
             $userAll = $this->allUserInDatabase("id,name,department");
             $userDepartment = [];
