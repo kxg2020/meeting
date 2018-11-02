@@ -2,6 +2,7 @@
 namespace app\index\controller;
 use app\index\service\Enum;
 use app\index\service\Tool;
+use think\Db;
 use think\facade\Cache;
 use think\facade\Request;
 
@@ -48,6 +49,11 @@ class Notice extends Base {
             Cache::set("notice-list",Tool::getInstance()->jsonEncode($result));
             return $this->printResponse(200, $result);
         }
+        return $this->printResponse(200, $result);
+    }
+
+    public function noticeLatest(){
+        $result = Db::name("notice")->order("create_time desc")->limit(0,1)->find();
         return $this->printResponse(200, $result);
     }
 

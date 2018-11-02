@@ -72,6 +72,8 @@ Route::group("/api/",function(){
 
     Route::get("notice/list","Notice/noticeList");
 
+    Route::get("notice/latest","Notice/noticeLatest");
+
     #新闻创建权限
     Route::get("notice/permission","Notice/noticeCreatePermission");
 
