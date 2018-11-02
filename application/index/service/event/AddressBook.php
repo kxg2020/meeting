@@ -88,7 +88,7 @@ class AddressBook implements InterfaceEvent{
             Cache::clear();
             Db::commit();
         }else{
-            Log::write("[success]:create user {$this->data["UserID"]} information failed!,time:{$this->updateTime},create user :".print_r($insert,1),"notice");
+            Log::write("[failed]:create user {$this->data["UserID"]} information failed!,time:{$this->updateTime},create user :".print_r($insert,1),"notice");
             Db::rollback();
         }
     }
@@ -103,7 +103,7 @@ class AddressBook implements InterfaceEvent{
            Cache::clear();
            Log::write("[success]:delete user {$this->data["UserID"]} information success!,time:{$this->updateTime}","notice");
        }else{
-           Log::write("[success]:delete user {$this->data["UserID"]} information failed!,time:{$this->updateTime},updated data:".print_r($update,1),"notice");
+           Log::write("[failed]:delete user {$this->data["UserID"]} information failed!,time:{$this->updateTime},updated data:".print_r($update,1),"notice");
        }
     }
 }
