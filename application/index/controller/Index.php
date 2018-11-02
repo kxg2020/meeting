@@ -11,9 +11,6 @@ use think\facade\Request;
 
 class Index extends Base{
 
-    /*
-     * �û���½
-     */
     public function index(){
         // dev
         if (strpos(Request::domain(), 'localhost')){
