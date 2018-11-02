@@ -1,6 +1,8 @@
 <?php
 namespace app\index\controller;
 use app\index\service\Enum;
+use app\index\service\Tool;
+use think\facade\Cache;
 use think\facade\Request;
 
 class Notice extends Base {
@@ -9,6 +11,7 @@ class Notice extends Base {
         $params = Request::post();
         $result = \app\index\model\Notice::getInstance()->createNotice($params);
         if($result){
+            Cache::rm("notice-list");
             return $this->printResponse(9005);
         }
         return $this->printResponse(4009);
@@ -18,6 +21,7 @@ class Notice extends Base {
         $noticeId = Request::param("noticeId");
         $result   = \app\index\model\Notice::getInstance()->deleteNotice($noticeId);
         if($result){
+            Cache::rm("notice-list");
             return $this->printResponse(9006);
         }
         return $this->printResponse(4010);
@@ -25,15 +29,25 @@ class Notice extends Base {
 
     public function detailNotice(){
         $noticeId = Request::param("noticeId");
-        $result = \app\index\model\Notice::getInstance()->detailNotice($noticeId);
-        if($result){
-            return $this->printResponse(200,$result);
+        $result   = Tool::getInstance()->jsonDecode(Cache::get("notice-detail-".$noticeId));
+        if(!$result){
+            $result = \app\index\model\Notice::getInstance()->detailNotice($noticeId);
+            if($result){
+                Cache::set("notice-detail-".$noticeId,Tool::getInstance()->jsonEncode($result));
+                return $this->printResponse(200,$result);
+            }
+            return $this->printResponse();
         }
-        return $this->printResponse();
+        return $this->printResponse(200,$result);
     }
 
     public function noticeList(){
-        $result = \app\index\model\Notice::getInstance()->getNoticeList($this->page, $this->pageSize);
+        $result = Tool::getInstance()->jsonDecode(Cache::get("notice-list"));
+        if(!$result){
+            $result = \app\index\model\Notice::getInstance()->getNoticeList($this->page, $this->pageSize);
+            Cache::set("notice-list",Tool::getInstance()->jsonEncode($result));
+            return $this->printResponse(200, $result);
+        }
         return $this->printResponse(200, $result);
     }
 

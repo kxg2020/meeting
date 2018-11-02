@@ -4,7 +4,7 @@
       <div class="notice-list">
         <div v-for="(notice, index) in notice_list" :key="index" class="notice-item" @click="toInfo(notice.id)">
           <div class="notice-body">
-            <img :src="notice.thumb" alt="">
+            <img :src="notice.images.length > 0 ? notice.images[0].file_url : '/static/images/notice_default.jpg'" alt="">
             <div class="notice-info">
               <div class="notice-info-title">{{notice.title}}</div>
               <div class="notice-info-intro">{{notice.intro}}</div>

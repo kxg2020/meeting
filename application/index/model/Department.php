@@ -16,7 +16,7 @@ class Department extends Base{
         }else{
             $result = WeChat::getInstance()->getDepartmentList();
             if($result){
-                Cache::set("department",Tool::getInstance()->jsonEncode($result),86400 * 7);
+                Cache::set("department",Tool::getInstance()->jsonEncode($result));
                 $this->createDepartment($result["department"]);
             }
             return $this->returnResponse($result);
