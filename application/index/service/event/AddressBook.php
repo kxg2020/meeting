@@ -16,7 +16,9 @@ class AddressBook implements InterfaceEvent{
         $this->updateTime = date("Y-m-d H:i:s",time());
         switch ($this->data["MsgType"]){
             case "event":
-                call_user_func([$this,$this->data["ChangeType"]]);
+                if(method_exists($this,$this->data["ChangeType"]) && is_callable([$this,$this->data["ChangeType"]])){
+                    call_user_func([$this,$this->data["ChangeType"]]);
+                }
                 break;
         }
     }
