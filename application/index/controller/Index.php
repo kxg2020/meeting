@@ -36,7 +36,7 @@ class Index extends Base{
             $userInfo  = User::getInstance()->getUserByUserId($userBasic["UserId"]);
             $userInfo["data"]["department"] = Tool::getInstance()->jsonDecode($userInfo["data"]["department"]);
             $viewPermission = Department::getInstance()
-                ->loginUserViewPermission($userInfo["data"]["department"]);
+                ->loginUserViewPermission($userInfo["data"]["department"],$userInfo);
             $viewPermissionId = [];
             if($viewPermission["data"]){
                 array_walk($viewPermission["data"],function ($value) use (&$viewPermissionId){

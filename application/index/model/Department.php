@@ -1,5 +1,6 @@
 <?php
 namespace app\index\model;
+use app\index\service\Enum;
 use app\index\service\Singleton;
 use app\index\service\Tool;
 use app\index\service\WeChat;
@@ -68,13 +69,21 @@ class Department extends Base{
         return $this->returnResponse();
     }
 
-    public function loginUserViewPermission($departmentId){
-        $result = Db::name("department")
-            ->alias("a")
-            ->field("b.id as meetingTypeId")
-            ->leftJoin("meeting_type b","a.department_id = b.department_id")
-            ->where("a.department_id","in",$departmentId)
-            ->select();
+    public function loginUserViewPermission($departmentId,$userInfo){
+        if($userInfo["data"]["position"] == Enum::ADMIN){
+            $result = Db::name("department")
+                ->alias("a")
+                ->field("b.id as meetingTypeId")
+                ->leftJoin("meeting_type b","a.department_id = b.department_id")
+                ->select();
+        }else{
+            $result = Db::name("department")
+                ->alias("a")
+                ->field("b.id as meetingTypeId")
+                ->leftJoin("meeting_type b","a.department_id = b.department_id")
+                ->where("a.department_id","in",$departmentId)
+                ->select();
+        }
         if($result){
             return $this->returnResponse($result);
         }
