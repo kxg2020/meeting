@@ -11,18 +11,19 @@ use think\facade\Request;
 class AddressBook extends Base{
     private $encodeKey = "wqm1uwsSBxBLXE0lo5EUaru7lTUFSSWm0nD1bY3Kbmc";
     private $token     = "AddressBook";
-    private $validate  = true;
     private $iv;
     private $key;
+    private $xml;
 
     /*
      * 通讯录变更
      */
     public function addressBookModifiedNotify(){
-        $this->validateToken(Request::get());
-        if($this->validate === false){
-
+        if(Request::isGet()){
+            $this->validateToken(Request::get());
         }
+        $this->xml = file_get_contents("php://input");
+        Log::error($this->xml);
     }
 
     private function validateToken($params){
@@ -36,20 +37,18 @@ class AddressBook extends Base{
         if($str == $msgSignature){
             $this->key = base64_decode($this->encodeKey."=");
             $this->iv  = substr($this->key, 0, 16);
-            $result = $this->decrypt($echoStr,WeChat::COMPANY_ID);
+            $result    = $this->decrypt($echoStr,WeChat::COMPANY_ID);
             echo $result;exit;
-        }else{
-            $this->validate = false;
         }
     }
 
     private function decrypt($encrypted, $receiveId){
-        $decrypted = (new Aes($this->key,"AES-256-CBC",$this->iv,OPENSSL_ZERO_PADDING))
+        $decrypted   = (new Aes($this->key,"AES-256-CBC",$this->iv,OPENSSL_ZERO_PADDING))
             ->decrypt($encrypted);
         $pkc_encoder = new Pkcs();
         $result      = $pkc_encoder->decode($decrypted);
         if (strlen($result) < 16) {
-            return [];
+            return false;
         }
         $content     = substr($result, 16, strlen($result));
         $len_list    = unpack('N', substr($content, 0, 4));
