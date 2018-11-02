@@ -71,8 +71,9 @@ class User extends Base{
             $member = $this->departmentUserInDb($result["data"]["department_id"]);
             $departmentName["member"]  = $member;
             $departmentName["meeting"] = $result["data"];
+            return $this->returnResponse($departmentName);
         }
-        return $this->returnResponse($departmentName);
+        return $this->returnResponse();
     }
 
     /*

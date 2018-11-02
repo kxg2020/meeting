@@ -2,16 +2,11 @@
 namespace app\index\controller;
 use app\index\model\Department;
 use app\index\model\User;
-use app\index\service\Aes;
 use app\index\service\Jwt;
 use app\index\service\Tool;
 use app\index\service\WeChat;
-use think\Exception;
-use think\facade\Config;
 use think\facade\Request;
-use think\facade\Response;
-use think\facade\Url;
-use think\response\Redirect;
+
 
 
 class Index extends Base{
