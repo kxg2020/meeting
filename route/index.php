@@ -15,7 +15,7 @@ Route::get("/","index/index");
 
 Route::get("/upload","static/uploads");
 
-Route::get("/address/book","AddressBook/addressBookModifiedNotify");
+Route::any("/address/book","AddressBook/addressBookModifiedNotify");
 
 #??????????
 Route::get("meetingRecord/word","MeetingRecord/meetingRecordWord");
