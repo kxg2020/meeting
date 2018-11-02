@@ -2,17 +2,17 @@
   <div class="main-container">
     <div>
       <div class="member">
-        <img class="member-avatar" src="https://img.it9g.com/other/FvO_Csuv2DyvYZxzc97xjxLWyoeO.jpeg" alt="">
-        <div class="member-name">WHNGQDCMHDXXF</div>
+        <img class="member-avatar" :src="user_info.avatar" alt="">
+        <div class="member-name">{{user_info.name}} <span class="member-position">{{user_info.position}}</span></div>
       </div>
       <van-cell-group class="user-group">
-        <van-cell icon="records" title="菜单" is-link/>
+        <van-cell icon="chat" title="公告" is-link to="/notices"/>
       </van-cell-group>
-      <van-cell-group>
-        <van-cell icon="exchange" title="菜单1" is-link/>
-        <van-cell icon="gold-coin" title="菜单2" is-link/>
-        <van-cell icon="gift" title="菜单3" is-link/>
-      </van-cell-group>
+      <!--<van-cell-group>-->
+        <!--<van-cell icon="exchange" title="菜单1" is-link/>-->
+        <!--<van-cell icon="gold-coin" title="菜单2" is-link/>-->
+        <!--<van-cell icon="gift" title="菜单3" is-link/>-->
+      <!--</van-cell-group>-->
     </div>
   </div>
 </template>
@@ -21,7 +21,9 @@
   export default {
     name: "Member",
     data() {
-      return {}
+      return {
+        user_info: window.user_info
+      }
     },
     created() {
       window.setTitle("个人中心")
@@ -50,5 +52,11 @@
   .member-name {
     color: #1d1d1d;
     margin-top: 50px;
+    font-size: 20px;
+    font-weight: 800;
+  }
+  .member-position {
+    font-size: 16px;
+    font-weight: 100;
   }
 </style>

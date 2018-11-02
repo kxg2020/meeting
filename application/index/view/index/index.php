@@ -28,6 +28,11 @@ if (! function_exists('mix')) {
   window.token = '{$token}';
   window.permission_ids = <?php echo json_encode($permission_ids)?>;
   window.route_path = '{$route_path}';
+  window.user_info = {
+    name: '<?php echo $user_info['name'] ?>',
+    position: '<?php echo $user_info['position'] ?>',
+    avatar: '<?php echo $user_info['avatar'] ?>'
+  };
 </script>
 <script type="text/javascript" src="<?php echo mix("/static/js/app.js"); ?>"></script>
 </html>
