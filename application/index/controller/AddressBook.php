@@ -2,10 +2,10 @@
 namespace app\index\controller;
 
 use app\index\service\Aes;
+use app\index\service\Event;
 use app\index\service\Pkcs;
+use app\index\service\Tool;
 use app\index\service\WeChat;
-use think\Exception;
-use think\facade\Log;
 use think\facade\Request;
 
 class AddressBook extends Base{
@@ -14,16 +14,27 @@ class AddressBook extends Base{
     private $iv;
     private $key;
     private $xml;
+    private $data;
 
     /*
      * 通讯录变更
      */
     public function addressBookModifiedNotify(){
+        $this->key = base64_decode($this->encodeKey."=");
+        $this->iv  = substr($this->key, 0, 16);
         if(Request::isGet()){
             $this->validateToken(Request::get());
+        }else{
+            $this->xml = file_get_contents("php://input");
+            $result = Tool::getInstance()->xmlToArray($this->xml);
+            // 解密
+            if(isset($result["Encrypt"]) && !empty($result["Encrypt"])){
+                $xml = $this->decrypt($result["Encrypt"],WeChat::COMPANY_ID);
+                $this->data = Tool::getInstance()->xmlToArray($xml);
+                Event::getInstance()->addEvent(new \app\index\service\event\AddressBook($this->data))->notify();
+            }
         }
-        $this->xml = file_get_contents("php://input");
-        Log::error($this->xml);
+
     }
 
     private function validateToken($params){
@@ -34,10 +45,8 @@ class AddressBook extends Base{
         $array = [$nonce,$timestamp,$this->token,$echoStr];
         sort($array,SORT_STRING);
         $str = sha1(implode($array));
+        $result    = $this->decrypt($echoStr,WeChat::COMPANY_ID);
         if($str == $msgSignature){
-            $this->key = base64_decode($this->encodeKey."=");
-            $this->iv  = substr($this->key, 0, 16);
-            $result    = $this->decrypt($echoStr,WeChat::COMPANY_ID);
             echo $result;exit;
         }
     }

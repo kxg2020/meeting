@@ -14,11 +14,14 @@ class Permission extends Base{
         $user = Db::name("user")->where(["user_id"=>$userId])->find();
         $permission = [];
         if($user){
-            if(substr_count($user["enable_sponsored_meeting_type_id"],$meetingTypeId)){
+            if($user["position"] == Enum::ADMIN){
+                $permission["sponsored"] = true;
+            }elseif(substr_count($user["enable_sponsored_meeting_type_id"],$meetingTypeId)){
                 $permission["sponsored"] = true;
             }else{
                 $permission["sponsored"] = false;
             }
+
             if($user["position"] == Enum::ADMIN){
                 $permission["delete"] = true;
                 $permission["export"] = true;

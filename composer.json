@@ -21,7 +21,10 @@
     "ext-json": "*",
     "lcobucci/jwt": "^3.2",
     "mpdf/mpdf": "^7.1",
-    "ext-openssl": "*"
+    "ext-openssl": "*",
+    "ext-libxml": "*",
+    "ext-simplexml": "*",
+    "ext-dom": "*"
   },
   "autoload": {
     "psr-4": {
