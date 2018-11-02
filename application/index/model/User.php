@@ -17,7 +17,7 @@ class User extends Base{
         if(!$user){
             $user = Db::name("user")->where(["user_id"=>$userId])->find();
             Cache::set($userId,Tool::getInstance()->jsonEncode($user));
-            return $user;
+            return $this->returnResponse($user);
         }
         return $this->returnResponse($user);
     }
