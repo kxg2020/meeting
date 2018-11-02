@@ -5,6 +5,7 @@ use app\index\service\Enum;
 use app\index\service\Singleton;
 use app\index\service\Tool;
 use think\Db;
+use think\facade\Cache;
 use think\facade\Request;
 
 class UserVotes extends Base{
