@@ -25,7 +25,12 @@ class Index extends Base{
             return view('index', [
                 'token' => Jwt::getInstance()->createToken("user_id", "whngqdcmhdxxf"),
                 'permission_ids' => [87, 88],
-                "route_path" => ''
+                "route_path" => '',
+                "user_info" => [
+                    "name" => 'name',
+                    "position" => 'position',
+                    "avatar" => 'https://img.it9g.com/other/FvO_Csuv2DyvYZxzc97xjxLWyoeO.jpeg'
+                ]
             ]);
         }
 
@@ -52,7 +57,12 @@ class Index extends Base{
                 return view('index', [
                     'token'      => Jwt::getInstance()->createToken("user_id",$userBasic["UserId"]),
                     "permission_ids"  => $viewPermissionId,
-                    "route_path" => $ifRedirect
+                    "route_path" => $ifRedirect,
+                    "user_info" => json_encode([
+                        "name" => $userInfo['name'],
+                        "position" => $userInfo["position"],
+                        "avatar" => $userInfo['avatar']
+                    ])
                 ]);
             }else{
                 $redirect = sprintf($this->authApi,$this->companyId,$this->redirect,$this->agentId);
