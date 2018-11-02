@@ -84,11 +84,11 @@ class AddressBook implements InterfaceEvent{
             $upt = User::getInstance()->updatePermission($this->data);
         }
         if($ins && $upt !== false){
-            Log::write("[success]:create user {$this->data["UserID"]} information success!,time:{$this->updateTime},插入数据:".print_r($insert,1),"notice");
+            Log::write("[success]:create user {$this->data["UserID"]} information success!,time:{$this->updateTime},create user :".print_r($insert,1),"notice");
             Cache::clear();
             Db::commit();
         }else{
-            Log::write("[success]:create user {$this->data["UserID"]} information failed!,time:{$this->updateTime},插入数据:".print_r($insert,1),"notice");
+            Log::write("[success]:create user {$this->data["UserID"]} information failed!,time:{$this->updateTime},create user :".print_r($insert,1),"notice");
             Db::rollback();
         }
     }
