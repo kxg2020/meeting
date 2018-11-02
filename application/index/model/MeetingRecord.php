@@ -166,7 +166,7 @@ class MeetingRecord extends Base{
 
     private function classifyMeetingUser(&$result,$meetingRecordId,$meetingIssue){
         $alreadyJoinedUserName = [];
-        $allUserInDatabase = User::getInstance()->allUserInDatabase("avatar,user_id");
+        $allUserInDatabase = User::getInstance()->allUserInDatabase();
         $allUserAvatar = [];
         if($allUserInDatabase["data"]){
             array_walk($allUserInDatabase["data"],function($value) use (&$allUserAvatar){

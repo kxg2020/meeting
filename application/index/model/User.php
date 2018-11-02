@@ -79,10 +79,10 @@ class User extends Base{
     /*
      * 所有用户
      */
-    public function allUserInDatabase($field){
+    public function allUserInDatabase(){
         $result = Tool::getInstance()->jsonDecode(Cache::get("all-user"));
         if(!$result){
-            $result = Db::name("user")->field($field)->select();
+            $result = Db::name("user")->select();
             Cache::set("all-user",Tool::getInstance()->jsonEncode($result));
             return $this->returnResponse($result);
         }
