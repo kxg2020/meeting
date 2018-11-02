@@ -13,7 +13,7 @@ class MeetingRecordInfo extends Base{
     public function meetingRecordIssueInfo(){
         $meetingId = Request::param("issueId");
         $result    = Tool::getInstance()->jsonDecode(Cache::get("meeting-issue-".$meetingId));
-        $result["data"]["editable"] = $this->editable($meetingId);
+        $result["data"]["edit"] = $this->editable($meetingId);
         if(!$result){
             $result = \app\index\model\MeetingRecordInfo::getInstance()->meetingIssueInfo($meetingId);
             if($result["status"]){
