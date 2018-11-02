@@ -65,11 +65,11 @@ class Department implements InterfaceEvent {
 
     private function delete_party(){
         $result = Db::name("department")->where(["department_id"=>$this->data["Id"]])->delete();
-                 Db::name("meeting_type")->where(["department_id"=>$this->data["Id"]])->delete();
+                  Db::name("meeting_type")->where(["department_id"=>$this->data["Id"]])->delete();
         if($result){
-            Log::write("[success]:delete department {$this->data["Name"]} information success!,time:{$this->updateTime},delete department :".print_r($result,1),"notice");
+            Log::write("[success]:delete department {$this->data["Id"]} information success!,time:{$this->updateTime},delete department :".print_r($result,1),"notice");
         }else{
-            Log::write("[failed]:delete department {$this->data["Name"]} information failed!,time:{$this->updateTime},delete department :".print_r($result,1),"notice");
+            Log::write("[failed]:delete department {$this->data["Id"]} information failed!,time:{$this->updateTime},delete department :".print_r($result,1),"notice");
         }
     }
 }
