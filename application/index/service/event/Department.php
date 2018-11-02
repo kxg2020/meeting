@@ -60,6 +60,9 @@ class Department implements InterfaceEvent {
             $update["parent_id"] = $this->data["ParentId"];
         }
         $result = Db::name("department")->where(["department_id"=>$this->data["Id"]])->update($update);
+                  Db::name("department")->where(["department_id"=>$this->data["Id"]])->update([
+                      "title" => $this->data["Name"]."»áÒé",
+                  ]);
         if($result !== false){
             Cache::clear();
             Log::write("[success]:update department {$this->data["Name"]} information success!,time:{$this->updateTime},update department :".print_r($update,1),"notice");
