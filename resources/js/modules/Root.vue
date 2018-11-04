@@ -1,7 +1,7 @@
 <template>
   <div class="main">
     <router-view />
-    <van-tabbar v-model="activeIndex" @change="change">
+    <van-tabbar v-model="activeIndex" @change="change" style="box-shadow: 0 0 10px hsla(0,0%,5%,.26);">
       <van-tabbar-item v-for="(navigator, index) in navigators" :icon="navigator.icon" :key="index">{{navigator.name}}</van-tabbar-item>
     </van-tabbar>
   </div>

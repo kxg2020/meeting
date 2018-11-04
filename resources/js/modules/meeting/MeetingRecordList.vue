@@ -40,7 +40,7 @@
         <Empty></Empty>
       </div>
     </div>
-    <van-tabbar v-if="sponsored">
+    <van-tabbar v-if="sponsored" style="box-shadow: 0 0 10px hsla(0,0%,5%,.26);">
       <van-tabbar-item @click="toForm">
         <span>发起会议</span>
         <i slot="icon" slot-scope="props" class="fa fa-edit"></i>

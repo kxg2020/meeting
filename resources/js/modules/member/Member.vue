@@ -8,11 +8,9 @@
       <van-cell-group class="user-group">
         <van-cell icon="chat" title="公告" is-link to="/notices"/>
       </van-cell-group>
-      <!--<van-cell-group>-->
-        <!--<van-cell icon="exchange" title="菜单1" is-link/>-->
-        <!--<van-cell icon="gold-coin" title="菜单2" is-link/>-->
-        <!--<van-cell icon="gift" title="菜单3" is-link/>-->
-      <!--</van-cell-group>-->
+      <van-cell-group>
+        <van-cell icon="delete" title="清除缓存" is-link @click="clearCache"/>
+      </van-cell-group>
     </div>
   </div>
 </template>
@@ -28,7 +26,13 @@
     created() {
       window.setTitle("个人中心")
     },
-    methods: {}
+    methods: {
+      clearCache() {
+        this.axios.get('/clear/cache').then(res => {
+          this.$toast('清除成功')
+        })
+      }
+    }
   }
 </script>
 
