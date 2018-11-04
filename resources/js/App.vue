@@ -18,6 +18,12 @@
         window.route_path = ''
         this.$router.push({path: route_path})
       }
+      if (window.msg != '') {
+        this.$dialog.alert({
+          title: '提示信息',
+          message: window.msg
+        })
+      }
     }
   }
 </script>

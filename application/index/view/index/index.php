@@ -33,6 +33,7 @@ if (! function_exists('mix')) {
     position: '<?php echo $user_info['position'] ?>',
     avatar: '<?php echo $user_info['avatar'] ?>'
   };
+  window.msg = '{$msg}'
 </script>
 <script type="text/javascript" src="<?php echo mix("/static/js/app.js"); ?>"></script>
 </html>
