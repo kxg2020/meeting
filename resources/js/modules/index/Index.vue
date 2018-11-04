@@ -95,7 +95,7 @@
 
 <style scoped>
   .main-container{
-    margin-bottom: 50px;
+    padding-bottom: 100px;
   }
 
   .meeting-type-list {
