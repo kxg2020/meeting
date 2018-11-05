@@ -32,17 +32,16 @@ class Index extends Base{
         if($code){
             $userBasic = WeChat::getInstance()->setCode($code)->getUserBasic();
             $userInfo  = User::getInstance()->getUserByUserId($userBasic["UserId"]);
-
-            $userInfo["data"]["department"] = Tool::getInstance()->jsonDecode($userInfo["data"]["department"]);
-            $viewPermission = Department::getInstance()
-                ->loginUserViewPermission($userInfo["data"]["department"],$userInfo);
-            $viewPermissionId = [];
-            if($viewPermission["data"]){
-                array_walk($viewPermission["data"],function ($value) use (&$viewPermissionId){
-                    $viewPermissionId[] = $value["meetingTypeId"];
-                });
-            }
             if($userBasic){
+                $userInfo["data"]["department"] = Tool::getInstance()->jsonDecode($userInfo["data"]["department"]);
+                $viewPermission = Department::getInstance()
+                    ->loginUserViewPermission($userInfo["data"]["department"],$userInfo);
+                $viewPermissionId = [];
+                if($viewPermission["data"]){
+                    array_walk($viewPermission["data"],function ($value) use (&$viewPermissionId){
+                        $viewPermissionId[] = $value["meetingTypeId"];
+                    });
+                }
                 return $this->indexView(
                     Jwt::getInstance()->createToken("user_id",$userBasic["UserId"]),
                     [
