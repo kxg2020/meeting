@@ -6,7 +6,10 @@ use think\facade\Request;
 class Auth{
     private $notice = "当前用户被禁用,无法进行任何操作";
     public function handle($request, \Closure $next){
-        $token = Request::header("token",Request::get("token")) ;
+        $token = Request::header("token") ;
+        if(!$token){
+            $token = Request::get("token");
+        }
         if($token){
             $result = Jwt::getInstance()->validateToken("user_id",$token);
             if($result["status"]){
