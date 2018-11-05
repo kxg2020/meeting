@@ -115,10 +115,10 @@ class MeetingRecord extends Base {
         }else{
             Request::instance()->userId = "";
         }
+        $userInfo = \app\index\model\User::getInstance()->getUserByUserId(Request::instance()->userId);
         if(!$this->exportCondition($meetingInfo)){
-            echo 2;
             $message = "暂时无法导出";
-            return $this->indexView(Request::header("token"),"","","",$message);
+            return $this->indexView(Request::header("token"),$userInfo["data"],"","",$message);
         }
 
         $result = $this->meetingJoinUser($result,$meetingInfo,$meetingId);
