@@ -11,22 +11,20 @@ use think\facade\Request;
 
 class Index extends Base{
 
-    /*
-     * �û���½
-     */
     public function index(){
         // dev
         if (strpos(Request::domain(), 'localhost')){
-            return view('index', [
-                'token' => Jwt::getInstance()->createToken("user_id", "whngqdcmhdxxf"),
-                'permission_ids' => [87, 88],
-                "route_path" => '',
-                "user_info" => [
+            return $this->indexView(
+                Jwt::getInstance()->createToken("user_id", "whngqdcmhdxxf"),
+                [
                     "name" => 'name',
                     "position" => 'position',
                     "avatar" => 'https://img.it9g.com/other/FvO_Csuv2DyvYZxzc97xjxLWyoeO.jpeg'
-                ]
-            ]);
+                ],
+                [87, 88],
+                '',
+                ''
+            );
         }
         $code = Request::get("code");
         $ifRedirect = Request::get("redirect") ? Request::get("redirect") : "";
@@ -45,16 +43,16 @@ class Index extends Base{
                 });
             }
             if($userBasic){
-                return view('index', [
-                    'token'           => Jwt::getInstance()->createToken("user_id",$userBasic["UserId"]),
-                    "permission_ids"  => $viewPermissionId,
-                    "route_path" => $ifRedirect,
-                    "user_info"  => [
+                return $this->indexView(
+                    Jwt::getInstance()->createToken("user_id",$userBasic["UserId"]),
+                    [
                         "name"   => $userInfo["data"]['name'],
                         "position" => $userInfo["data"]["position"],
                         "avatar"   => $userInfo["data"]['avatar']
-                    ]
-                ]);
+                    ],
+                    $viewPermissionId,
+                    $ifRedirect
+                );
             }else{
                 $redirect = sprintf($this->authApi,$this->companyId,$this->redirect,$this->agentId);
                 return \redirect($redirect);

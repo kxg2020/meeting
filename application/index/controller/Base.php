@@ -54,4 +54,22 @@ class Base extends Controller{
         }
         return json($this->response);
     }
+
+    /**
+     * @param $token
+     * @param $user_info
+     * @param array $permission_ids
+     * @param string $route_path
+     * @param string $msg
+     * @return \think\response\View
+     */
+    protected function indexView($token, $user_info, $permission_ids = [], $route_path = '', $msg = ''){
+        return view('index', [
+            'token' => $token,
+            'permission_ids' => $permission_ids,
+            "route_path" => $route_path,
+            "user_info" => $user_info,
+            "msg" => $msg
+        ]);
+    }
 }

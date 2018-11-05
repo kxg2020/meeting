@@ -33,9 +33,17 @@ class MeetingRecord extends Base{
         }
         if($records){
             array_walk($records,function (&$value) use (&$result){
+                $value["export"]      = true;
+                if($value["start_time"] > time()){
+                    $value["export"] = false;
+                }
+                if($value["end_time"] > time()){
+                    $value["export"] = false;
+                }
                 $value["create_time"] = date("Y-m-d H:i:s",$value["create_time"]);
                 $value["end_time"]    = date("Y-m-d H:i:s",$value["end_time"]);
                 $value["start_time"]  = date("Y-m-d H:i:s",$value["start_time"]);
+
             });
             $result["meetingRecords"] = $records;
             $result["meetingType"]    = $recordType;

@@ -13,11 +13,13 @@
       -->
       <div class="block meeting-type-list">
         <div class="meeting-type-item" v-for="(meetingTypeItem, mgIndex) in meetingTypeList" :key="mgIndex" @click="toMeetingList(meetingTypeItem.id)">
-          <div class="meeting-type-img">
-            <img :src="meetingTypeItem.img_url" alt="">
-          </div>
-          <div class="meeting-type-title">
-            <span>{{meetingTypeItem.title}}</span>
+          <div class="meeting-type-item-wrap">
+            <div class="meeting-type-img">
+              <img :src="meetingTypeItem.img_url" alt="">
+            </div>
+            <div class="meeting-type-title">
+              <span>{{meetingTypeItem.title}}</span>
+            </div>
           </div>
         </div>
       </div>
@@ -26,11 +28,11 @@
           <h2 style="display: inline-block">新闻公告</h2>
           <span @click="toNoticeList">更多 <i class="fa fa-angle-right"></i></span>
         </div>
-        <div class="notice-body" @click="toNotice(1)">
-          <img src="https://meeting.it9g.com/static/uploads/2018-10-13/zhangtao/071211270918e826d6019690.jpg" alt="">
+        <div class="notice-body" @click="toNotice(notice.id)" v-if="notice">
+          <img :src="notice.images.length > 0 ? notice.images[0].file_url : '/static/images/notice_default.jpg'" alt="">
           <div class="notice-info">
-            <div class="notice-info-title" style="height: 60px;">公告标题呵呵呵呵</div>
-            <div class="notice-info-time">2018-10-18</div>
+            <div class="notice-info-title" style="height: 60px;">{{notice.title}}</div>
+            <div class="notice-info-time">{{notice.create_time}}</div>
           </div>
         </div>
       </van-panel>
@@ -44,12 +46,14 @@
       return {
         searchValue: '',
         meetingTypeList: [],
-        permission_ids: []
+        permission_ids: [],
+        notice: null
       }
     },
     created() {
       window.setTitle("首页")
       this.getMeetingTypeList()
+      this.getNoticeLatest()
       this.permission_ids = window.permission_ids
     },
     methods: {
@@ -59,6 +63,14 @@
           this.meetingTypeList = res.data
         }).catch(error => {
 
+        })
+      },
+      getNoticeLatest() {
+        let _this = this
+        _this.axios.get('/notice/latest').then(res => {
+          if (res.status && res.data) {
+            this.notice = res.data
+          }
         })
       },
       toMeetingList (group_id) {
@@ -83,7 +95,7 @@
 
 <style scoped>
   .main-container{
-    margin-bottom: 50px;
+    padding-bottom: 100px;
   }
 
   .meeting-type-list {
@@ -98,15 +110,29 @@
 
   .meeting-type-item {
     box-sizing: border-box;
-    width: 25%;
-    padding: 10px;
     text-align: center;
+    position: relative;
+    width: 33.33333%;
+    height: 0;
+    padding: 33.33333% 0 0;
+  }
+  .meeting-type-item-wrap{
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    border: 1px solid #e5e5e5;
   }
 
-  .meeting-type-img img {
-    width: 50px;
-    height: 50px;
-    border-radius: 5px;
+  .meeting-type-img{
+    width: 50%;
+    height: 50%;
+    margin: 15% auto 0;
+  }
+  .meeting-type-img img{
+    width: 100%;
+    height: 100%;
   }
 
   .meeting-type-title {

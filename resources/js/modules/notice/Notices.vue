@@ -7,7 +7,7 @@
             <img :src="notice.images.length > 0 ? notice.images[0].file_url : '/static/images/notice_default.jpg'" alt="">
             <div class="notice-info">
               <div class="notice-info-title">{{notice.title}}</div>
-              <div class="notice-info-intro">{{notice.intro}}</div>
+              <!--<div class="notice-info-intro">{{notice.intro}}</div>-->
               <div class="notice-info-time" style="display: flex;flex-direction: row;justify-content: space-between">
                 <span>{{notice.create_time}}</span>
                 <el-button style="display: inline-block"

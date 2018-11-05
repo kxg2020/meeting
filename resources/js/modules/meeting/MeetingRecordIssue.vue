@@ -20,9 +20,9 @@
         </div>
         <div class="vote-item" v-for="(vote, voteIndex) in issue.option" :key="'o' + voteIndex">
           <div class="vote-title">{{vote.title}}</div>
-          <div v-for="(item, itemIndex) in vote.items" class="vote-item-notice" :key="'i' + itemIndex" v-if="item.files.length > 0">
-            选项{{(itemIndex + 1).ConvertToChinese()}} <span style="color: #409EFF;">{{item.value}}</span>
-            <div>
+          <div v-for="(item, itemIndex) in vote.items" class="vote-item-notice" :key="'i' + itemIndex">
+            {{itemIndex + 1}}. <span style="color: #409EFF;">{{item.value}}</span>
+            <div v-if="item.files.length > 0">
               <FileList :files="item.files" :show-remove="false" :show-download="true" :preview="true"></FileList>
             </div>
           </div>

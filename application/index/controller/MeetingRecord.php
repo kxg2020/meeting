@@ -115,7 +115,7 @@ class MeetingRecord extends Base {
             Request::instance()->userId = "";
         }
         if(!$this->exportCondition($meetingInfo)){
-            echo "<h2>当前会议记录无法导出</h2>";
+            echo "<h2>褰撳墠浼氳璁板綍鏃犳硶瀵煎嚭</h2>";
             return;
         }
         $result = $this->meetingJoinUser($result,$meetingInfo,$meetingId);
@@ -141,7 +141,7 @@ class MeetingRecord extends Base {
         $result = $this->exportData($result);
         $this->assign(["meeting" => $result]);
         $html = $this->fetch("meeting/word");
-        $fileName = "中共白朝乡月坝村党支部党员大会会议记录";
+        $fileName = "涓叡鐧芥湞涔℃湀鍧濇潙鍏氭敮閮ㄥ厷鍛樺ぇ浼氫細璁褰�";
         try{
             $pdf = new Mpdf(['default_font' => 'GB','format' => 'A4-L']);
             $pdf->use_kwt = true;
@@ -262,11 +262,11 @@ class MeetingRecord extends Base {
                             }
                             $ballotResult = "";
                             if($agree > $oppose){
-                                $ballotResult = "同意";
+                                $ballotResult = "鍚屾剰";
                             }else if($agree == $oppose){
-                                $ballotResult = "票数相同";
+                                $ballotResult = "绁ㄦ暟鐩稿悓";
                             }else if ($agree < $oppose){
-                                $ballotResult = "反对";
+                                $ballotResult = "鍙嶅";
                             }
                             $issueOption[$i] = [
                                 "title"  => $j["title"],
@@ -306,7 +306,7 @@ class MeetingRecord extends Base {
                     $userVote = Db::name("user_votes")
                         ->where(["meeting_info_id"=> $vote["meeting_info_id"],"type"=>Enum::VOTE])
                         ->select();
-
+                    $itemVote = [];
                     if($vote["options"]){
                         foreach ($vote["options"] as $i => $j){
                             foreach ($j["items"] as $k => $v){
@@ -334,7 +334,7 @@ class MeetingRecord extends Base {
                         }
                         array_multisort($volume, SORT_DESC, $itemVote);
                     }
-                    $voteResult = isset($itemVote[0]["option"]) ? $itemVote[0]["option"] : "错误";
+                    $voteResult = isset($itemVote[0]["option"]) ? $itemVote[0]["option"] : "閿欒";
                     $meetingIssueList = [
                         "title"     => $voteInfo["title"],
                         "type"      => Enum::VOTE,

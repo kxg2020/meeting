@@ -55,6 +55,9 @@ class Notice extends Base {
 
     public function noticeLatest(){
         $result = Db::name("notice")->order("create_time desc")->limit(0,1)->find();
+        if ($result) {
+            $result['create_time'] = date("Y-m-d H:i:s", $result['create_time']);
+        }
         return $this->printResponse(200, $result);
     }
 
