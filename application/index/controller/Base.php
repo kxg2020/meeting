@@ -65,11 +65,11 @@ class Base extends Controller{
      */
     protected function indexView($token, $user_info, $permission_ids = [], $route_path = '', $msg = ''){
         return view('index', [
-            'token' => $token,
+            'token'          => $token,
             'permission_ids' => $permission_ids,
-            "route_path" => $route_path,
-            "user_info" => $user_info,
-            "msg" => $msg
+            "route_path"     => $route_path,
+            "user_info"      => $user_info,
+            "msg"            => $msg
         ]);
     }
 }

@@ -46,7 +46,7 @@ class Index extends Base{
                 return $this->indexView(
                     Jwt::getInstance()->createToken("user_id",$userBasic["UserId"]),
                     [
-                        "name"   => $userInfo["data"]['name'],
+                        "name"     => $userInfo["data"]['name'],
                         "position" => $userInfo["data"]["position"],
                         "avatar"   => $userInfo["data"]['avatar']
                     ],
