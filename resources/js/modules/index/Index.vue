@@ -28,7 +28,7 @@
           <h2 style="display: inline-block">新闻公告</h2>
           <span @click="toNoticeList">更多 <i class="fa fa-angle-right"></i></span>
         </div>
-        <div class="notice-body" @click="toNotice(1)" v-if="notice">
+        <div class="notice-body" @click="toNotice(notice.id)" v-if="notice">
           <img :src="notice.images.length > 0 ? notice.images[0].file_url : '/static/images/notice_default.jpg'" alt="">
           <div class="notice-info">
             <div class="notice-info-title" style="height: 60px;">{{notice.title}}</div>
