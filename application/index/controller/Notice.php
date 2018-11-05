@@ -33,6 +33,7 @@ class Notice extends Base {
         $result   = Tool::getInstance()->jsonDecode(Cache::get("notice-detail-".$noticeId));
         if(!$result){
             $result = \app\index\model\Notice::getInstance()->detailNotice($noticeId);
+
             if($result){
                 Cache::set("notice-detail-".$noticeId,Tool::getInstance()->jsonEncode($result));
                 return $this->printResponse(200,$result);

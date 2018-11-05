@@ -40,6 +40,7 @@ class Notice extends Base
     public function detailNotice($noticeId): ?array
     {
         $result = Db::name("notice")->where(["id" => $noticeId])->find();
+
         if ($result) {
             $result["images"] = Tool::getInstance()->jsonDecode($result['images']);
             $result["create_time"] = date("Y-m-d H:i:s", $result["create_time"]);

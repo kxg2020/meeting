@@ -34,6 +34,7 @@ class Index extends Base{
         if($code){
             $userBasic = WeChat::getInstance()->setCode($code)->getUserBasic();
             $userInfo  = User::getInstance()->getUserByUserId($userBasic["UserId"]);
+
             $userInfo["data"]["department"] = Tool::getInstance()->jsonDecode($userInfo["data"]["department"]);
             $viewPermission = Department::getInstance()
                 ->loginUserViewPermission($userInfo["data"]["department"],$userInfo);

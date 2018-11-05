@@ -70,6 +70,7 @@ class Department extends Base{
     }
 
     public function loginUserViewPermission($departmentId,$userInfo){
+
         if($userInfo["data"]["position"] == Enum::ADMIN){
             $result = Db::name("department")
                 ->alias("a")
