@@ -144,7 +144,7 @@ class MeetingRecord extends Base {
         $result = $this->exportData($result);
         $this->assign(["meeting" => $result]);
         $html = $this->fetch("meeting/word");
-        $fileName = "涓叡鐧芥湞涔℃湀鍧濇潙鍏氭敮閮ㄥ厷鍛樺ぇ浼氫細璁褰�";
+        $fileName = "会议记录";
         try{
             $pdf = new Mpdf(['default_font' => 'GB','format' => 'A4-L']);
             $pdf->use_kwt = true;
@@ -265,11 +265,11 @@ class MeetingRecord extends Base {
                             }
                             $ballotResult = "";
                             if($agree > $oppose){
-                                $ballotResult = "鍚屾剰";
+                                $ballotResult = "同意";
                             }else if($agree == $oppose){
-                                $ballotResult = "绁ㄦ暟鐩稿悓";
+                                $ballotResult = "票数相同";
                             }else if ($agree < $oppose){
-                                $ballotResult = "鍙嶅";
+                                $ballotResult = "反对";
                             }
                             $issueOption[$i] = [
                                 "title"  => $j["title"],
@@ -337,7 +337,7 @@ class MeetingRecord extends Base {
                         }
                         array_multisort($volume, SORT_DESC, $itemVote);
                     }
-                    $voteResult = isset($itemVote[0]["option"]) ? $itemVote[0]["option"] : "閿欒";
+                    $voteResult = isset($itemVote[0]["option"]) ? $itemVote[0]["option"] : "错误";
                     $meetingIssueList = [
                         "title"     => $voteInfo["title"],
                         "type"      => Enum::VOTE,

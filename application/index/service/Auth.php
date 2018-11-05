@@ -4,7 +4,7 @@ use app\index\model\User;
 use think\facade\Request;
 
 class Auth{
-    private $notice = "µ±Ç°ÓÃ»§±»½ûÓÃ,ÎŞ·¨½øĞĞÈÎºÎ²Ù×÷";
+    private $notice = "å½“å‰ç”¨æˆ·è¢«ç¦ç”¨,æ— æ³•è¿›è¡Œä»»ä½•æ“ä½œ";
     public function handle($request, \Closure $next){
         $token = Request::header("token",Request::get("token")) ;
         if($token){
