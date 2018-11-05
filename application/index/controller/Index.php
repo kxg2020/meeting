@@ -64,4 +64,8 @@ class Index extends Base{
 
     }
 
+    public function pdf(){
+        return view('pdf');
+    }
+
 }
