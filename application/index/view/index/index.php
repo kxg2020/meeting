@@ -29,9 +29,9 @@ if (! function_exists('mix')) {
   window.permission_ids = <?php echo json_encode($permission_ids)?>;
   window.route_path = '{$route_path}';
   window.user_info = {
-    name: '<?php echo $user_info['name'] ?>',
-    position: '<?php echo $user_info['position'] ?>',
-    avatar: '<?php echo $user_info['avatar'] ?>'
+    name: '<?php echo isset($user_info['name']) ? $user_info['name'] :  "" ?>',
+    position: '<?php echo isset($user_info['position']) ?  $user_info['position'] : "" ?>',
+    avatar: '<?php echo isset($user_info['avatar']) ? $user_info['avatar'] : "" ?>'
   };
   window.msg = '{$msg}'
 </script>

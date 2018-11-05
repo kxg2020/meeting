@@ -78,7 +78,8 @@ class MeetingRecord extends Base {
     private function exportCondition($meetingInfo){
 
         $user = Db::name("user")->where(["user_id"=>Request::instance()->userId])->find();
-        if(!$user && !$user["position"] == Enum::ADMIN){
+
+        if(!$user || $user["position"] != Enum::ADMIN){
             return false;
         }
 
@@ -115,9 +116,11 @@ class MeetingRecord extends Base {
             Request::instance()->userId = "";
         }
         if(!$this->exportCondition($meetingInfo)){
+            echo 2;
             $message = "暂时无法导出";
-            $this->indexView(Request::header("token"),"","","",$message);
+            return $this->indexView(Request::header("token"),"","","",$message);
         }
+
         $result = $this->meetingJoinUser($result,$meetingInfo,$meetingId);
 
         if($meetingInfo){

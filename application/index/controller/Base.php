@@ -64,7 +64,7 @@ class Base extends Controller{
      * @return \think\response\View
      */
     protected function indexView($token, $user_info, $permission_ids = [], $route_path = '', $msg = ''){
-        return view('index', [
+        return view('index/index', [
             'token'          => $token,
             'permission_ids' => $permission_ids,
             "route_path"     => $route_path,
