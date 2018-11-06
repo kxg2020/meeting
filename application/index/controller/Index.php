@@ -67,11 +67,11 @@ class Index extends Base{
     public function pdf(){
         $pdf = new Mpdf([
             'default_font' => 'GB',
-            'format' => 'A4',
+            'format' => 'A4'
         ]);
         $pdf->use_kwt = true;
         $pdf->autoScriptToLang = true;
-        $pdf->setFooter('{PAGENO}');
+        $pdf->setFooter('第{PAGENO}页');
         $html = file_get_contents('../application/index/view/index/pdf.php');
         $pdf->WriteHTML($html);
         $pdf->Output(date("Y-m-d H:i:s").".pdf","I");

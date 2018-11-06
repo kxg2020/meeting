@@ -36,16 +36,14 @@
 
 八号5pt
 https://wenku.baidu.com/view/e2f6a0daa58da0116c1749dc
-发文机关标识 小标宋体 红色 29.92px
 
 -->
   <style>
     body {
-      font-size: 1em;
+      font-size: 14pt;
       margin: 0em;
       display: block;
       border-style: none;
-      width: 49.58333em;
     }
 
     .empty-block {
@@ -108,6 +106,7 @@ https://wenku.baidu.com/view/e2f6a0daa58da0116c1749dc
       color: #000000;
       line-height: 1.191406em;
       text-align: center;
+      font-weight: bold;
     }
     .content-block {
       text-indent: 2em;
@@ -121,6 +120,22 @@ https://wenku.baidu.com/view/e2f6a0daa58da0116c1749dc
     .enclosure-item-no{
       font-weight: bold;
       color: #000000;
+    }
+    /**/
+    table{
+      width: 100%;
+      border-collapse: collapse;
+    }
+    thead{
+      font-weight: bold;
+      font-size: 14pt;
+    }
+    tbody{
+      font-size: 12pt;
+    }
+    td, th{
+      text-align: center;
+      border: 0.05em solid #000000;
     }
   </style>
 </head>
@@ -149,6 +164,31 @@ https://wenku.baidu.com/view/e2f6a0daa58da0116c1749dc
     <div class="content-block">
       李氏子蟠，年十七，好古文，六艺经传皆通习之，不拘于时，学于余。余嘉其能行古道，作《师说》以贻之
     </div>
+    <div class="empty-block h1em"></div>
+    <img src="https://meeting.it9g.com/static/uploads/2018-10-29/whngqdcmhdxxf/8801FAA8-732D-48DD-B3D5-11C047D11B71.jpeg" alt="">
+    <div class="empty-block h1em"></div>
+    <table>
+      <tr>
+        <th>column1</th>
+        <th>column2</th>
+        <th>column3</th>
+      </tr>
+      <tr>
+        <td>value1</td>
+        <td>value2</td>
+        <td>value3</td>
+      </tr>
+      <tr>
+        <td>value1</td>
+        <td>value2</td>
+        <td>value3</td>
+      </tr>
+      <tr>
+        <td>value1</td>
+        <td>value2</td>
+        <td>value3</td>
+      </tr>
+    </table>
     <div class="empty-block h1em"></div>
     <div class="enclosure">附件：1.六艺经传皆通习之</div>
     <div class="enclosure-more">2.所以传道受业解惑也</div>
