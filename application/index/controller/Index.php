@@ -5,6 +5,7 @@ use app\index\model\User;
 use app\index\service\Jwt;
 use app\index\service\Tool;
 use app\index\service\WeChat;
+use Mpdf\Mpdf;
 use think\facade\Request;
 
 
@@ -64,7 +65,18 @@ class Index extends Base{
     }
 
     public function pdf(){
-        return view('pdf');
+        $pdf = new Mpdf([
+            'default_font' => 'GB',
+            'format' => 'A4',
+        ]);
+        $pdf->use_kwt = true;
+        $pdf->autoScriptToLang = true;
+        $pdf->setFooter('{PAGENO}');
+        $html = file_get_contents('../application/index/view/index/pdf.php');
+        $pdf->WriteHTML($html);
+        $pdf->Output(date("Y-m-d H:i:s").".pdf","I");
+        exit;
+//        return view('pdf');
     }
 
 }

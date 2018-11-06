@@ -71,18 +71,16 @@ https://wenku.baidu.com/view/e2f6a0daa58da0116c1749dc
     }
 
     .header .title {
-      letter-spacing: 0.0751em;
-      line-height: 1.191406em;
-      font-size: 1.87em;
-      font-family: "方正小标宋简体";
+      font-size: 26pt;
+      font-family: "FangSong";
       color: #FF0000;
       text-align: center;
+      letter-spacing: 0.0165em;
+      font-weight: bold;
     }
 
     .header-number {
-      letter-spacing: -0.0011em;
-      line-height: 1em;
-      font-size: 1.335em;
+      font-size: 16pt;
       font-family: "FangSong";
       color: #000000;
       white-space: nowrap;
@@ -98,22 +96,31 @@ https://wenku.baidu.com/view/e2f6a0daa58da0116c1749dc
     .main {
       letter-spacing: 0.0165em;
       line-height: 1.5em;
-      font-size: 1.335em;
+      font-size: 16pt;
       font-family: "FangSong";
       color: #000000;
     }
 
     .main-title {
       letter-spacing: 0.0724em;
-      font-size: 1.835em;
-      font-family: "方正小标宋简体";
+      font-size: 22pt;
+      font-family: "FangSong";
       color: #000000;
       line-height: 1.191406em;
       text-align: center;
     }
-
     .content-block {
       text-indent: 2em;
+    }
+    .enclosure{
+      text-indent: 2em;
+    }
+    .enclosure-more{
+      text-indent: 5em;
+    }
+    .enclosure-item-no{
+      font-weight: bold;
+      color: #000000;
     }
   </style>
 </head>
@@ -128,7 +135,8 @@ https://wenku.baidu.com/view/e2f6a0daa58da0116c1749dc
   <div class="empty-block h2em"></div>
   <div class="main">
     <div class="main-title">XXXX关于XXX的通知</div>
-    <div class="content-cell">各位XXXX:</div>
+    <div class="empty-block h1em"></div>
+    <div class="content-cell">各位XXXX：</div>
     <div class="content-block">
       古之学者必有师。师者，所以传道受业解惑也。人非生而知之者，孰能无惑？惑而不从师，其为惑也，终不解矣。生乎吾前，其闻道也固先乎吾，吾从而师之；生乎吾后，其闻道也亦先乎吾，吾从而师之。吾师道也，夫庸知其年之先后生于吾乎？是故无贵无贱，无长无少，道之所存，师之所存也。
     </div>
@@ -140,6 +148,32 @@ https://wenku.baidu.com/view/e2f6a0daa58da0116c1749dc
     </div>
     <div class="content-block">
       李氏子蟠，年十七，好古文，六艺经传皆通习之，不拘于时，学于余。余嘉其能行古道，作《师说》以贻之
+    </div>
+    <div class="empty-block h1em"></div>
+    <div class="enclosure">附件：1.六艺经传皆通习之</div>
+    <div class="enclosure-more">2.所以传道受业解惑也</div>
+    <div class="enclosure-more">3.所以传道受业解惑也</div>
+    <div class="empty-block h3em"></div>
+    <div class="enclosure-item">
+      <div class="enclosure-item-no">附件一</div>
+      <div class="main">
+        <div class="main-title">所以传道受业解惑也</div>
+        <div class="empty-block h2em"></div>
+        <div class="content-block">
+          古之学者必有师。师者，所以传道受业解惑也。人非生而知之者，孰能无惑？惑而不从师，其为惑也，终不解矣。生乎吾前，其闻道也固先乎吾，吾从而师之；生乎吾后，其闻道也亦先乎吾，吾从而师之。吾师道也，夫庸知其年之先后生于吾乎？是故无贵无贱，无长无少，道之所存，师之所存也。
+        </div>
+      </div>
+    </div>
+    <div class="empty-block h3em"></div>
+    <div class="enclosure-item">
+      <div class="enclosure-item-no">附件二</div>
+      <div class="main">
+        <div class="main-title">所以传道受业解惑也</div>
+        <div class="empty-block h2em"></div>
+        <div class="content-block">
+          古之学者必有师。师者，所以传道受业解惑也。人非生而知之者，孰能无惑？惑而不从师，其为惑也，终不解矣。生乎吾前，其闻道也固先乎吾，吾从而师之；生乎吾后，其闻道也亦先乎吾，吾从而师之。吾师道也，夫庸知其年之先后生于吾乎？是故无贵无贱，无长无少，道之所存，师之所存也。
+        </div>
+      </div>
     </div>
   </div>
 </div>
