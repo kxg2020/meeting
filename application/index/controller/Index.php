@@ -32,7 +32,7 @@ class Index extends Base{
         $this->redirect = urlencode($this->redirect.'?redirect='.$ifRedirect);
         if($code){
             $userBasic = WeChat::getInstance()->setCode($code)->getUserBasic();
-            if($userBasic){
+            if($userBasic && isset($userBasic["UserId"])){
                 $userInfo  = User::getInstance()->getUserByUserId($userBasic["UserId"]);
                 $userInfo["data"]["department"] = Tool::getInstance()->jsonDecode($userInfo["data"]["department"]);
                 $viewPermission = Department::getInstance()
