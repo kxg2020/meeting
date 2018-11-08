@@ -32,8 +32,8 @@ class Index extends Base{
         $this->redirect = urlencode($this->redirect.'?redirect='.$ifRedirect);
         if($code){
             $userBasic = WeChat::getInstance()->setCode($code)->getUserBasic();
-            $userInfo  = User::getInstance()->getUserByUserId($userBasic["UserId"]);
             if($userBasic){
+                $userInfo  = User::getInstance()->getUserByUserId($userBasic["UserId"]);
                 $userInfo["data"]["department"] = Tool::getInstance()->jsonDecode($userInfo["data"]["department"]);
                 $viewPermission = Department::getInstance()
                     ->loginUserViewPermission($userInfo["data"]["department"],$userInfo);
@@ -54,8 +54,9 @@ class Index extends Base{
                     $ifRedirect
                 );
             }else{
-                $redirect = sprintf($this->authApi,$this->companyId,$this->redirect,$this->agentId);
-                return \redirect($redirect);
+                return $this->errorView();
+//                $redirect = sprintf($this->authApi,$this->companyId,$this->redirect,$this->agentId);
+//                return \redirect($redirect);
             }
         }else{
             $redirect = sprintf($this->authApi,$this->companyId,$this->redirect,$this->agentId);
