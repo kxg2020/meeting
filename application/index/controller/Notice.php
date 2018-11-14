@@ -57,6 +57,7 @@ class Notice extends Base {
         $result = Db::name("notice")->order("create_time desc")->limit(0,1)->find();
         if ($result) {
             $result['create_time'] = date("Y-m-d H:i:s", $result['create_time']);
+            $result["images"] = Tool::getInstance()->jsonDecode($result['images']);
         }
         return $this->printResponse(200, $result);
     }

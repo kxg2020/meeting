@@ -31,13 +31,13 @@ class Department extends Base{
                $departmentData  = ["name" => $value["name"],"parent_id" => $value["parentid"],"department_id"=>$value["id"]];
                $meetingTypeData = ["title"=> $value["name"], "department_id" => $value["id"]];
                if($record){
-                   // ¸üÐÂ
+                   // ï¿½ï¿½ï¿½ï¿½
                    $meetingTypeData["update_time"] = time();
                    $departmentData["update_time"]  = time();
                    Db::name("department")->where(["department_id"=>$value["id"]])->update($departmentData);
                    Db::name("meeting_type")->where(["department_id"=>$value["id"]])->update($meetingTypeData);
                }else{
-                   // ²åÈë
+                   // ï¿½ï¿½ï¿½ï¿½
                    $meetingTypeData["create_time"] = time();
                    $departmentData["create_time"]  = time();
                    Db::name("department")->insert($departmentData);
@@ -71,7 +71,7 @@ class Department extends Base{
 
     public function loginUserViewPermission($departmentId,$userInfo){
 
-        if($userInfo["data"]["position"] == Enum::ADMIN){
+        if(isset($userInfo["data"]["position"]) && $userInfo["data"]["position"] == Enum::ADMIN){
             $result = Db::name("department")
                 ->alias("a")
                 ->field("b.id as meetingTypeId")

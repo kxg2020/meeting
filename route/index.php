@@ -13,6 +13,8 @@ use think\facade\Route;
 
 Route::get("/","index/index");
 
+Route::get("/pdf","index/pdf");
+
 Route::get("/upload","static/uploads");
 
 Route::any("/address/book","AddressBook/addressBookModifiedNotify");

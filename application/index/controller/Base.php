@@ -72,4 +72,12 @@ class Base extends Controller{
             "msg"            => $msg
         ]);
     }
+
+    /**
+     * @param string $error
+     * @return string
+     */
+    protected function errorView($error = "没有权限访问") {
+        return "<h1>$error</h1>";
+    }
 }

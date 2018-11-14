@@ -5,6 +5,7 @@ use app\index\model\User;
 use app\index\service\Jwt;
 use app\index\service\Tool;
 use app\index\service\WeChat;
+use Mpdf\Mpdf;
 use think\facade\Request;
 
 
@@ -31,8 +32,8 @@ class Index extends Base{
         $this->redirect = urlencode($this->redirect.'?redirect='.$ifRedirect);
         if($code){
             $userBasic = WeChat::getInstance()->setCode($code)->getUserBasic();
-            $userInfo  = User::getInstance()->getUserByUserId($userBasic["UserId"]);
-            if($userBasic){
+            if($userBasic && isset($userBasic["UserId"])){
+                $userInfo  = User::getInstance()->getUserByUserId($userBasic["UserId"]);
                 $userInfo["data"]["department"] = Tool::getInstance()->jsonDecode($userInfo["data"]["department"]);
                 $viewPermission = Department::getInstance()
                     ->loginUserViewPermission($userInfo["data"]["department"],$userInfo);
@@ -53,14 +54,30 @@ class Index extends Base{
                     $ifRedirect
                 );
             }else{
-                $redirect = sprintf($this->authApi,$this->companyId,$this->redirect,$this->agentId);
-                return \redirect($redirect);
+                return $this->errorView();
+//                $redirect = sprintf($this->authApi,$this->companyId,$this->redirect,$this->agentId);
+//                return \redirect($redirect);
             }
         }else{
             $redirect = sprintf($this->authApi,$this->companyId,$this->redirect,$this->agentId);
             return \redirect($redirect);
         }
 
+    }
+
+    public function pdf(){
+        $pdf = new Mpdf([
+            'default_font' => 'GB',
+            'format' => 'A4'
+        ]);
+        $pdf->use_kwt = true;
+        $pdf->autoScriptToLang = true;
+        $pdf->setFooter('第{PAGENO}页');
+        $html = file_get_contents('../application/index/view/index/pdf.php');
+        $pdf->WriteHTML($html);
+        $pdf->Output(date("Y-m-d H:i:s").".pdf","I");
+        exit;
+//        return view('pdf');
     }
 
 }
