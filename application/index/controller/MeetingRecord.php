@@ -151,7 +151,7 @@ class MeetingRecord extends Base {
             $pdf->autoScriptToLang = true;
             $pdf->setFooter('{PAGENO}');
             $pdf->WriteHTML($html);
-            $pdf->Output("$fileName.pdf","D");
+            $pdf->Output("$fileName.pdf","f");
         }catch (MpdfException $exception){
             echo $exception->getMessage();
         }
