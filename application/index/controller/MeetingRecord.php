@@ -94,6 +94,19 @@ class MeetingRecord extends Base {
     }
 
     public function meetingRecordWord(){
+        $html = $this->fetch("index/pdf");
+        $fileName = "会议记录";
+        try{
+            $pdf = new Mpdf(['default_font' => 'GB','format' => 'A4']);
+            $pdf->use_kwt = false;
+            $pdf->autoScriptToLang = true;
+            $pdf->setFooter('{PAGENO}');
+            $pdf->WriteHTML($html);
+            $pdf->Output("$fileName.pdf","i");
+        }catch (MpdfException $exception){
+            echo $exception->getMessage();
+        }
+        die;
         $meetingId = Request::get("meetingId");
         $result = [];
         $filed = "a.title as meetingName,b.title as meetingIssueName,a.create_time as meetingCreateTime";
